@@ -15,19 +15,17 @@ export default function SettingsPage() {
   const updateProfile = useUpdateProfile();
   const [name, setName] = useState("");
   const [goalWeight, setGoalWeight] = useState("");
-  const [goalSteps, setGoalSteps] = useState("");
-  const [goalWorkouts, setGoalWorkouts] = useState("");
-  const [goalCalories, setGoalCalories] = useState("");
-  const [goalMinutes, setGoalMinutes] = useState("");
+  const [goalExercises, setGoalExercises] = useState("");
+  const [goalOutdoor, setGoalOutdoor] = useState("");
+  const [goalKayak, setGoalKayak] = useState("");
 
   useEffect(() => {
     if (profile) {
       setName(profile.display_name || "");
       setGoalWeight(profile.goal_weight?.toString() || "");
-      setGoalSteps(profile.goal_steps?.toString() || "10000");
-      setGoalWorkouts(profile.goal_workouts_per_week?.toString() || "3");
-      setGoalCalories(profile.goal_calories?.toString() || "500");
-      setGoalMinutes(profile.goal_active_minutes?.toString() || "30");
+      setGoalExercises(profile.goal_exercises_per_week?.toString() || "3");
+      setGoalOutdoor(profile.goal_outdoor_per_week?.toString() || "2");
+      setGoalKayak(profile.goal_kayak_per_week?.toString() || "1");
     }
   }, [profile]);
 
@@ -36,10 +34,9 @@ export default function SettingsPage() {
       await updateProfile.mutateAsync({
         display_name: name.trim() || null,
         goal_weight: goalWeight ? Number(goalWeight) : null,
-        goal_steps: Number(goalSteps) || 10000,
-        goal_workouts_per_week: Number(goalWorkouts) || 3,
-        goal_calories: Number(goalCalories) || 500,
-        goal_active_minutes: Number(goalMinutes) || 30,
+        goal_exercises_per_week: Number(goalExercises) || 3,
+        goal_outdoor_per_week: Number(goalOutdoor) || 2,
+        goal_kayak_per_week: Number(goalKayak) || 1,
       });
       toast.success("Settings saved!");
     } catch {
@@ -76,29 +73,25 @@ export default function SettingsPage() {
 
         <Card className="shadow-card">
           <CardHeader>
-            <CardTitle className="text-base">Goals</CardTitle>
+            <CardTitle className="text-base">Weekly Goals</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="s-weight">Target Weight (kg)</Label>
-                <Input id="s-weight" type="number" value={goalWeight} onChange={(e) => setGoalWeight(e.target.value)} min={20} max={300} />
+                <Label htmlFor="s-weight">Target Weight (lbs)</Label>
+                <Input id="s-weight" type="number" value={goalWeight} onChange={(e) => setGoalWeight(e.target.value)} min={50} max={500} />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="s-steps">Daily Steps</Label>
-                <Input id="s-steps" type="number" value={goalSteps} onChange={(e) => setGoalSteps(e.target.value)} min={1000} max={50000} />
+                <Label htmlFor="s-exercises">Exercises/Week</Label>
+                <Input id="s-exercises" type="number" value={goalExercises} onChange={(e) => setGoalExercises(e.target.value)} min={1} max={14} />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="s-workouts">Workouts/Week</Label>
-                <Input id="s-workouts" type="number" value={goalWorkouts} onChange={(e) => setGoalWorkouts(e.target.value)} min={1} max={14} />
+                <Label htmlFor="s-outdoor">Hike+XC Ski/Week</Label>
+                <Input id="s-outdoor" type="number" value={goalOutdoor} onChange={(e) => setGoalOutdoor(e.target.value)} min={0} max={14} />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="s-cals">Daily Calories</Label>
-                <Input id="s-cals" type="number" value={goalCalories} onChange={(e) => setGoalCalories(e.target.value)} min={100} max={5000} />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="s-mins">Active Minutes</Label>
-                <Input id="s-mins" type="number" value={goalMinutes} onChange={(e) => setGoalMinutes(e.target.value)} min={10} max={300} />
+                <Label htmlFor="s-kayak">Kayaking/Week</Label>
+                <Input id="s-kayak" type="number" value={goalKayak} onChange={(e) => setGoalKayak(e.target.value)} min={0} max={14} />
               </div>
             </div>
           </CardContent>

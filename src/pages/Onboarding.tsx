@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Target, Footprints, Dumbbell, Flame } from "lucide-react";
+import { Target, Dumbbell, Mountain, Ship } from "lucide-react";
 
 export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [goalWeight, setGoalWeight] = useState("");
-  const [goalSteps, setGoalSteps] = useState("10000");
-  const [goalWorkouts, setGoalWorkouts] = useState("3");
-  const [goalCalories, setGoalCalories] = useState("500");
+  const [goalExercises, setGoalExercises] = useState("3");
+  const [goalOutdoor, setGoalOutdoor] = useState("2");
+  const [goalKayak, setGoalKayak] = useState("1");
   const updateProfile = useUpdateProfile();
   const navigate = useNavigate();
 
@@ -24,50 +24,31 @@ export default function Onboarding() {
       description: "What's your target weight? (optional)",
       content: (
         <div className="space-y-2">
-          <Label htmlFor="weight">Target weight (kg)</Label>
+          <Label htmlFor="weight">Target weight (lbs)</Label>
           <Input
             id="weight"
             type="number"
             value={goalWeight}
             onChange={(e) => setGoalWeight(e.target.value)}
-            placeholder="70"
-            min={20}
-            max={300}
-          />
-        </div>
-      ),
-    },
-    {
-      icon: <Footprints className="h-8 w-8" />,
-      title: "Daily Steps",
-      description: "How many steps do you want to hit daily?",
-      content: (
-        <div className="space-y-2">
-          <Label htmlFor="steps">Daily steps goal</Label>
-          <Input
-            id="steps"
-            type="number"
-            value={goalSteps}
-            onChange={(e) => setGoalSteps(e.target.value)}
-            placeholder="10000"
-            min={1000}
-            max={50000}
+            placeholder="170"
+            min={50}
+            max={500}
           />
         </div>
       ),
     },
     {
       icon: <Dumbbell className="h-8 w-8" />,
-      title: "Workouts",
-      description: "How many workouts per week?",
+      title: "Exercises / Week",
+      description: "Peloton or OrangeTheory sessions per week?",
       content: (
         <div className="space-y-2">
-          <Label htmlFor="workouts">Workouts per week</Label>
+          <Label htmlFor="exercises">Exercises per week</Label>
           <Input
-            id="workouts"
+            id="exercises"
             type="number"
-            value={goalWorkouts}
-            onChange={(e) => setGoalWorkouts(e.target.value)}
+            value={goalExercises}
+            onChange={(e) => setGoalExercises(e.target.value)}
             placeholder="3"
             min={1}
             max={14}
@@ -76,20 +57,39 @@ export default function Onboarding() {
       ),
     },
     {
-      icon: <Flame className="h-8 w-8" />,
-      title: "Calorie Goal",
-      description: "Daily calorie burn target",
+      icon: <Mountain className="h-8 w-8" />,
+      title: "Outdoor Miles",
+      description: "Hikes or XC ski sessions per week?",
       content: (
         <div className="space-y-2">
-          <Label htmlFor="calories">Daily calories goal</Label>
+          <Label htmlFor="outdoor">Hike / XC Ski per week</Label>
           <Input
-            id="calories"
+            id="outdoor"
             type="number"
-            value={goalCalories}
-            onChange={(e) => setGoalCalories(e.target.value)}
-            placeholder="500"
-            min={100}
-            max={5000}
+            value={goalOutdoor}
+            onChange={(e) => setGoalOutdoor(e.target.value)}
+            placeholder="2"
+            min={0}
+            max={14}
+          />
+        </div>
+      ),
+    },
+    {
+      icon: <Ship className="h-8 w-8" />,
+      title: "Kayaking",
+      description: "Kayak sessions per week?",
+      content: (
+        <div className="space-y-2">
+          <Label htmlFor="kayak">Kayaking per week</Label>
+          <Input
+            id="kayak"
+            type="number"
+            value={goalKayak}
+            onChange={(e) => setGoalKayak(e.target.value)}
+            placeholder="1"
+            min={0}
+            max={14}
           />
         </div>
       ),
@@ -100,9 +100,9 @@ export default function Onboarding() {
     try {
       await updateProfile.mutateAsync({
         goal_weight: goalWeight ? Number(goalWeight) : null,
-        goal_steps: Number(goalSteps) || 10000,
-        goal_workouts_per_week: Number(goalWorkouts) || 3,
-        goal_calories: Number(goalCalories) || 500,
+        goal_exercises_per_week: Number(goalExercises) || 3,
+        goal_outdoor_per_week: Number(goalOutdoor) || 2,
+        goal_kayak_per_week: Number(goalKayak) || 1,
         onboarding_completed: true,
       });
       toast.success("Goals saved! Let's go 💪");
