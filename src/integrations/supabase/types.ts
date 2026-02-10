@@ -59,6 +59,9 @@ export type Database = {
           display_name: string | null
           goal_active_minutes: number | null
           goal_calories: number | null
+          goal_exercises_per_week: number | null
+          goal_kayak_per_week: number | null
+          goal_outdoor_per_week: number | null
           goal_steps: number | null
           goal_weight: number | null
           goal_workouts_per_week: number | null
@@ -72,6 +75,9 @@ export type Database = {
           display_name?: string | null
           goal_active_minutes?: number | null
           goal_calories?: number | null
+          goal_exercises_per_week?: number | null
+          goal_kayak_per_week?: number | null
+          goal_outdoor_per_week?: number | null
           goal_steps?: number | null
           goal_weight?: number | null
           goal_workouts_per_week?: number | null
@@ -85,6 +91,9 @@ export type Database = {
           display_name?: string | null
           goal_active_minutes?: number | null
           goal_calories?: number | null
+          goal_exercises_per_week?: number | null
+          goal_kayak_per_week?: number | null
+          goal_outdoor_per_week?: number | null
           goal_steps?: number | null
           goal_weight?: number | null
           goal_workouts_per_week?: number | null
@@ -127,7 +136,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      activity_type: "walk" | "run" | "cycle" | "gym"
+      activity_type:
+        | "kayaking"
+        | "hiking"
+        | "xc_skiing"
+        | "peloton"
+        | "orange_theory"
       intensity_level: "low" | "moderate" | "high" | "extreme"
     }
     CompositeTypes: {
@@ -256,7 +270,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      activity_type: ["walk", "run", "cycle", "gym"],
+      activity_type: [
+        "kayaking",
+        "hiking",
+        "xc_skiing",
+        "peloton",
+        "orange_theory",
+      ],
       intensity_level: ["low", "moderate", "high", "extreme"],
     },
   },

@@ -2,12 +2,20 @@ import { Activity } from "@/hooks/useActivities";
 import { format } from "date-fns";
 import { Clock, Flame, MapPin } from "lucide-react";
 
-const activityEmojis: Record<string, string> = { walk: "🚶", run: "🏃", cycle: "🚴", gym: "🏋️" };
-const intensityColors: Record<string, string> = {
-  low: "bg-chart-2/15 text-chart-2",
-  moderate: "bg-primary/15 text-primary",
-  high: "bg-accent/15 text-accent",
-  extreme: "bg-destructive/15 text-destructive",
+const activityEmojis: Record<string, string> = {
+  kayaking: "🛶",
+  hiking: "🥾",
+  xc_skiing: "⛷️",
+  peloton: "🚴",
+  orange_theory: "🏋️",
+};
+
+const activityLabels: Record<string, string> = {
+  kayaking: "Kayaking",
+  hiking: "Hiking",
+  xc_skiing: "XC Skiing",
+  peloton: "Peloton",
+  orange_theory: "OrangeTheory",
 };
 
 export default function ActivityItem({ activity }: { activity: Activity }) {
@@ -18,10 +26,7 @@ export default function ActivityItem({ activity }: { activity: Activity }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="font-semibold capitalize text-foreground">{activity.type}</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full ${intensityColors[activity.intensity]}`}>
-            {activity.intensity}
-          </span>
+          <span className="font-semibold text-foreground">{activityLabels[activity.type] || activity.type}</span>
         </div>
         <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
           <span className="flex items-center gap-1">
@@ -31,7 +36,7 @@ export default function ActivityItem({ activity }: { activity: Activity }) {
           {activity.distance && (
             <span className="flex items-center gap-1">
               <MapPin className="h-3.5 w-3.5" />
-              {activity.distance}km
+              {activity.distance}mi
             </span>
           )}
           {activity.calories && (

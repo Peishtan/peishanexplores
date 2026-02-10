@@ -11,6 +11,9 @@ export interface Profile {
   goal_workouts_per_week: number;
   goal_active_minutes: number;
   goal_calories: number;
+  goal_exercises_per_week: number;
+  goal_outdoor_per_week: number;
+  goal_kayak_per_week: number;
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string;

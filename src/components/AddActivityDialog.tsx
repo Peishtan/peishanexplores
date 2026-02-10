@@ -3,21 +3,31 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAddActivity } from "@/hooks/useActivities";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
 
+const ACTIVITY_OPTIONS = [
+  { value: "hiking", emoji: "🥾", label: "Hiking" },
+  { value: "kayaking", emoji: "🛶", label: "Kayaking" },
+  { value: "xc_skiing", emoji: "⛷️", label: "XC Skiing" },
+  { value: "peloton", emoji: "🚴", label: "Peloton" },
+  { value: "orange_theory", emoji: "🏋️", label: "OrangeTheory" },
+] as const;
+
+type ActivityType = (typeof ACTIVITY_OPTIONS)[number]["value"];
+
 export default function AddActivityDialog() {
   const [open, setOpen] = useState(false);
-  const [type, setType] = useState<"walk" | "run" | "cycle" | "gym">("walk");
+  const [type, setType] = useState<ActivityType>("hiking");
   const [duration, setDuration] = useState("");
   const [distance, setDistance] = useState("");
   const [calories, setCalories] = useState("");
-  const [intensity, setIntensity] = useState<"low" | "moderate" | "high" | "extreme">("moderate");
   const [notes, setNotes] = useState("");
   const addActivity = useAddActivity();
+
+  const isMileActivity = ["kayaking", "hiking", "xc_skiing"].includes(type);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +42,7 @@ export default function AddActivityDialog() {
         duration: Number(duration),
         distance: distance ? Number(distance) : null,
         calories: calories ? Number(calories) : null,
-        intensity,
+        intensity: "moderate",
         notes: notes.trim() || null,
       });
       toast.success("Activity logged! 🎉");
@@ -44,15 +54,12 @@ export default function AddActivityDialog() {
   };
 
   const resetForm = () => {
-    setType("walk");
+    setType("hiking");
     setDuration("");
     setDistance("");
     setCalories("");
-    setIntensity("moderate");
     setNotes("");
   };
-
-  const activityEmojis = { walk: "🚶", run: "🏃", cycle: "🚴", gym: "🏋️" };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -67,20 +74,20 @@ export default function AddActivityDialog() {
           <DialogTitle>Log Activity</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-4 gap-2">
-            {(["walk", "run", "cycle", "gym"] as const).map((t) => (
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+            {ACTIVITY_OPTIONS.map((opt) => (
               <button
-                key={t}
+                key={opt.value}
                 type="button"
-                onClick={() => setType(t)}
-                className={`flex flex-col items-center gap-1 rounded-xl p-3 text-sm transition-all border ${
-                  type === t
+                onClick={() => setType(opt.value)}
+                className={`flex flex-col items-center gap-1 rounded-xl p-3 text-xs transition-all border ${
+                  type === opt.value
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border bg-card text-muted-foreground hover:border-primary/50"
                 }`}
               >
-                <span className="text-xl">{activityEmojis[t]}</span>
-                <span className="capitalize">{t}</span>
+                <span className="text-xl">{opt.emoji}</span>
+                <span>{opt.label}</span>
               </button>
             ))}
           </div>
@@ -93,28 +100,27 @@ export default function AddActivityDialog() {
                 type="number"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
-                placeholder="30"
+                placeholder="60"
                 required
                 min={1}
                 max={600}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="distance">Distance (km)</Label>
-              <Input
-                id="distance"
-                type="number"
-                step="0.1"
-                value={distance}
-                onChange={(e) => setDistance(e.target.value)}
-                placeholder="5.0"
-                min={0}
-                max={200}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
+            {isMileActivity && (
+              <div className="space-y-1.5">
+                <Label htmlFor="distance">Distance (miles)</Label>
+                <Input
+                  id="distance"
+                  type="number"
+                  step="0.1"
+                  value={distance}
+                  onChange={(e) => setDistance(e.target.value)}
+                  placeholder="5.0"
+                  min={0}
+                  max={200}
+                />
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label htmlFor="calories">Calories</Label>
               <Input
@@ -122,24 +128,10 @@ export default function AddActivityDialog() {
                 type="number"
                 value={calories}
                 onChange={(e) => setCalories(e.target.value)}
-                placeholder="250"
+                placeholder="400"
                 min={0}
                 max={10000}
               />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="intensity">Intensity</Label>
-              <Select value={intensity} onValueChange={(v) => setIntensity(v as any)}>
-                <SelectTrigger id="intensity">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="moderate">Moderate</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="extreme">Extreme</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
