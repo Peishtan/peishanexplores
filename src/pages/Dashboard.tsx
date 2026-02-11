@@ -1,119 +1,169 @@
+import { useMemo, useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
-import { useWeekActivities, MILE_ACTIVITIES, EXERCISE_ACTIVITIES } from "@/hooks/useActivities";
-import { useWeightEntries } from "@/hooks/useWeightEntries";
-import { useAuth } from "@/hooks/useAuth";
-import StatCard from "@/components/StatCard";
-import AddActivityDialog from "@/components/AddActivityDialog";
-import ActivityItem from "@/components/ActivityItem";
+import { useActivities, MILE_ACTIVITIES } from "@/hooks/useActivities";
 import BottomNav from "@/components/BottomNav";
-import { MapPin, Dumbbell, Scale, Mountain, Ship } from "lucide-react";
+import GoalCircle from "@/components/GoalCircle";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { startOfWeek, endOfWeek, startOfMonth, startOfYear } from "date-fns";
+
+const SPORTS = [
+  { id: "kayaking", label: "Kayaking", color: "#c92a32", category: "water" },
+  { id: "hiking", label: "Hiking", color: "#278737", category: "wild" },
+  { id: "xc_skiing", label: "XC Skiing", color: "#2a6dc9", category: "wild" },
+  { id: "orange_theory", label: "Orange Theory", color: "#ef4444", category: "class" },
+  { id: "peloton", label: "Peloton", color: "#ec4899", category: "class" },
+];
+
+type Timeframe = "wtd" | "mtd" | "ytd";
 
 export default function Dashboard() {
-  const { user } = useAuth();
   const { data: profile } = useProfile();
-  const { data: weekActivities } = useWeekActivities();
-  const { data: weightEntries } = useWeightEntries();
+  const { data: activities } = useActivities();
+  const [chartTimeframe, setChartTimeframe] = useState<Timeframe>("ytd");
 
-  const exerciseCount = weekActivities?.filter((a) => EXERCISE_ACTIVITIES.includes(a.type as any)).length || 0;
-  const outdoorCount = weekActivities?.filter((a) => ["hiking", "xc_skiing"].includes(a.type)).length || 0;
-  const kayakCount = weekActivities?.filter((a) => a.type === "kayaking").length || 0;
-  const totalMiles = weekActivities
-    ?.filter((a) => MILE_ACTIVITIES.includes(a.type as any))
-    .reduce((sum, a) => sum + (a.distance || 0), 0) || 0;
-  const latestWeight = weightEntries?.length ? weightEntries[weightEntries.length - 1].weight : null;
+  const stats = useMemo(() => {
+    if (!activities) return null;
+    const now = new Date();
+    const weekStart = startOfWeek(now, { weekStartsOn: 0 }).getTime();
+    const monthStart = startOfMonth(now).getTime();
+    const yearStart = startOfYear(now).getTime();
+
+    const filterByStart = (start: number) =>
+      activities.filter((a) => new Date(a.start_time).getTime() >= start);
+
+    const weekLogs = filterByStart(weekStart);
+    const monthLogs = filterByStart(monthStart);
+    const yearLogs = filterByStart(yearStart);
+
+    const getMiles = (logs: typeof activities) =>
+      logs.filter((a) => MILE_ACTIVITIES.includes(a.type as any)).reduce((s, a) => s + (a.distance || 0), 0);
+
+    const getGoals = (logs: typeof activities) => ({
+      classes: logs.filter((a) => ["peloton", "orange_theory"].includes(a.type)).length,
+      wild: logs.filter((a) => ["hiking", "xc_skiing"].includes(a.type)).length,
+      water: logs.filter((a) => a.type === "kayaking").length,
+    });
+
+    const getBreakdown = (logs: typeof activities) => {
+      const k = logs.filter((a) => a.type === "kayaking").reduce((s, a) => s + (a.distance || 0), 0);
+      const h = logs.filter((a) => a.type === "hiking").reduce((s, a) => s + (a.distance || 0), 0);
+      const x = logs.filter((a) => a.type === "xc_skiing").reduce((s, a) => s + (a.distance || 0), 0);
+      return {
+        data: [
+          { name: "Kayaking", miles: k, color: "#c92a32" },
+          { name: "XC Skiing", miles: x, color: "#2a6dc9" },
+          { name: "Hiking", miles: h, color: "#278737" },
+        ],
+        total: k + h + x,
+      };
+    };
+
+    return {
+      wtd: { miles: getMiles(weekLogs), goals: getGoals(weekLogs) },
+      mtd: { miles: getMiles(monthLogs), goals: getGoals(monthLogs) },
+      ytd: { miles: getMiles(yearLogs), goals: getGoals(yearLogs) },
+      breakdowns: {
+        wtd: getBreakdown(weekLogs),
+        mtd: getBreakdown(monthLogs),
+        ytd: getBreakdown(yearLogs),
+      },
+    };
+  }, [activities]);
 
   const exerciseGoal = profile?.goal_exercises_per_week ?? 3;
-  const outdoorGoal = profile?.goal_outdoor_per_week ?? 2;
+  const outdoorGoal = profile?.goal_outdoor_per_week ?? 1;
   const kayakGoal = profile?.goal_kayak_per_week ?? 1;
-
-  // Show most recent activities (today or this week)
-  const recentActivities = weekActivities?.slice(0, 5) || [];
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
-      <div className="gradient-primary px-4 pt-12 pb-8">
-        <div className="mx-auto max-w-lg">
-          <p className="text-primary-foreground/80 text-sm">Good {getGreeting()}</p>
-          <h1 className="text-2xl font-bold text-primary-foreground">
-            {profile?.display_name || "Athlete"}
+      <main className="mx-auto max-w-5xl px-4 pt-8 space-y-8">
+        <header>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            {profile?.display_name ? `${profile.display_name}'s Tracker` : "Activity Tracker"}
           </h1>
-          <p className="text-primary-foreground/60 text-xs mt-1">This week's progress</p>
-        </div>
-      </div>
+          <p className="text-muted-foreground">Let's get moving!</p>
+        </header>
 
-      <div className="mx-auto max-w-lg px-4 -mt-4 space-y-4">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          <StatCard
-            icon={<Dumbbell className="h-5 w-5" />}
-            label="Exercises"
-            value={`${exerciseCount}/${exerciseGoal}`}
-            unit="/wk"
-            progress={(exerciseCount / exerciseGoal) * 100}
-            gradient="energy"
-          />
-          <StatCard
-            icon={<Mountain className="h-5 w-5" />}
-            label="Hike / XC Ski"
-            value={`${outdoorCount}/${outdoorGoal}`}
-            unit="/wk"
-            progress={(outdoorCount / outdoorGoal) * 100}
-            gradient="calm"
-          />
-          <StatCard
-            icon={<Ship className="h-5 w-5" />}
-            label="Kayaking"
-            value={`${kayakCount}/${kayakGoal}`}
-            unit="/wk"
-            progress={(kayakCount / kayakGoal) * 100}
-            gradient="primary"
-          />
-          <StatCard
-            icon={<MapPin className="h-5 w-5" />}
-            label="Total Miles"
-            value={totalMiles.toFixed(1)}
-            unit="mi"
-          />
-        </div>
-
-        {/* Weight */}
-        {latestWeight !== null && (
-          <div className="rounded-xl bg-card p-4 border border-border shadow-card flex items-center gap-3">
-            <Scale className="h-5 w-5 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Weight</span>
-            <span className="ml-auto text-lg font-bold text-foreground">{latestWeight} <span className="text-sm font-normal text-muted-foreground">lbs</span></span>
-          </div>
-        )}
-
-        {/* Quick Add */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">Recent Activities</h2>
-          <AddActivityDialog />
-        </div>
-
-        {/* Activity List */}
-        <div className="space-y-2">
-          {recentActivities.length > 0 ? (
-            recentActivities.map((a) => <ActivityItem key={a.id} activity={a} />)
-          ) : (
-            <div className="rounded-xl bg-card border border-border p-8 text-center shadow-card">
-              <Dumbbell className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
-              <p className="text-muted-foreground">No activities this week</p>
-              <p className="text-sm text-muted-foreground/70">Tap "Log Activity" to get started</p>
+        {/* Miles Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { label: "Week to Date", val: stats?.wtd.miles ?? 0 },
+            { label: "Month to Date", val: stats?.mtd.miles ?? 0 },
+            { label: "Year to Date", val: stats?.ytd.miles ?? 0 },
+          ].map((card, i) => (
+            <div key={i} className="rounded-2xl bg-card p-6 border border-border shadow-card">
+              <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{card.label}</p>
+              <p className="text-4xl font-bold mt-2 text-foreground">
+                {card.val.toFixed(1)} <span className="text-lg font-normal text-muted-foreground">mi</span>
+              </p>
             </div>
-          )}
+          ))}
         </div>
-      </div>
 
+        {/* Mileage Breakout Chart */}
+        <div className="rounded-2xl bg-card p-6 border border-border shadow-card">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div>
+              <h2 className="text-xl font-semibold text-foreground">Outdoor Mileage Breakout</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Cumulative:{" "}
+                <span className="text-foreground font-bold">
+                  {(stats?.breakdowns[chartTimeframe]?.total ?? 0).toFixed(1)} mi
+                </span>
+              </p>
+            </div>
+            <div className="flex bg-muted p-1 rounded-lg">
+              {(["wtd", "mtd", "ytd"] as Timeframe[]).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setChartTimeframe(t)}
+                  className={`px-4 py-1 text-xs rounded-md transition-colors uppercase font-bold tracking-tight ${
+                    chartTimeframe === t
+                      ? "bg-secondary text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={stats?.breakdowns[chartTimeframe]?.data ?? []}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip
+                  cursor={{ fill: "hsl(var(--muted))" }}
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "8px",
+                    color: "hsl(var(--foreground))",
+                  }}
+                />
+                <Bar dataKey="miles" radius={[4, 4, 0, 0]}>
+                  {(stats?.breakdowns[chartTimeframe]?.data ?? []).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Weekly Goals */}
+        <div className="rounded-2xl bg-card p-6 border border-border shadow-card">
+          <h2 className="text-xl font-semibold mb-6 text-foreground">Weekly Goal Status</h2>
+          <div className="grid grid-cols-3 gap-6">
+            <GoalCircle label={`Classes (Goal: ${exerciseGoal})`} current={stats?.wtd.goals.classes ?? 0} target={exerciseGoal} color="#ec4899" />
+            <GoalCircle label={`Outdoor (Goal: ${outdoorGoal})`} current={stats?.wtd.goals.wild ?? 0} target={outdoorGoal} color="#278737" />
+            <GoalCircle label={`Kayak (Goal: ${kayakGoal})`} current={stats?.wtd.goals.water ?? 0} target={kayakGoal} color="#c92a32" />
+          </div>
+        </div>
+      </main>
       <BottomNav />
     </div>
   );
-}
-
-function getGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "morning";
-  if (hour < 17) return "afternoon";
-  return "evening";
 }

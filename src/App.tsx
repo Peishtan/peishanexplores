@@ -2,15 +2,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Activities from "./pages/Activities";
-import Weight from "./pages/Weight";
-import SettingsPage from "./pages/SettingsPage";
+import Benchmarks from "./pages/Benchmarks";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -47,9 +46,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/activities" element={<Activities />} />
-      <Route path="/weight" element={<Weight />} />
-      <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/logs" element={<Activities />} />
+      <Route path="/benchmarks" element={<Benchmarks />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

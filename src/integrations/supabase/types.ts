@@ -23,6 +23,7 @@ export type Database = {
           id: string
           intensity: Database["public"]["Enums"]["intensity_level"] | null
           notes: string | null
+          route: string | null
           start_time: string
           type: Database["public"]["Enums"]["activity_type"]
           user_id: string
@@ -35,6 +36,7 @@ export type Database = {
           id?: string
           intensity?: Database["public"]["Enums"]["intensity_level"] | null
           notes?: string | null
+          route?: string | null
           start_time?: string
           type: Database["public"]["Enums"]["activity_type"]
           user_id: string
@@ -47,8 +49,42 @@ export type Database = {
           id?: string
           intensity?: Database["public"]["Enums"]["intensity_level"] | null
           notes?: string | null
+          route?: string | null
           start_time?: string
           type?: Database["public"]["Enums"]["activity_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      benchmarks: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          result: string
+          test_id: Database["public"]["Enums"]["benchmark_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          result: string
+          test_id: Database["public"]["Enums"]["benchmark_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          result?: string
+          test_id?: Database["public"]["Enums"]["benchmark_type"]
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -142,6 +178,12 @@ export type Database = {
         | "xc_skiing"
         | "peloton"
         | "orange_theory"
+      benchmark_type:
+        | "500m_row"
+        | "1000m_row"
+        | "pushups_1m"
+        | "situps_1m"
+        | "plank_time"
       intensity_level: "low" | "moderate" | "high" | "extreme"
     }
     CompositeTypes: {
@@ -276,6 +318,13 @@ export const Constants = {
         "xc_skiing",
         "peloton",
         "orange_theory",
+      ],
+      benchmark_type: [
+        "500m_row",
+        "1000m_row",
+        "pushups_1m",
+        "situps_1m",
+        "plank_time",
       ],
       intensity_level: ["low", "moderate", "high", "extreme"],
     },
