@@ -69,13 +69,15 @@ export default function Activities() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const [year, month, day] = form.date.split("-").map(Number);
+      const localDate = new Date(year, month - 1, day);
       if (editingId) {
         const { error } = await supabase
           .from("activities")
           .update({
             route: form.route || null,
             type: form.sport,
-            start_time: new Date(form.date).toISOString(),
+            start_time: localDate.toISOString(),
             distance: form.miles ? parseFloat(form.miles) : null,
             notes: form.notes || null,
           })
@@ -84,16 +86,21 @@ export default function Activities() {
         queryClient.invalidateQueries({ queryKey: ["activities"] });
         toast.success("Activity updated");
       } else {
-        await addActivity.mutateAsync({
-          type: form.sport,
-          start_time: new Date(form.date).toISOString(),
-          duration: 0,
-          distance: form.miles ? parseFloat(form.miles) : null,
-          calories: null,
-          intensity: "moderate",
-          notes: form.notes || null,
-        });
-        // Also update route via direct call
+        const { error } = await supabase
+          .from("activities")
+          .insert({
+            type: form.sport,
+            start_time: localDate.toISOString(),
+            duration: 0,
+            distance: form.miles ? parseFloat(form.miles) : null,
+            calories: null,
+            intensity: "moderate" as const,
+            notes: form.notes || null,
+            route: form.route || null,
+            user_id: user!.id,
+          });
+        if (error) throw error;
+        queryClient.invalidateQueries({ queryKey: ["activities"] });
         toast.success("Activity logged! 🎉");
       }
       setDialogOpen(false);
