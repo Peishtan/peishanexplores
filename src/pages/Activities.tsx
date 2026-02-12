@@ -154,7 +154,7 @@ export default function Activities() {
                     </td>
                   </tr>
                 )}
-                {activities?.map((a) => {
+                {activities?.slice().sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime()).map((a) => {
                   const sport = SPORTS.find((s) => s.id === a.type);
                   return (
                     <tr key={a.id} className="hover:bg-muted/50 transition-colors">
