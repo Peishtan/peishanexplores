@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { startOfWeek, subWeeks, startOfMonth, startOfYear, differenceInWeeks } from "date-fns";
+import { startOfWeek, subWeeks, startOfMonth, startOfYear, differenceInCalendarDays, addDays, format } from "date-fns";
 import { Activity, MILE_ACTIVITIES } from "./useActivities";
 
 export interface WeekData {
@@ -9,10 +9,20 @@ export interface WeekData {
   water: number;
 }
 
+export interface QuarterChallenge {
+  label: string;
+  current: number;
+  target: number;
+  pct: number;
+  projectedFinish: string | null;
+  pace: "ahead" | "on_pace" | "behind";
+}
+
 export interface DashboardInsights {
   wtd: WeekData;
   mtd: { miles: number };
   ytd: { miles: number };
+  qtd: { miles: number };
   lastWeek: WeekData;
   weekDelta: number;
   threeWeekAvg: number;
@@ -27,17 +37,13 @@ export interface DashboardInsights {
     outdoor: string;
     water: string;
   };
-  load: {
-    last7: number;
-    last30: number;
-    trend: "increasing" | "decreasing" | "stable";
-    risk: "low" | "moderate" | "high";
+  quarterWeeklyGoals: {
+    kayak: { hit: number; total: number };
+    outdoor: { hit: number; total: number };
+    classes: { hit: number; total: number };
   };
-  breakdowns: {
-    wtd: { data: { name: string; miles: number; color: string }[]; total: number };
-    mtd: { data: { name: string; miles: number; color: string }[]; total: number };
-    ytd: { data: { name: string; miles: number; color: string }[]; total: number };
-  };
+  kayakChallenge: QuarterChallenge;
+  hikingTotal: { miles: number; count: number };
 }
 
 function getWeekData(activities: Activity[], weekStart: number, weekEnd: number): WeekData {
@@ -53,19 +59,20 @@ function getWeekData(activities: Activity[], weekStart: number, weekEnd: number)
   };
 }
 
-function getBreakdown(activities: Activity[], start: number) {
-  const logs = activities.filter((a) => new Date(a.start_time).getTime() >= start);
-  const k = logs.filter((a) => a.type === "kayaking").reduce((s, a) => s + (a.distance || 0), 0);
-  const h = logs.filter((a) => a.type === "hiking").reduce((s, a) => s + (a.distance || 0), 0);
-  const x = logs.filter((a) => a.type === "xc_skiing").reduce((s, a) => s + (a.distance || 0), 0);
-  return {
-    data: [
-      { name: "Kayaking", miles: k, color: "#0ea5e9" },
-      { name: "XC Skiing", miles: x, color: "#6366f1" },
-      { name: "Hiking", miles: h, color: "#22c55e" },
-    ],
-    total: k + h + x,
-  };
+function getQuarterStart(date: Date): Date {
+  const m = date.getMonth();
+  const q = Math.floor(m / 3) * 3;
+  return new Date(date.getFullYear(), q, 1);
+}
+
+function getQuarterEnd(date: Date): Date {
+  const m = date.getMonth();
+  const q = Math.floor(m / 3) * 3 + 3;
+  return new Date(date.getFullYear(), q, 1);
+}
+
+function getQuarterLabel(date: Date): string {
+  return `Q${Math.floor(date.getMonth() / 3) + 1}`;
 }
 
 export function useDashboardInsights(
@@ -134,47 +141,77 @@ export function useDashboardInsights(
       water: goalNote(wtd.water, goals.kayak, lastWeek.water, "kayak"),
     };
 
-    // Training load
-    const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000);
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
-    const last7 = activities
-      .filter((a) => new Date(a.start_time).getTime() >= sevenDaysAgo.getTime())
-      .filter((a) => MILE_ACTIVITIES.includes(a.type as any))
-      .reduce((s, a) => s + (a.distance || 0), 0);
-    const last30 = activities
-      .filter((a) => new Date(a.start_time).getTime() >= thirtyDaysAgo.getTime())
-      .filter((a) => MILE_ACTIVITIES.includes(a.type as any))
-      .reduce((s, a) => s + (a.distance || 0), 0);
-
-    const weeklyAvg30 = last30 / 4;
-    const loadRatio = weeklyAvg30 > 0 ? last7 / weeklyAvg30 : 1;
-    const trend = loadRatio > 1.15 ? "increasing" as const : loadRatio < 0.85 ? "decreasing" as const : "stable" as const;
-    const risk = loadRatio > 1.5 ? "high" as const : loadRatio > 1.2 ? "moderate" as const : "low" as const;
-
-    // MTD / YTD
+    // MTD / YTD / QTD
     const monthStart = startOfMonth(now).getTime();
     const yearStart = startOfYear(now).getTime();
+    const qStart = getQuarterStart(now);
+    const qEnd = getQuarterEnd(now);
+    const qStartMs = qStart.getTime();
+
     const getMiles = (start: number) =>
       activities
         .filter((a) => new Date(a.start_time).getTime() >= start)
         .filter((a) => MILE_ACTIVITIES.includes(a.type as any))
         .reduce((s, a) => s + (a.distance || 0), 0);
 
+    const qtdMiles = getMiles(qStartMs);
+
+    // Kayak challenge: 90 miles per quarter
+    const KAYAK_TARGET = 90;
+    const kayakQtd = activities
+      .filter((a) => new Date(a.start_time).getTime() >= qStartMs)
+      .filter((a) => a.type === "kayaking")
+      .reduce((s, a) => s + (a.distance || 0), 0);
+    const daysPassed = Math.max(differenceInCalendarDays(now, qStart), 1);
+    const totalDays = differenceInCalendarDays(qEnd, qStart);
+    const dailyRate = kayakQtd / daysPassed;
+    const daysToFinish = dailyRate > 0 ? Math.ceil((KAYAK_TARGET - kayakQtd) / dailyRate) : null;
+    const projectedFinish = daysToFinish !== null && daysToFinish > 0 ? format(addDays(now, daysToFinish), "MMM d") : kayakQtd >= KAYAK_TARGET ? "Done!" : null;
+    const expectedPct = daysPassed / totalDays;
+    const actualPct = kayakQtd / KAYAK_TARGET;
+    const pace = actualPct >= expectedPct * 1.05 ? "ahead" as const : actualPct >= expectedPct * 0.85 ? "on_pace" as const : "behind" as const;
+
+    // Hiking totals for quarter
+    const hikingLogs = activities.filter((a) => new Date(a.start_time).getTime() >= qStartMs && a.type === "hiking");
+    const hikingMiles = hikingLogs.reduce((s, a) => s + (a.distance || 0), 0);
+
+    // Quarter weekly goals: how many weeks in this quarter hit the goal
+    const weeksInQuarter = Math.ceil(daysPassed / 7);
+    const countWeeksHit = (check: (w: WeekData) => boolean) => {
+      let hit = 0;
+      for (let i = 0; i < weeksInQuarter; i++) {
+        const ws = new Date(qStartMs + i * 7 * 86400000);
+        const we = new Date(ws.getTime() + 7 * 86400000);
+        const wd = getWeekData(activities, ws.getTime(), Math.min(we.getTime(), now.getTime()));
+        if (check(wd)) hit++;
+      }
+      return hit;
+    };
+
     return {
       wtd,
       mtd: { miles: getMiles(monthStart) },
       ytd: { miles: getMiles(yearStart) },
+      qtd: { miles: qtdMiles },
       lastWeek,
       weekDelta: wtd.miles - lastWeek.miles,
       threeWeekAvg,
       streaks,
       goalNotes,
-      load: { last7, last30, trend, risk },
-      breakdowns: {
-        wtd: getBreakdown(activities, startOfWeek(now, { weekStartsOn: 1 }).getTime()),
-        mtd: getBreakdown(activities, monthStart),
-        ytd: getBreakdown(activities, yearStart),
+      quarterWeeklyGoals: {
+        kayak: { hit: countWeeksHit((w) => w.water >= goals.kayak), total: weeksInQuarter },
+        outdoor: { hit: countWeeksHit((w) => w.outdoor >= goals.outdoor), total: weeksInQuarter },
+        classes: { hit: countWeeksHit((w) => w.classes >= goals.exercises), total: weeksInQuarter },
       },
+      kayakChallenge: {
+        label: `${getQuarterLabel(now)} Kayak Challenge`,
+        current: kayakQtd,
+        target: KAYAK_TARGET,
+        pct: Math.min((kayakQtd / KAYAK_TARGET) * 100, 100),
+        projectedFinish,
+        pace,
+      },
+      hikingTotal: { miles: hikingMiles, count: hikingLogs.length },
     };
   }, [activities, goals.exercises, goals.outdoor, goals.kayak]);
 }
