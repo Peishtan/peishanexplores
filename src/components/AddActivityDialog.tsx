@@ -44,6 +44,7 @@ export default function AddActivityDialog() {
         calories: calories ? Number(calories) : null,
         intensity: "moderate",
         notes: notes.trim() || null,
+        elevation_gain: null,
       });
       toast.success("Activity logged! 🎉");
       setOpen(false);

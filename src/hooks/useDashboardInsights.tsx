@@ -43,7 +43,7 @@ export interface DashboardInsights {
     classes: { hit: number; total: number };
   };
   kayakChallenge: QuarterChallenge;
-  hikingTotal: { miles: number; count: number };
+  hikingTotal: { miles: number; count: number; avgElevation: number; maxElevation: number };
 }
 
 function getWeekData(activities: Activity[], weekStart: number, weekEnd: number): WeekData {
@@ -174,6 +174,13 @@ export function useDashboardInsights(
     // Hiking totals for quarter
     const hikingLogs = activities.filter((a) => new Date(a.start_time).getTime() >= qStartMs && a.type === "hiking");
     const hikingMiles = hikingLogs.reduce((s, a) => s + (a.distance || 0), 0);
+    const hikingWithElevation = hikingLogs.filter((a) => a.elevation_gain != null && a.elevation_gain > 0);
+    const avgElevation = hikingWithElevation.length > 0
+      ? hikingWithElevation.reduce((s, a) => s + (a.elevation_gain || 0), 0) / hikingWithElevation.length
+      : 0;
+    const maxElevation = hikingWithElevation.length > 0
+      ? Math.max(...hikingWithElevation.map((a) => a.elevation_gain || 0))
+      : 0;
 
     // Quarter weekly goals: how many weeks in this quarter hit the goal
     const weeksInQuarter = Math.ceil(daysPassed / 7);
@@ -211,7 +218,7 @@ export function useDashboardInsights(
         projectedFinish,
         pace,
       },
-      hikingTotal: { miles: hikingMiles, count: hikingLogs.length },
+      hikingTotal: { miles: hikingMiles, count: hikingLogs.length, avgElevation: Math.round(avgElevation), maxElevation },
     };
   }, [activities, goals.exercises, goals.outdoor, goals.kayak]);
 }

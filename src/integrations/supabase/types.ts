@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           distance: number | null
           duration: number
+          elevation_gain: number | null
           id: string
           intensity: Database["public"]["Enums"]["intensity_level"] | null
           notes: string | null
@@ -33,6 +34,7 @@ export type Database = {
           created_at?: string
           distance?: number | null
           duration: number
+          elevation_gain?: number | null
           id?: string
           intensity?: Database["public"]["Enums"]["intensity_level"] | null
           notes?: string | null
@@ -46,6 +48,7 @@ export type Database = {
           created_at?: string
           distance?: number | null
           duration?: number
+          elevation_gain?: number | null
           id?: string
           intensity?: Database["public"]["Enums"]["intensity_level"] | null
           notes?: string | null

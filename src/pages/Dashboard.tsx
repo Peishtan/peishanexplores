@@ -39,22 +39,15 @@ export default function Dashboard() {
             alt="Mountain landscape"
             className="w-full h-48 md:h-56 object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-5">
-            <h2 className="text-xl font-bold text-primary-foreground mb-2">Your Outdoor Year</h2>
-            <div className="bg-foreground/40 backdrop-blur-sm rounded-lg px-4 py-2.5 inline-flex flex-col gap-0.5">
-              <p className="text-sm text-primary-foreground/90">
-                <span className="font-medium">Total Miles</span>{" "}
-                Q{Math.floor(new Date().getMonth() / 3) + 1}:{" "}
-                <span className="font-bold">{(insights?.qtd.miles ?? 0).toFixed(0)}</span> miles
-              </p>
-              <p className="text-xs text-primary-foreground/70">
-                2026: <span className="font-bold">{(insights?.ytd.miles ?? 0).toFixed(0)}</span> miles
-              </p>
-            </div>
-            <p className="text-xs text-primary-foreground/60 mt-2">
-              Track your kayaking, hiking & skiing progress throughout the year
+            <p className="text-xs font-medium text-primary-foreground/70 uppercase tracking-wider mb-1">2026 Total Miles</p>
+            <p className="text-3xl font-extrabold text-primary-foreground">
+              {(insights?.ytd.miles ?? 0).toFixed(0)} <span className="text-base font-medium text-primary-foreground/80">miles</span>
             </p>
+            <span className="mt-2 inline-block bg-primary-foreground/20 backdrop-blur-sm rounded-md px-3 py-1 text-xs font-semibold text-primary-foreground/90">
+              Q{Math.floor(new Date().getMonth() / 3) + 1}: {(insights?.qtd.miles ?? 0).toFixed(0)} miles so far
+            </span>
           </div>
         </div>
 
@@ -108,6 +101,18 @@ export default function Dashboard() {
             <p className="text-xs text-muted-foreground mt-1">
               {insights?.hikingTotal.count ?? 0} hikes this quarter
             </p>
+            {(insights?.hikingTotal.avgElevation ?? 0) > 0 && (
+              <div className="mt-3 pt-3 border-t border-border grid grid-cols-2 gap-2">
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Avg elevation</p>
+                  <p className="text-sm font-bold text-foreground">{insights!.hikingTotal.avgElevation.toLocaleString()} ft</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Highest hike</p>
+                  <p className="text-sm font-bold text-foreground">{insights!.hikingTotal.maxElevation.toLocaleString()} ft</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

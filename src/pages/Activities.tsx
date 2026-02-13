@@ -27,6 +27,7 @@ interface LogForm {
   route: string;
   date: string;
   miles: string;
+  elevation: string;
   notes: string;
   sport: ActivityType;
 }
@@ -43,12 +44,13 @@ export default function Activities() {
     route: "",
     date: new Date().toISOString().split("T")[0],
     miles: "",
+    elevation: "",
     notes: "",
     sport: "hiking",
   });
 
   const resetForm = () => {
-    setForm({ route: "", date: new Date().toISOString().split("T")[0], miles: "", notes: "", sport: "hiking" });
+    setForm({ route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking" });
     setEditingId(null);
   };
 
@@ -60,6 +62,7 @@ export default function Activities() {
       route: (a as any).route || "",
       date: new Date(a.start_time).toISOString().split("T")[0],
       miles: a.distance?.toString() || "",
+      elevation: a.elevation_gain?.toString() || "",
       notes: a.notes || "",
       sport: a.type,
     });
@@ -79,6 +82,7 @@ export default function Activities() {
             type: form.sport,
             start_time: localDate.toISOString(),
             distance: form.miles ? parseFloat(form.miles) : null,
+            elevation_gain: form.elevation ? parseInt(form.elevation) : null,
             notes: form.notes || null,
           })
           .eq("id", editingId);
@@ -93,6 +97,7 @@ export default function Activities() {
             start_time: localDate.toISOString(),
             duration: 0,
             distance: form.miles ? parseFloat(form.miles) : null,
+            elevation_gain: form.elevation ? parseInt(form.elevation) : null,
             calories: null,
             intensity: "moderate" as const,
             notes: form.notes || null,
@@ -228,6 +233,17 @@ export default function Activities() {
                 />
               </div>
             </div>
+            {["hiking", "xc_skiing"].includes(form.sport) && (
+              <div className="space-y-1.5">
+                <Label>Elevation Gain (ft)</Label>
+                <Input
+                  type="number"
+                  value={form.elevation}
+                  onChange={(e) => setForm({ ...form, elevation: e.target.value })}
+                  placeholder="e.g. 1200"
+                />
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label>Sport Type</Label>
               <select
