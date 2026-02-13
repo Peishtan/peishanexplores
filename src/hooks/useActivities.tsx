@@ -13,6 +13,7 @@ export interface Activity {
   calories: number | null;
   intensity: "low" | "moderate" | "high" | "extreme";
   notes: string | null;
+  elevation_gain: number | null;
   created_at: string;
 }
 

@@ -1,0 +1,1 @@
+ALTER TABLE public.activities ADD COLUMN elevation_gain integer NULL;
