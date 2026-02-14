@@ -172,16 +172,13 @@ function GoalRow({ icon, label, hit, total, description, met, streak }: {
   icon: React.ReactNode; label: string; hit: number; total: number;
   description: string; met: boolean; streak: number;
 }) {
+  const totalWeeksInQuarter = 13;
   return (
-    <div className="flex items-start justify-between gap-3">
-      <div className="flex items-start gap-3 min-w-0">
+    <div className="space-y-2">
+      <div className="flex items-start gap-3">
         <div className="mt-0.5">{icon}</div>
         <div>
-          <p className="text-sm font-semibold text-foreground">
-            {label}{" "}
-            <span className="font-bold">{hit}</span>
-            <span className="text-muted-foreground font-normal"> / {total}</span>
-          </p>
+          <p className="text-sm font-semibold text-foreground">{label}</p>
           <p className="text-xs text-muted-foreground">{description}</p>
           {streak > 1 && (
             <p className="text-[10px] text-primary font-bold mt-0.5 flex items-center gap-1">
@@ -190,14 +187,18 @@ function GoalRow({ icon, label, hit, total, description, met, streak }: {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
-        {Array.from({ length: Math.min(total, 13) }, (_, i) => (
-          <div key={i} className={`h-5 w-5 rounded-full flex items-center justify-center ${
-            i < hit ? "bg-primary/15" : i === hit && met ? "bg-primary/15" : "bg-border"
-          }`}>
-            {(i < hit || (i === hit && met)) && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
-          </div>
-        ))}
+      <div className="flex items-center gap-1.5 pl-7">
+        {Array.from({ length: totalWeeksInQuarter }, (_, i) => {
+          const isHit = i < hit || (i === hit && met);
+          const isPast = i < total;
+          return (
+            <div key={i} className={`h-5 w-5 rounded-full flex items-center justify-center ${
+              isHit ? "bg-primary/15" : isPast ? "bg-muted-foreground/30" : "bg-border"
+            }`}>
+              {isHit && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
