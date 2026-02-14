@@ -28,9 +28,9 @@ export interface DashboardInsights {
   threeWeekAvg: number;
   streaks: { outdoor: number; classes: number; water: number; miles: number };
   quarterWeeklyGoals: {
-    kayak: { hit: number; total: number };
-    outdoor: { hit: number; total: number };
-    classes: { hit: number; total: number };
+    kayak: { weekResults: boolean[]; total: number };
+    outdoor: { weekResults: boolean[]; total: number };
+    classes: { weekResults: boolean[]; total: number };
   };
   kayakChallenge: QuarterChallenge;
   hikingChallenge: QuarterChallenge;
@@ -150,23 +150,23 @@ export function useDashboardInsights(
 
     // Quarter weekly goals
     const weeksInQuarter = Math.ceil(daysPassed / 7);
-    const countWeeksHit = (check: (w: WeekData) => boolean) => {
-      let hit = 0;
+    const getWeekResults = (check: (w: WeekData) => boolean): boolean[] => {
+      const results: boolean[] = [];
       for (let i = 0; i < weeksInQuarter; i++) {
         const ws = new Date(qStartMs + i * 7 * 86400000);
         const we = new Date(ws.getTime() + 7 * 86400000);
-        if (check(getWeekData(activities, ws.getTime(), Math.min(we.getTime(), now.getTime())))) hit++;
+        results.push(check(getWeekData(activities, ws.getTime(), Math.min(we.getTime(), now.getTime()))));
       }
-      return hit;
+      return results;
     };
 
     return {
       wtd, mtd: { miles: getMiles(monthStart) }, ytd: { miles: getMiles(yearStart) }, qtd: { miles: qtdMiles },
       lastWeek, weekDelta: wtd.miles - lastWeek.miles, threeWeekAvg: threeWeekMiles / 3, streaks,
       quarterWeeklyGoals: {
-        kayak: { hit: countWeeksHit((w) => w.water >= goals.kayak), total: weeksInQuarter },
-        outdoor: { hit: countWeeksHit((w) => w.outdoor >= goals.outdoor), total: weeksInQuarter },
-        classes: { hit: countWeeksHit((w) => w.classes >= goals.exercises), total: weeksInQuarter },
+        kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak), total: weeksInQuarter },
+        outdoor: { weekResults: getWeekResults((w) => w.outdoor >= goals.outdoor), total: weeksInQuarter },
+        classes: { weekResults: getWeekResults((w) => w.classes >= goals.exercises), total: weeksInQuarter },
       },
       kayakChallenge, hikingChallenge,
       hikingTotal: { miles: hikingMiles, count: hikingLogs.length, avgElevation: Math.round(avgElevation), maxElevation },

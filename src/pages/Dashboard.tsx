@@ -96,25 +96,25 @@ export default function Dashboard() {
             <GoalRow
               icon={<Waves className="h-4 w-4 text-muted-foreground" />}
               label="Kayak"
-              hit={insights?.quarterWeeklyGoals.kayak.hit ?? 0}
+              weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
               total={insights?.quarterWeeklyGoals.kayak.total ?? 0}
-              description="paddle each week"
+              description="1 paddle each week"
               met={(insights?.wtd.water ?? 0) >= kayakGoal}
               streak={insights?.streaks.water ?? 0}
             />
             <GoalRow
               icon={<Mountain className="h-4 w-4 text-muted-foreground" />}
               label="Hiking / XC Ski"
-              hit={insights?.quarterWeeklyGoals.outdoor.hit ?? 0}
+              weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
               total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
-              description="hike or XC ski each week"
+              description="1 hike or XC ski each week"
               met={(insights?.wtd.outdoor ?? 0) >= outdoorGoal}
               streak={insights?.streaks.outdoor ?? 0}
             />
             <GoalRow
               icon={<Dumbbell className="h-4 w-4 text-muted-foreground" />}
               label="Gym Classes"
-              hit={insights?.quarterWeeklyGoals.classes.hit ?? 0}
+              weekResults={insights?.quarterWeeklyGoals.classes.weekResults ?? []}
               total={insights?.quarterWeeklyGoals.classes.total ?? 0}
               description={`${exerciseGoal} classes per week`}
               met={(insights?.wtd.classes ?? 0) >= exerciseGoal}
@@ -168,8 +168,8 @@ function ChallengeCard({
   );
 }
 
-function GoalRow({ icon, label, hit, total, description, met, streak }: {
-  icon: React.ReactNode; label: string; hit: number; total: number;
+function GoalRow({ icon, label, weekResults, total, description, met, streak }: {
+  icon: React.ReactNode; label: string; weekResults: boolean[]; total: number;
   description: string; met: boolean; streak: number;
 }) {
   const totalWeeksInQuarter = 13;
@@ -189,13 +189,16 @@ function GoalRow({ icon, label, hit, total, description, met, streak }: {
       </div>
       <div className="flex items-center gap-1.5 pl-7">
         {Array.from({ length: totalWeeksInQuarter }, (_, i) => {
-          const isHit = i < hit || (i === hit && met);
-          const isPast = i < total;
+          const isCurrentWeek = i === total - 1;
+          const isPastWeek = i < total;
+          const wasHit = i < weekResults.length ? weekResults[i] : false;
+          const currentWeekMet = isCurrentWeek && met;
+          const filled = wasHit || currentWeekMet;
           return (
             <div key={i} className={`h-5 w-5 rounded-full flex items-center justify-center ${
-              isHit ? "bg-primary/15" : isPast ? "bg-muted-foreground/30" : "bg-border"
+              filled ? "bg-primary/15" : isPastWeek ? "bg-muted-foreground/30" : "bg-border"
             }`}>
-              {isHit && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
+              {filled && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
             </div>
           );
         })}
