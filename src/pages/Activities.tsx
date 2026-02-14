@@ -206,6 +206,32 @@ export default function Activities() {
           </select>
         </div>
 
+        {/* Micro Stats */}
+        {!isLoading && filtered && filtered.length > 0 && (() => {
+          const hikeCount = filtered.filter(a => a.type === "hiking").length;
+          const skiCount = filtered.filter(a => a.type === "xc_skiing").length;
+          const kayakCount = filtered.filter(a => a.type === "kayaking").length;
+          const gymCount = filtered.filter(a => ["peloton", "orange_theory"].includes(a.type)).length;
+          const totalMiles = filtered.reduce((s, a) => s + (a.distance ?? 0), 0);
+          const totalElev = filtered.reduce((s, a) => s + (a.elevation_gain ?? 0), 0);
+
+          const parts: string[] = [];
+          if (hikeCount > 0) parts.push(`${hikeCount} hike${hikeCount > 1 ? "s" : ""}`);
+          if (kayakCount > 0) parts.push(`${kayakCount} paddle${kayakCount > 1 ? "s" : ""}`);
+          if (skiCount > 0) parts.push(`${skiCount} ski${skiCount > 1 ? "s" : ""}`);
+          if (gymCount > 0) parts.push(`${gymCount} gym`);
+          if (totalMiles > 0) parts.push(`${totalMiles % 1 === 0 ? totalMiles : totalMiles.toFixed(1)} mi`);
+          if (totalElev > 0) parts.push(`${totalElev.toLocaleString()} ft`);
+
+          const rangeLabel = DATE_RANGES.find(r => r.id === dateRange)?.label ?? "";
+
+          return (
+            <p className="text-xs text-muted-foreground font-medium">
+              {rangeLabel}: {parts.join(" • ")}
+            </p>
+          );
+        })()}
+
         {/* Table */}
         {isLoading ? (
           <div className="flex justify-center py-12">
