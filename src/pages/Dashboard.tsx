@@ -1,4 +1,5 @@
 import { useProfile } from "@/hooks/useProfile";
+import { format } from "date-fns";
 import { useActivities } from "@/hooks/useActivities";
 import { useDashboardInsights } from "@/hooks/useDashboardInsights";
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
@@ -285,7 +286,7 @@ function MilestoneSpotlight() {
     <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
       <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
         <Trophy className="h-4 w-4 text-muted-foreground" />
-        Latest Milestone Spotlight
+        Spotlight: Latest Milestones
       </h3>
       {!achieved || achieved.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-4 text-center">
@@ -301,9 +302,16 @@ function MilestoneSpotlight() {
       ) : (
         <div className="space-y-0 divide-y divide-border">
           {achieved.map((p) => (
-            <div key={p.id} className="flex items-center gap-2.5 py-2.5">
-              <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-              <span className="text-sm font-medium text-foreground">{p.skill_milestones?.title}</span>
+            <div key={p.id} className="flex items-center justify-between py-2.5">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-sm font-medium text-foreground">{p.skill_milestones?.title}</span>
+              </div>
+              {p.achieved_at && (
+                <span className="text-xs text-muted-foreground shrink-0">
+                  {format(new Date(p.achieved_at), "MMM d")}
+                </span>
+              )}
             </div>
           ))}
         </div>
