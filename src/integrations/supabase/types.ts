@@ -98,8 +98,11 @@ export type Database = {
           display_name: string | null
           goal_active_minutes: number | null
           goal_calories: number | null
+          goal_elevation_avg: number
           goal_exercises_per_week: number | null
+          goal_hiking_quarterly_miles: number
           goal_kayak_per_week: number | null
+          goal_kayak_quarterly_miles: number
           goal_outdoor_per_week: number | null
           goal_steps: number | null
           goal_weight: number | null
@@ -114,8 +117,11 @@ export type Database = {
           display_name?: string | null
           goal_active_minutes?: number | null
           goal_calories?: number | null
+          goal_elevation_avg?: number
           goal_exercises_per_week?: number | null
+          goal_hiking_quarterly_miles?: number
           goal_kayak_per_week?: number | null
+          goal_kayak_quarterly_miles?: number
           goal_outdoor_per_week?: number | null
           goal_steps?: number | null
           goal_weight?: number | null
@@ -130,8 +136,11 @@ export type Database = {
           display_name?: string | null
           goal_active_minutes?: number | null
           goal_calories?: number | null
+          goal_elevation_avg?: number
           goal_exercises_per_week?: number | null
+          goal_hiking_quarterly_miles?: number
           goal_kayak_per_week?: number | null
+          goal_kayak_quarterly_miles?: number
           goal_outdoor_per_week?: number | null
           goal_steps?: number | null
           goal_weight?: number | null
