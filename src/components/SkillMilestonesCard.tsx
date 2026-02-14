@@ -98,6 +98,8 @@ export default function SkillMilestonesCard() {
                     ) : (
                       <span className="text-sm font-bold text-muted-foreground">
                         {current} / {target}
+                        {(ms.milestone_type === "QUARTERLY_DISTANCE_TARGET") && " mi"}
+                        {(ms.milestone_type === "QUARTERLY_ELEVATION_AVG_TARGET") && " ft"}
                       </span>
                     )}
                   </div>

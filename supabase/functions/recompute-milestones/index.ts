@@ -50,6 +50,13 @@ Deno.serve(async (req) => {
       .order("start_time", { ascending: false });
     if (aErr) throw aErr;
 
+    // Fetch user profile for quarterly targets
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("goal_kayak_quarterly_miles, goal_hiking_quarterly_miles, goal_elevation_avg")
+      .eq("user_id", userId)
+      .maybeSingle();
+
     // Map activity_type enum values to milestone activity types
     const activityTypeMap: Record<string, string> = {
       kayaking: "kayak",
@@ -152,7 +159,6 @@ Deno.serve(async (req) => {
 
         case "STREAK_WEEKLY_MINIMUM": {
           const acts = filterByWindow(activities!, ms);
-          // Bucket by Monday-aligned week
           const weekMap = new Map<string, any[]>();
           for (const a of acts) {
             const wk = getWeekKey(new Date(a.start_time));
@@ -160,33 +166,23 @@ Deno.serve(async (req) => {
             weekMap.get(wk)!.push(a);
           }
 
-          // Get sorted week keys descending
-          const sortedWeeks = [...weekMap.keys()].sort().reverse();
-          
-          // Current week
           const currentWeekKey = getWeekKey(now);
-          
-          // Compute current streak ending at current or most recent week
           let streak = 0;
           const streakEvidence: string[] = [];
-          
-          // Start from current week and go backwards
           const d = new Date(now);
           const dayOfWeek = d.getDay();
           const mondayDiff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
           d.setDate(d.getDate() + mondayDiff);
           d.setHours(0, 0, 0, 0);
-          
+
           while (true) {
             const wk = d.toISOString().slice(0, 10);
             const logs = weekMap.get(wk);
             if (logs && logs.length > 0) {
               streak++;
-              streakEvidence.push(logs[0].id); // one representative per week
+              streakEvidence.push(logs[0].id);
               d.setDate(d.getDate() - 7);
             } else {
-              // If we're checking the current week and it has no logs yet,
-              // skip it and check from last week
               if (wk === currentWeekKey && streak === 0) {
                 d.setDate(d.getDate() - 7);
                 continue;
@@ -198,6 +194,40 @@ Deno.serve(async (req) => {
           progressTarget = ms.threshold_count ?? 1;
           progressCurrent = streak;
           evidenceLogIds = streakEvidence;
+          break;
+        }
+
+        case "QUARTERLY_DISTANCE_TARGET": {
+          const quarterActs = filterByWindow(activities!, ms);
+          const totalDistance = quarterActs.reduce((sum: number, a: any) => sum + (a.distance ?? 0), 0);
+
+          // Get target from profile based on activity_type
+          let target = 0;
+          if (ms.activity_type === "kayak") {
+            target = profile?.goal_kayak_quarterly_miles ?? 90;
+          } else if (ms.activity_type === "hike") {
+            target = profile?.goal_hiking_quarterly_miles ?? 60;
+          }
+
+          progressTarget = target;
+          progressCurrent = Math.round(totalDistance);
+          evidenceLogIds = quarterActs.slice(0, 10).map((a: any) => a.id);
+          break;
+        }
+
+        case "QUARTERLY_ELEVATION_AVG_TARGET": {
+          // Filter hikes + xc_skiing in quarter that have elevation
+          const quarterActs = filterByWindow(activities!, ms).filter(
+            (a: any) => (a.elevation_gain ?? 0) > 0
+          );
+          const avgElev = quarterActs.length > 0
+            ? quarterActs.reduce((sum: number, a: any) => sum + (a.elevation_gain ?? 0), 0) / quarterActs.length
+            : 0;
+
+          const target = profile?.goal_elevation_avg ?? 1200;
+          progressTarget = target;
+          progressCurrent = Math.round(avgElev);
+          evidenceLogIds = quarterActs.slice(0, 10).map((a: any) => a.id);
           break;
         }
       }
