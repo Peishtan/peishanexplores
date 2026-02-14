@@ -60,7 +60,7 @@ export default function Dashboard() {
           <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
             <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
               <Footprints className="h-4 w-4 text-muted-foreground" />
-              {qLabel} Hiking Progress
+              {qLabel} Hiking / XC Ski Progress
             </h3>
             <div className="flex items-baseline gap-2 mb-2">
               <span className="text-[32px] font-bold text-foreground">
@@ -102,7 +102,7 @@ export default function Dashboard() {
             />
             <GoalRow
               icon={<Mountain className="h-4 w-4 text-muted-foreground" />}
-              label="Outdoor"
+              label="Hiking / XC Ski"
               hit={insights?.quarterWeeklyGoals.outdoor.hit ?? 0}
               total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
               description="hike or XC ski each week"
@@ -184,13 +184,13 @@ function GoalRow({ icon, label, hit, total, description, met, streak }: {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-1 shrink-0 mt-0.5 flex-wrap justify-end max-w-[50%]">
-        {Array.from({ length: Math.min(total, 12) }, (_, i) => (
-          <div key={i} className={`h-4 w-4 rounded-full flex items-center justify-center ${i < hit ? "bg-primary/15" : "bg-border"}`}>
-            {i < hit && <CheckCircle2 className="h-3 w-3 text-primary" />}
+      <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
+        {Array.from({ length: Math.min(total, 13) }, (_, i) => (
+          <div key={i} className={`h-5 w-5 rounded-full flex items-center justify-center ${i < hit ? "bg-primary/15" : "bg-border"}`}>
+            {i < hit && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
           </div>
         ))}
-        {met && <CheckCircle2 className="h-4 w-4 text-primary ml-1" />}
+        {met && <CheckCircle2 className="h-5 w-5 text-primary ml-1" />}
       </div>
     </div>
   );
