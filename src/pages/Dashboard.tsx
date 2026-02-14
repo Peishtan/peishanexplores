@@ -1,11 +1,10 @@
 import { useProfile } from "@/hooks/useProfile";
 import { useActivities } from "@/hooks/useActivities";
 import { useDashboardInsights } from "@/hooks/useDashboardInsights";
-import { useRecentlyCompletedMilestones } from "@/hooks/useMilestones";
+import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints, Trophy, Target } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
@@ -221,7 +220,7 @@ function MilesCard({ label, value, delta }: { label: string; value: number; delt
 }
 
 function MilestoneSpotlight() {
-  const { data: milestones } = useRecentlyCompletedMilestones(5);
+  const { data: achieved } = useAchievedMilestones(5);
 
   return (
     <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
@@ -229,23 +228,23 @@ function MilestoneSpotlight() {
         <Trophy className="h-4 w-4 text-muted-foreground" />
         Latest Milestone Spotlight
       </h3>
-      {!milestones || milestones.length === 0 ? (
+      {!achieved || achieved.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-4 text-center">
           <Target className="h-8 w-8 text-muted-foreground/40 mb-2" />
-          <p className="text-sm text-muted-foreground mb-2">No milestones yet!</p>
+          <p className="text-sm text-muted-foreground mb-2">No milestones unlocked yet!</p>
           <Link
             to="/targets"
             className="text-sm font-semibold text-primary hover:underline"
           >
-            Set some milestones to target →
+            View milestones →
           </Link>
         </div>
       ) : (
         <div className="space-y-0 divide-y divide-border">
-          {milestones.map((m) => (
-            <div key={m.id} className="flex items-center gap-2.5 py-2.5">
+          {achieved.map((p) => (
+            <div key={p.id} className="flex items-center gap-2.5 py-2.5">
               <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-              <span className="text-sm font-medium text-foreground">{m.title}</span>
+              <span className="text-sm font-medium text-foreground">{p.skill_milestones?.title}</span>
             </div>
           ))}
         </div>

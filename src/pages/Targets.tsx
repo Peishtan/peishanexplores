@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
-import { useMilestones, useAddMilestone, useToggleMilestone, useDeleteMilestone } from "@/hooks/useMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
-import { Waves, Mountain, Footprints, Dumbbell, Target, Pencil, Check, X, Plus, Trash2, Trophy, Circle, CheckCircle2 } from "lucide-react";
+import SkillMilestonesCard from "@/components/SkillMilestonesCard";
+import { Waves, Mountain, Footprints, Dumbbell, Target, Pencil, Check, X } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -140,119 +140,9 @@ export default function Targets() {
           </div>
         </div>
         {/* Skill Milestones */}
-        <MilestonesSection />
+        <SkillMilestonesCard />
       </main>
       <BottomNav />
-    </div>
-  );
-}
-
-function MilestonesSection() {
-  const { data: milestones, isLoading } = useMilestones();
-  const addMilestone = useAddMilestone();
-  const toggleMilestone = useToggleMilestone();
-  const deleteMilestone = useDeleteMilestone();
-  const [newTitle, setNewTitle] = useState("");
-  const [adding, setAdding] = useState(false);
-
-  const handleAdd = () => {
-    if (!newTitle.trim()) return;
-    addMilestone.mutate(newTitle.trim(), {
-      onSuccess: () => {
-        setNewTitle("");
-        setAdding(false);
-        toast.success("Milestone added");
-      },
-    });
-  };
-
-  const pending = milestones?.filter((m) => !m.completed) ?? [];
-  const completed = milestones?.filter((m) => m.completed) ?? [];
-
-  return (
-    <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-muted-foreground" />
-            Skill Milestones
-          </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">Personal achievements to unlock</p>
-        </div>
-        <button
-          onClick={() => setAdding(!adding)}
-          className="p-1.5 rounded-md hover:bg-muted text-muted-foreground"
-        >
-          {adding ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-        </button>
-      </div>
-
-      {adding && (
-        <div className="flex gap-2 mb-3">
-          <input
-            type="text"
-            placeholder='e.g. "Complete 1 hike at 3000 ft elevation"'
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-            className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground"
-            autoFocus
-          />
-          <button
-            onClick={handleAdd}
-            disabled={!newTitle.trim() || addMilestone.isPending}
-            className="px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
-          >
-            Add
-          </button>
-        </div>
-      )}
-
-      {isLoading ? (
-        <div className="flex justify-center py-4">
-          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-        </div>
-      ) : (
-        <div className="space-y-0 divide-y divide-border">
-          {pending.map((m) => (
-            <div key={m.id} className="flex items-center justify-between py-2.5 group">
-              <button
-                onClick={() => toggleMilestone.mutate({ id: m.id, completed: true })}
-                className="flex items-center gap-2.5 text-sm text-foreground hover:text-primary transition-colors"
-              >
-                <Circle className="h-4 w-4 text-muted-foreground" />
-                {m.title}
-              </button>
-              <button
-                onClick={() => deleteMilestone.mutate(m.id)}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ))}
-          {completed.map((m) => (
-            <div key={m.id} className="flex items-center justify-between py-2.5 group">
-              <button
-                onClick={() => toggleMilestone.mutate({ id: m.id, completed: false })}
-                className="flex items-center gap-2.5 text-sm text-muted-foreground line-through hover:text-foreground transition-colors"
-              >
-                <CheckCircle2 className="h-4 w-4 text-primary" />
-                {m.title}
-              </button>
-              <button
-                onClick={() => deleteMilestone.mutate(m.id)}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ))}
-          {pending.length === 0 && completed.length === 0 && (
-            <p className="text-xs text-muted-foreground py-3 text-center">No milestones yet. Add your first one!</p>
-          )}
-        </div>
-      )}
     </div>
   );
 }

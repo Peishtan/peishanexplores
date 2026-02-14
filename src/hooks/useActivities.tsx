@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { startOfWeek, endOfWeek } from "date-fns";
+import { useRecomputeMilestones } from "./useSkillMilestones";
 
 export interface Activity {
   id: string;
@@ -87,6 +88,7 @@ export function useWeekActivities() {
 export function useAddActivity() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const recompute = useRecomputeMilestones();
 
   return useMutation({
     mutationFn: async (activity: Omit<Activity, "id" | "user_id" | "created_at">) => {
@@ -97,12 +99,14 @@ export function useAddActivity() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
+      recompute.mutate();
     },
   });
 }
 
 export function useDeleteActivity() {
   const queryClient = useQueryClient();
+  const recompute = useRecomputeMilestones();
 
   return useMutation({
     mutationFn: async (id: string) => {
@@ -111,6 +115,7 @@ export function useDeleteActivity() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
+      recompute.mutate();
     },
   });
 }
