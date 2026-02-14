@@ -330,6 +330,8 @@ export type Database = {
         | "SINGLE_ACTIVITY_OVER_ELEVATION"
         | "SINGLE_ACTIVITY_OVER_DISTANCE"
         | "STREAK_WEEKLY_MINIMUM"
+        | "QUARTERLY_DISTANCE_TARGET"
+        | "QUARTERLY_ELEVATION_AVG_TARGET"
       window_type: "all_time" | "quarter" | "rolling_days"
     }
     CompositeTypes: {
@@ -481,6 +483,8 @@ export const Constants = {
         "SINGLE_ACTIVITY_OVER_ELEVATION",
         "SINGLE_ACTIVITY_OVER_DISTANCE",
         "STREAK_WEEKLY_MINIMUM",
+        "QUARTERLY_DISTANCE_TARGET",
+        "QUARTERLY_ELEVATION_AVG_TARGET",
       ],
       window_type: ["all_time", "quarter", "rolling_days"],
     },
