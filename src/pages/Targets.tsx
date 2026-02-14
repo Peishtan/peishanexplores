@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import BottomNav from "@/components/BottomNav";
+import HeroBanner from "@/components/HeroBanner";
 import { Waves, Mountain, Footprints, Dumbbell, Target, Pencil, Check, X } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -91,12 +92,15 @@ export default function Targets() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <main className="mx-auto max-w-5xl px-4 pt-8 space-y-5">
+      <main className="mx-auto max-w-5xl px-4 pt-6 space-y-4">
+        {/* Header */}
+        <header className="flex items-center justify-between">
+          <h1 className="text-[22px] font-semibold tracking-tight text-foreground">PS FitTrackr</h1>
+        </header>
+
+        <HeroBanner title="Targets" />
+
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Target className="h-5 w-5 text-muted-foreground" />
-            <h1 className="text-[22px] font-semibold text-foreground">Targets</h1>
-          </div>
           {editing ? (
             <div className="flex items-center gap-2">
               <button onClick={() => setEditing(false)} className="p-1.5 rounded-md hover:bg-muted text-muted-foreground">
