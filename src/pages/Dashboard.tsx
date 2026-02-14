@@ -39,15 +39,7 @@ export default function Dashboard() {
         </header>
 
         {/* Hero Banner */}
-        <HeroBanner title="Dashboard">
-          <p className="text-xs font-medium text-primary-foreground/70 uppercase tracking-wider mb-1">2026 Total Miles</p>
-          <p className="text-4xl font-bold text-primary-foreground">
-            {(insights?.ytd.miles ?? 0).toFixed(0)} <span className="text-base font-medium text-primary-foreground/80">miles</span>
-          </p>
-          <span className="mt-2 inline-block bg-primary-foreground/20 backdrop-blur-sm rounded-md px-3 py-1 text-xs font-semibold text-primary-foreground/90">
-            {qLabel}: {(insights?.qtd.miles ?? 0).toFixed(0)} miles so far
-          </span>
-        </HeroBanner>
+        <HeroBanner title="Dashboard" />
 
         {/* Challenge Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
