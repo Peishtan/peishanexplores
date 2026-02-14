@@ -220,7 +220,7 @@ function MilesCard({ label, value, delta }: { label: string; value: number; delt
 }
 
 function MilestoneSpotlight() {
-  const { data: achieved } = useAchievedMilestones(5);
+  const { data: achieved } = useAchievedMilestones(3);
 
   return (
     <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
