@@ -101,7 +101,7 @@ export default function Targets() {
 
         <HeroBanner title="Targets" />
 
-        <div className="flex items-center justify-between">
+        <div className="flex justify-end">
           {editing ? (
             <div className="flex items-center gap-2">
               <button onClick={() => setEditing(false)} className="p-1.5 rounded-md hover:bg-muted text-muted-foreground">

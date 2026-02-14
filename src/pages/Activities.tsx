@@ -166,13 +166,17 @@ export default function Activities() {
         {/* Header */}
         <header className="flex items-center justify-between">
           <h1 className="text-[22px] font-semibold tracking-tight text-foreground">PS FitTrackr</h1>
-          <Button onClick={openAdd} size="sm" className="gap-1.5 rounded-xl">
-            <Plus className="h-4 w-4" /> Add
-          </Button>
         </header>
 
         {/* Hero Banner */}
         <HeroBanner title="Logs" />
+
+        {/* Action button */}
+        <div className="flex justify-end">
+          <Button onClick={openAdd} size="sm" className="gap-1.5 rounded-xl">
+            <Plus className="h-4 w-4" /> Add
+          </Button>
+        </div>
 
         {/* Filters Row */}
         <div className="flex items-center justify-between gap-3 flex-wrap">
