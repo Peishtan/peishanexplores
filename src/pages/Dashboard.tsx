@@ -227,7 +227,7 @@ function MilestoneSpotlight() {
     <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
       <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
         <Trophy className="h-4 w-4 text-muted-foreground" />
-        Milestone Spotlight
+        Latest Milestone Spotlight
       </h3>
       {!milestones || milestones.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-4 text-center">
@@ -243,16 +243,9 @@ function MilestoneSpotlight() {
       ) : (
         <div className="space-y-0 divide-y divide-border">
           {milestones.map((m) => (
-            <div key={m.id} className="flex items-center justify-between py-2.5 gap-3">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                <span className="text-sm font-medium text-foreground truncate">{m.title}</span>
-              </div>
-              {m.completed_at && (
-                <span className="text-[10px] text-muted-foreground whitespace-nowrap">
-                  {formatDistanceToNow(new Date(m.completed_at), { addSuffix: true })}
-                </span>
-              )}
+            <div key={m.id} className="flex items-center gap-2.5 py-2.5">
+              <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+              <span className="text-sm font-medium text-foreground">{m.title}</span>
             </div>
           ))}
         </div>
