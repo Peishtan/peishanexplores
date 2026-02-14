@@ -4,8 +4,9 @@ import { useDashboardInsights } from "@/hooks/useDashboardInsights";
 import { useRecentlyCompletedMilestones } from "@/hooks/useMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
-import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints, Trophy } from "lucide-react";
+import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints, Trophy, Target } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const { data: profile } = useProfile();
@@ -89,38 +90,41 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Weekly Goals */}
-        <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
-          <h3 className="text-sm font-semibold text-foreground mb-4">{qLabel} Weekly Goals</h3>
-          <div className="space-y-4">
-            <GoalRow
-              icon={<Waves className="h-4 w-4 text-muted-foreground" />}
-              label="Kayak"
-              weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
-              total={insights?.quarterWeeklyGoals.kayak.total ?? 0}
-              description={`${kayakGoal} paddle each week`}
-              met={(insights?.wtd.water ?? 0) >= kayakGoal}
-              streak={insights?.streaks.water ?? 0}
-            />
-            <GoalRow
-              icon={<Mountain className="h-4 w-4 text-muted-foreground" />}
-              label="Hiking / XC Ski"
-              weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
-              total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
-              description={`${outdoorGoal} hike or XC ski each week`}
-              met={(insights?.wtd.outdoor ?? 0) >= outdoorGoal}
-              streak={insights?.streaks.outdoor ?? 0}
-            />
-            <GoalRow
-              icon={<Dumbbell className="h-4 w-4 text-muted-foreground" />}
-              label="Gym Classes"
-              weekResults={insights?.quarterWeeklyGoals.classes.weekResults ?? []}
-              total={insights?.quarterWeeklyGoals.classes.total ?? 0}
-              description={`${exerciseGoal} classes per week`}
-              met={(insights?.wtd.classes ?? 0) >= exerciseGoal}
-              streak={insights?.streaks.classes ?? 0}
-            />
+        {/* Weekly Goals + Milestone Spotlight */}
+        <div className="grid grid-cols-1 md:grid-cols-[1fr,auto] gap-3">
+          <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
+            <h3 className="text-sm font-semibold text-foreground mb-4">{qLabel} Weekly Goals</h3>
+            <div className="space-y-4">
+              <GoalRow
+                icon={<Waves className="h-4 w-4 text-muted-foreground" />}
+                label="Kayak"
+                weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
+                total={insights?.quarterWeeklyGoals.kayak.total ?? 0}
+                description={`${kayakGoal} paddle each week`}
+                met={(insights?.wtd.water ?? 0) >= kayakGoal}
+                streak={insights?.streaks.water ?? 0}
+              />
+              <GoalRow
+                icon={<Mountain className="h-4 w-4 text-muted-foreground" />}
+                label="Hiking / XC Ski"
+                weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
+                total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
+                description={`${outdoorGoal} hike or XC ski each week`}
+                met={(insights?.wtd.outdoor ?? 0) >= outdoorGoal}
+                streak={insights?.streaks.outdoor ?? 0}
+              />
+              <GoalRow
+                icon={<Dumbbell className="h-4 w-4 text-muted-foreground" />}
+                label="Gym Classes"
+                weekResults={insights?.quarterWeeklyGoals.classes.weekResults ?? []}
+                total={insights?.quarterWeeklyGoals.classes.total ?? 0}
+                description={`${exerciseGoal} classes per week`}
+                met={(insights?.wtd.classes ?? 0) >= exerciseGoal}
+                streak={insights?.streaks.classes ?? 0}
+              />
+            </div>
           </div>
+          <MilestoneSpotlight />
         </div>
 
         {/* Miles Summary */}
@@ -129,9 +133,6 @@ export default function Dashboard() {
           <MilesCard label="Quarterly" value={insights?.qtd.miles ?? 0} />
           <MilesCard label="Year to Date" value={insights?.ytd.miles ?? 0} />
         </div>
-
-        {/* Milestone Spotlight */}
-        <MilestoneSpotlight />
 
       </main>
       <BottomNav />
@@ -222,29 +223,40 @@ function MilesCard({ label, value, delta }: { label: string; value: number; delt
 function MilestoneSpotlight() {
   const { data: milestones } = useRecentlyCompletedMilestones(5);
 
-  if (!milestones || milestones.length === 0) return null;
-
   return (
-    <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
+    <div className="rounded-2xl bg-card p-4 border border-border shadow-card md:w-64">
       <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
         <Trophy className="h-4 w-4 text-muted-foreground" />
         Milestone Spotlight
       </h3>
-      <div className="space-y-0 divide-y divide-border">
-        {milestones.map((m) => (
-          <div key={m.id} className="flex items-center justify-between py-2.5">
-            <div className="flex items-center gap-2.5">
-              <CheckCircle2 className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">{m.title}</span>
+      {!milestones || milestones.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-4 text-center">
+          <Target className="h-8 w-8 text-muted-foreground/40 mb-2" />
+          <p className="text-sm text-muted-foreground mb-2">No milestones yet!</p>
+          <Link
+            to="/targets"
+            className="text-sm font-semibold text-primary hover:underline"
+          >
+            Set some milestones to target →
+          </Link>
+        </div>
+      ) : (
+        <div className="space-y-0 divide-y divide-border">
+          {milestones.map((m) => (
+            <div key={m.id} className="flex items-center justify-between py-2.5 gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-sm font-medium text-foreground truncate">{m.title}</span>
+              </div>
+              {m.completed_at && (
+                <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                  {formatDistanceToNow(new Date(m.completed_at), { addSuffix: true })}
+                </span>
+              )}
             </div>
-            {m.completed_at && (
-              <span className="text-[10px] text-muted-foreground">
-                {formatDistanceToNow(new Date(m.completed_at), { addSuffix: true })}
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
