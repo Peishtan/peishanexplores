@@ -243,7 +243,15 @@ Deno.serve(async (req) => {
         .maybeSingle();
 
       if (status === "achieved") {
-        achievedAt = existing?.achieved_at || new Date().toISOString();
+        // Use the date of the qualifying activity rather than recompute time
+        if (existing?.achieved_at) {
+          achievedAt = existing.achieved_at;
+        } else if (evidenceLogIds.length > 0) {
+          const evidenceActivity = activities!.find((a: any) => a.id === evidenceLogIds[0]);
+          achievedAt = evidenceActivity?.start_time || new Date().toISOString();
+        } else {
+          achievedAt = new Date().toISOString();
+        }
       }
 
       results.push({
