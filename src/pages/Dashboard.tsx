@@ -62,7 +62,7 @@ export default function Dashboard() {
           <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
             <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
               <Footprints className="h-4 w-4 text-muted-foreground" />
-              {qLabel} Hiking / XC Ski Progress
+              {qLabel} Hiking / XC Ski Challenge
             </h3>
             <div className="flex items-baseline gap-2 mb-2">
               <span className="text-[32px] font-bold text-foreground">
