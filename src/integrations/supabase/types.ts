@@ -182,6 +182,101 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_milestone_progress: {
+        Row: {
+          achieved_at: string | null
+          evidence_log_ids: Json
+          id: string
+          milestone_id: string
+          progress_current: number
+          progress_target: number
+          status: Database["public"]["Enums"]["milestone_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          evidence_log_ids?: Json
+          id?: string
+          milestone_id: string
+          progress_current?: number
+          progress_target?: number
+          status?: Database["public"]["Enums"]["milestone_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          evidence_log_ids?: Json
+          id?: string
+          milestone_id?: string
+          progress_current?: number
+          progress_target?: number
+          status?: Database["public"]["Enums"]["milestone_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_milestone_progress_milestone_id_fkey"
+            columns: ["milestone_id"]
+            isOneToOne: false
+            referencedRelation: "skill_milestones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skill_milestones: {
+        Row: {
+          activity_type:
+            | Database["public"]["Enums"]["milestone_activity_type"]
+            | null
+          created_at: string
+          id: string
+          is_active: boolean
+          milestone_type: Database["public"]["Enums"]["milestone_type"]
+          threshold_count: number | null
+          threshold_distance_mi: number | null
+          threshold_duration_min: number | null
+          threshold_elevation_ft: number | null
+          title: string
+          window_days: number | null
+          window_type: Database["public"]["Enums"]["window_type"]
+        }
+        Insert: {
+          activity_type?:
+            | Database["public"]["Enums"]["milestone_activity_type"]
+            | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          milestone_type: Database["public"]["Enums"]["milestone_type"]
+          threshold_count?: number | null
+          threshold_distance_mi?: number | null
+          threshold_duration_min?: number | null
+          threshold_elevation_ft?: number | null
+          title: string
+          window_days?: number | null
+          window_type?: Database["public"]["Enums"]["window_type"]
+        }
+        Update: {
+          activity_type?:
+            | Database["public"]["Enums"]["milestone_activity_type"]
+            | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          milestone_type?: Database["public"]["Enums"]["milestone_type"]
+          threshold_count?: number | null
+          threshold_distance_mi?: number | null
+          threshold_duration_min?: number | null
+          threshold_elevation_ft?: number | null
+          title?: string
+          window_days?: number | null
+          window_type?: Database["public"]["Enums"]["window_type"]
+        }
+        Relationships: []
+      }
       weight_entries: {
         Row: {
           created_at: string
@@ -227,6 +322,15 @@ export type Database = {
         | "situps_1m"
         | "plank_time"
       intensity_level: "low" | "moderate" | "high" | "extreme"
+      milestone_activity_type: "kayak" | "hike" | "ski" | "gym"
+      milestone_status: "locked" | "in_progress" | "achieved"
+      milestone_type:
+        | "COUNT_ACTIVITIES_OVER_DISTANCE"
+        | "COUNT_ACTIVITIES_OVER_ELEVATION"
+        | "SINGLE_ACTIVITY_OVER_ELEVATION"
+        | "SINGLE_ACTIVITY_OVER_DISTANCE"
+        | "STREAK_WEEKLY_MINIMUM"
+      window_type: "all_time" | "quarter" | "rolling_days"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -369,6 +473,16 @@ export const Constants = {
         "plank_time",
       ],
       intensity_level: ["low", "moderate", "high", "extreme"],
+      milestone_activity_type: ["kayak", "hike", "ski", "gym"],
+      milestone_status: ["locked", "in_progress", "achieved"],
+      milestone_type: [
+        "COUNT_ACTIVITIES_OVER_DISTANCE",
+        "COUNT_ACTIVITIES_OVER_ELEVATION",
+        "SINGLE_ACTIVITY_OVER_ELEVATION",
+        "SINGLE_ACTIVITY_OVER_DISTANCE",
+        "STREAK_WEEKLY_MINIMUM",
+      ],
+      window_type: ["all_time", "quarter", "rolling_days"],
     },
   },
 } as const
