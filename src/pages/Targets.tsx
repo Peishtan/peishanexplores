@@ -1,11 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { useActivities } from "@/hooks/useActivities";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import SkillMilestonesCard from "@/components/SkillMilestonesCard";
 import { Waves, Mountain, Footprints, Dumbbell, Target, Pencil, Check, X } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+function getQuarterBounds(now: Date) {
+  const y = now.getFullYear();
+  const q = Math.floor(now.getMonth() / 3);
+  const start = new Date(y, q * 3, 1);
+  const end = new Date(y, (q + 1) * 3, 0, 23, 59, 59, 999);
+  return { start, end };
+}
 
 interface TargetRowProps {
   icon: React.ReactNode;
@@ -15,27 +24,39 @@ interface TargetRowProps {
   editValue: string;
   onEditChange: (v: string) => void;
   suffix?: string;
+  pacing?: { needed: number; current: number; unit: string } | null;
 }
 
-function TargetRow({ icon, label, value, isEditing, editValue, onEditChange, suffix }: TargetRowProps) {
+function TargetRow({ icon, label, value, isEditing, editValue, onEditChange, suffix, pacing }: TargetRowProps) {
   return (
-    <div className="flex items-center justify-between py-3">
-      <div className="flex items-center gap-3">
-        <div className="text-muted-foreground">{icon}</div>
-        <span className="text-sm font-medium text-foreground">{label}</span>
-      </div>
-      {isEditing ? (
-        <div className="flex items-center gap-1">
-          <input
-            type="number"
-            value={editValue}
-            onChange={(e) => onEditChange(e.target.value)}
-            className="w-16 rounded-md border border-border bg-background px-2 py-1 text-sm text-right text-foreground"
-          />
-          {suffix && <span className="text-xs text-muted-foreground">{suffix}</span>}
+    <div className="py-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="text-muted-foreground">{icon}</div>
+          <span className="text-sm font-medium text-foreground">{label}</span>
         </div>
-      ) : (
-        <span className="text-sm font-bold text-foreground">{value}</span>
+        {isEditing ? (
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              value={editValue}
+              onChange={(e) => onEditChange(e.target.value)}
+              className="w-16 rounded-md border border-border bg-background px-2 py-1 text-sm text-right text-foreground"
+            />
+            {suffix && <span className="text-xs text-muted-foreground">{suffix}</span>}
+          </div>
+        ) : (
+          <span className="text-sm font-bold text-foreground">{value}</span>
+        )}
+      </div>
+      {!isEditing && pacing && (
+        <div className="ml-7 mt-1 flex flex-wrap gap-x-3 text-[11px] text-muted-foreground">
+          <span>{pacing.unit === "ft" ? `Target: ${pacing.needed.toLocaleString()} ${pacing.unit}` : `Need ${pacing.needed.toFixed(1)} ${pacing.unit}/wk`}</span>
+          <span>•</span>
+          <span className={pacing.current >= pacing.needed ? "text-primary font-medium" : "text-destructive font-medium"}>
+            Avg: {pacing.unit === "ft" ? `${pacing.current.toLocaleString()} ${pacing.unit}` : `${pacing.current.toFixed(1)} ${pacing.unit}/wk`}
+          </span>
+        </div>
       )}
     </div>
   );
@@ -43,6 +64,7 @@ function TargetRow({ icon, label, value, isEditing, editValue, onEditChange, suf
 
 export default function Targets() {
   const { data: profile, isLoading } = useProfile();
+  const { data: activities } = useActivities();
   const updateProfile = useUpdateProfile();
   const [editing, setEditing] = useState(false);
 
@@ -82,6 +104,38 @@ export default function Targets() {
       }
     );
   };
+
+  // Pacing model
+  const pacing = useMemo(() => {
+    const now = new Date();
+    const { start, end } = getQuarterBounds(now);
+    const totalWeeks = (end.getTime() - start.getTime()) / (7 * 86400000);
+    const weeksElapsed = Math.max((now.getTime() - start.getTime()) / (7 * 86400000), 0.1);
+    const weeksRemaining = Math.max(totalWeeks - weeksElapsed, 0.1);
+
+    const qActivities = activities?.filter(a => {
+      const d = new Date(a.start_time);
+      return d >= start && d <= end;
+    }) ?? [];
+
+    const kayakMiles = qActivities.filter(a => a.type === "kayaking").reduce((s, a) => s + (a.distance ?? 0), 0);
+    const hikingMiles = qActivities.filter(a => ["hiking", "xc_skiing"].includes(a.type)).reduce((s, a) => s + (a.distance ?? 0), 0);
+    const elevations = qActivities.filter(a => (a.elevation_gain ?? 0) > 0);
+    const avgElev = elevations.length > 0 ? elevations.reduce((s, a) => s + (a.elevation_gain ?? 0), 0) / elevations.length : 0;
+
+    const kayakTarget = parseInt(kayakQ) || 90;
+    const hikingTarget = parseInt(hikingQ) || 60;
+    const elevTarget = parseInt(elevAvg) || 1200;
+
+    const kayakRemaining = Math.max(kayakTarget - kayakMiles, 0);
+    const hikingRemaining = Math.max(hikingTarget - hikingMiles, 0);
+
+    return {
+      kayak: { needed: kayakRemaining / weeksRemaining, current: kayakMiles / weeksElapsed, unit: "mi" },
+      hiking: { needed: hikingRemaining / weeksRemaining, current: hikingMiles / weeksElapsed, unit: "mi" },
+      elev: { needed: elevTarget, current: Math.round(avgElev), unit: "ft" },
+    };
+  }, [activities, kayakQ, hikingQ, elevAvg]);
 
   if (isLoading) {
     return (
@@ -123,9 +177,9 @@ export default function Targets() {
           <h2 className="text-sm font-semibold text-foreground mb-1">Quarterly Targets</h2>
           <p className="text-xs text-muted-foreground mb-3">Goals to hit each quarter</p>
           <div className="divide-y divide-border">
-            <TargetRow icon={<Waves className="h-4 w-4" />} label="Kayak" value={`${kayakQ} miles`} isEditing={editing} editValue={kayakQ} onEditChange={setKayakQ} suffix="mi" />
-            <TargetRow icon={<Footprints className="h-4 w-4" />} label="Hiking" value={`${hikingQ} miles`} isEditing={editing} editValue={hikingQ} onEditChange={setHikingQ} suffix="mi" />
-            <TargetRow icon={<Mountain className="h-4 w-4" />} label="Elevation avg" value={`${parseInt(elevAvg).toLocaleString()} ft`} isEditing={editing} editValue={elevAvg} onEditChange={setElevAvg} suffix="ft" />
+            <TargetRow icon={<Waves className="h-4 w-4" />} label="Kayak" value={`${kayakQ} miles`} isEditing={editing} editValue={kayakQ} onEditChange={setKayakQ} suffix="mi" pacing={pacing.kayak} />
+            <TargetRow icon={<Footprints className="h-4 w-4" />} label="Hiking" value={`${hikingQ} miles`} isEditing={editing} editValue={hikingQ} onEditChange={setHikingQ} suffix="mi" pacing={pacing.hiking} />
+            <TargetRow icon={<Mountain className="h-4 w-4" />} label="Elevation avg" value={`${parseInt(elevAvg).toLocaleString()} ft`} isEditing={editing} editValue={elevAvg} onEditChange={setElevAvg} suffix="ft" pacing={{ needed: pacing.elev.needed, current: pacing.elev.current, unit: "ft" }} />
           </div>
         </div>
 
