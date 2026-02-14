@@ -189,16 +189,13 @@ function GoalRow({ icon, label, weekResults, total, description, met, streak }: 
       </div>
       <div className="flex items-center gap-1.5 pl-7">
         {Array.from({ length: totalWeeksInQuarter }, (_, i) => {
-          const isCurrentWeek = i === total - 1;
-          const isPastWeek = i < total;
+          const isPastOrCurrent = i < total;
           const wasHit = i < weekResults.length ? weekResults[i] : false;
-          const currentWeekMet = isCurrentWeek && met;
-          const filled = wasHit || currentWeekMet;
           return (
             <div key={i} className={`h-5 w-5 rounded-full flex items-center justify-center ${
-              filled ? "bg-primary/15" : isPastWeek ? "bg-muted-foreground/30" : "bg-border"
+              wasHit ? "bg-primary/15" : isPastOrCurrent ? "bg-muted-foreground/30" : "bg-border"
             }`}>
-              {filled && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
+              {wasHit && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
             </div>
           );
         })}

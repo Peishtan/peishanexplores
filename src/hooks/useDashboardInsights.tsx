@@ -149,13 +149,18 @@ export function useDashboardInsights(
       ? Math.max(...hikingWithElev.map((a) => a.elevation_gain || 0)) : 0;
 
     // Quarter weekly goals
-    const weeksInQuarter = Math.ceil(daysPassed / 7);
+    // Use Monday-aligned weeks for quarter goal tracking
+    const firstMonday = startOfWeek(qStart, { weekStartsOn: 1 });
+    const currentMonday = startOfWeek(now, { weekStartsOn: 1 });
+    const weeksInQuarter = Math.floor((currentMonday.getTime() - firstMonday.getTime()) / (7 * 86400000)) + 1;
     const getWeekResults = (check: (w: WeekData) => boolean): boolean[] => {
       const results: boolean[] = [];
       for (let i = 0; i < weeksInQuarter; i++) {
-        const ws = new Date(qStartMs + i * 7 * 86400000);
+        const ws = new Date(firstMonday.getTime() + i * 7 * 86400000);
         const we = new Date(ws.getTime() + 7 * 86400000);
-        results.push(check(getWeekData(activities, ws.getTime(), Math.min(we.getTime(), now.getTime()))));
+        // Only count activities within the quarter
+        const effectiveStart = Math.max(ws.getTime(), qStartMs);
+        results.push(check(getWeekData(activities, effectiveStart, Math.min(we.getTime(), now.getTime()))));
       }
       return results;
     };
