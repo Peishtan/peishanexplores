@@ -98,7 +98,7 @@ export default function Dashboard() {
               label="Kayak"
               weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
               total={insights?.quarterWeeklyGoals.kayak.total ?? 0}
-              description="1 paddle each week"
+              description={`${kayakGoal} paddle each week`}
               met={(insights?.wtd.water ?? 0) >= kayakGoal}
               streak={insights?.streaks.water ?? 0}
             />
@@ -107,7 +107,7 @@ export default function Dashboard() {
               label="Hiking / XC Ski"
               weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
               total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
-              description="1 hike or XC ski each week"
+              description={`${outdoorGoal} hike or XC ski each week`}
               met={(insights?.wtd.outdoor ?? 0) >= outdoorGoal}
               streak={insights?.streaks.outdoor ?? 0}
             />
