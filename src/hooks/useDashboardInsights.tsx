@@ -138,9 +138,9 @@ export function useDashboardInsights(
     const kayakChallenge = buildChallenge(`${getQuarterLabel(now)} Kayak Challenge`, kayakQtd, goals.kayakTarget, daysPassed, totalDays, now);
 
     // Hiking challenge + totals
-    const hikingLogs = activities.filter((a) => new Date(a.start_time).getTime() >= qStartMs && a.type === "hiking");
+    const hikingLogs = activities.filter((a) => new Date(a.start_time).getTime() >= qStartMs && (a.type === "hiking" || a.type === "xc_skiing"));
     const hikingMiles = hikingLogs.reduce((s, a) => s + (a.distance || 0), 0);
-    const hikingChallenge = buildChallenge(`${getQuarterLabel(now)} Hiking Progress`, hikingMiles, goals.hikingTarget, daysPassed, totalDays, now);
+    const hikingChallenge = buildChallenge(`${getQuarterLabel(now)} Hiking / XC Ski Progress`, hikingMiles, goals.hikingTarget, daysPassed, totalDays, now);
 
     const hikingWithElev = hikingLogs.filter((a) => a.elevation_gain != null && a.elevation_gain > 0);
     const avgElevation = hikingWithElev.length > 0
