@@ -23,22 +23,18 @@ const TIER_CONFIG: Record<Tier, { label: string; icon: typeof Compass; badgeClas
 };
 
 function getMilestoneTier(ms: { milestone_type: string; threshold_elevation_ft?: number | null; threshold_distance_mi?: number | null }): Tier {
-  // Quarterly targets = foundation (consistency goals)
-  if (ms.milestone_type === "QUARTERLY_DISTANCE_TARGET" || ms.milestone_type === "QUARTERLY_ELEVATION_AVG_TARGET") {
-    return "foundation";
-  }
   // Elevation milestones by threshold
   if (ms.milestone_type === "SINGLE_ACTIVITY_OVER_ELEVATION") {
     const ft = ms.threshold_elevation_ft ?? 0;
     if (ft >= 5000) return "advanced";
-    if (ft >= 4000) return "intermediate";
+    if (ft >= 3000) return "intermediate";
     return "foundation";
   }
   // Distance milestones
   if (ms.milestone_type === "SINGLE_ACTIVITY_OVER_DISTANCE") {
     const mi = ms.threshold_distance_mi ?? 0;
-    if (mi >= 15) return "advanced";
-    if (mi >= 10) return "intermediate";
+    if (mi >= 20) return "advanced";
+    if (mi >= 15) return "intermediate";
     return "foundation";
   }
   return "foundation";
