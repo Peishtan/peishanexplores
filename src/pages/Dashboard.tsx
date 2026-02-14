@@ -210,7 +210,7 @@ function GoalRow({ icon, label, weekResults, total, description, met, streak }: 
 
 function MomentumCard({ momentum }: { momentum: import("@/hooks/useDashboardInsights").MomentumData | null }) {
   if (!momentum) return null;
-  const { fourWeekAvgMiles, fourWeekDelta, elevTrendPct, longestHikeThisQ, longestHikeLastQ } = momentum;
+  const { fourWeekAvgMiles, fourWeekDelta, elevTrendPct, fourWeekAvgElev, priorFourWeekAvgElev, longestHikeThisQ, longestHikeLastQ } = momentum;
   const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
   const lastQLabel = `Q${((Math.floor(new Date().getMonth() / 3) - 1 + 4) % 4) + 1}`;
 
@@ -244,6 +244,10 @@ function MomentumCard({ momentum }: { momentum: import("@/hooks/useDashboardInsi
               {elevTrendPct > 0 ? "+" : ""}{elevTrendPct}%
             </span>
           </div>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            4-wk avg: {fourWeekAvgElev.toLocaleString()} ft
+            {priorFourWeekAvgElev > 0 && <> · prior: {priorFourWeekAvgElev.toLocaleString()} ft</>}
+          </p>
         </div>
 
         {/* Longest hike */}
