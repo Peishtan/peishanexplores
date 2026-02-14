@@ -90,9 +90,10 @@ export function useAchievedMilestones(limit = 5) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("skill_milestone_progress")
-        .select("*, skill_milestones(*)")
+        .select("*, skill_milestones!inner(*)")
         .eq("user_id", user!.id)
         .eq("status", "achieved")
+        .eq("skill_milestones.is_active", true)
         .order("achieved_at", { ascending: false })
         .limit(limit);
       if (error) throw error;
