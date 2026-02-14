@@ -91,8 +91,8 @@ export default function Dashboard() {
         </div>
 
         {/* Weekly Goals + Milestone Spotlight */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr,auto] gap-3">
-          <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="md:col-span-2 rounded-2xl bg-card p-4 border border-border shadow-card">
             <h3 className="text-sm font-semibold text-foreground mb-4">{qLabel} Weekly Goals</h3>
             <div className="space-y-4">
               <GoalRow
@@ -224,7 +224,7 @@ function MilestoneSpotlight() {
   const { data: milestones } = useRecentlyCompletedMilestones(5);
 
   return (
-    <div className="rounded-2xl bg-card p-4 border border-border shadow-card md:w-64">
+    <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
       <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
         <Trophy className="h-4 w-4 text-muted-foreground" />
         Milestone Spotlight
