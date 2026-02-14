@@ -23,6 +23,8 @@ export interface MomentumData {
   priorFourWeekAvgMiles: number;
   fourWeekDelta: number;
   elevTrendPct: number; // % change recent 4wk avg vs prior 4wk avg
+  fourWeekAvgElev: number;
+  priorFourWeekAvgElev: number;
   longestHikeThisQ: number;
   longestHikeLastQ: number;
 }
@@ -214,6 +216,8 @@ export function useDashboardInsights(
       priorFourWeekAvgMiles,
       fourWeekDelta: fourWeekAvgMiles - priorFourWeekAvgMiles,
       elevTrendPct: Math.round(elevTrendPct),
+      fourWeekAvgElev: Math.round(recentElev),
+      priorFourWeekAvgElev: Math.round(priorElev),
       longestHikeThisQ,
       longestHikeLastQ,
     };
