@@ -2,7 +2,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useActivities } from "@/hooks/useActivities";
 import { useDashboardInsights } from "@/hooks/useDashboardInsights";
 import BottomNav from "@/components/BottomNav";
-import heroImage from "@/assets/hero-outdoor.jpg";
+import HeroBanner from "@/components/HeroBanner";
 import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints } from "lucide-react";
 
 export default function Dashboard() {
@@ -39,19 +39,15 @@ export default function Dashboard() {
         </header>
 
         {/* Hero Banner */}
-        <div className="relative rounded-2xl overflow-hidden shadow-card">
-          <img src={heroImage} alt="Mountain landscape" className="w-full h-44 md:h-52 object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-5">
-            <p className="text-xs font-medium text-primary-foreground/70 uppercase tracking-wider mb-1">2026 Total Miles</p>
-            <p className="text-4xl font-bold text-primary-foreground">
-              {(insights?.ytd.miles ?? 0).toFixed(0)} <span className="text-base font-medium text-primary-foreground/80">miles</span>
-            </p>
-            <span className="mt-2 inline-block bg-primary-foreground/20 backdrop-blur-sm rounded-md px-3 py-1 text-xs font-semibold text-primary-foreground/90">
-              {qLabel}: {(insights?.qtd.miles ?? 0).toFixed(0)} miles so far
-            </span>
-          </div>
-        </div>
+        <HeroBanner title="Dashboard">
+          <p className="text-xs font-medium text-primary-foreground/70 uppercase tracking-wider mb-1">2026 Total Miles</p>
+          <p className="text-4xl font-bold text-primary-foreground">
+            {(insights?.ytd.miles ?? 0).toFixed(0)} <span className="text-base font-medium text-primary-foreground/80">miles</span>
+          </p>
+          <span className="mt-2 inline-block bg-primary-foreground/20 backdrop-blur-sm rounded-md px-3 py-1 text-xs font-semibold text-primary-foreground/90">
+            {qLabel}: {(insights?.qtd.miles ?? 0).toFixed(0)} miles so far
+          </span>
+        </HeroBanner>
 
         {/* Challenge Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useActivities, useDeleteActivity, useAddActivity, Activity, MILE_ACTIVITIES } from "@/hooks/useActivities";
+import { useActivities, useDeleteActivity, Activity } from "@/hooks/useActivities";
 import BottomNav from "@/components/BottomNav";
+import HeroBanner from "@/components/HeroBanner";
 import { format } from "date-fns";
-import { Trash2, Edit2, Plus, Loader2 } from "lucide-react";
+import { Trash2, Edit2, Plus, Loader2, Waves, Footprints, Snowflake, Dumbbell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,14 +15,29 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
 
 const SPORTS = [
-  { id: "kayaking" as const, label: "Kayaking", color: "#c92a32" },
-  { id: "hiking" as const, label: "Hiking", color: "#278737" },
-  { id: "xc_skiing" as const, label: "XC Skiing", color: "#2a6dc9" },
-  { id: "orange_theory" as const, label: "Orange Theory", color: "#ef4444" },
-  { id: "peloton" as const, label: "Peloton", color: "#ec4899" },
+  { id: "kayaking" as const, label: "Kayak", icon: Waves },
+  { id: "hiking" as const, label: "Hike", icon: Footprints },
+  { id: "xc_skiing" as const, label: "XC Ski", icon: Snowflake },
+  { id: "orange_theory" as const, label: "Gym", icon: Dumbbell },
+  { id: "peloton" as const, label: "Gym", icon: Dumbbell },
 ];
 
-type ActivityType = (typeof SPORTS)[number]["id"];
+const FILTERS = [
+  { id: "all", label: "All" },
+  { id: "kayaking", label: "Kayak" },
+  { id: "hiking", label: "Hike" },
+  { id: "xc_skiing", label: "XC Ski" },
+  { id: "gym", label: "Gym" },
+];
+
+const DATE_RANGES = [
+  { id: "30", label: "Last 30 Days" },
+  { id: "90", label: "Last 90 Days" },
+  { id: "365", label: "This Year" },
+  { id: "all", label: "All Time" },
+];
+
+type ActivityType = "kayaking" | "hiking" | "xc_skiing" | "orange_theory" | "peloton";
 
 interface LogForm {
   route: string;
@@ -32,21 +48,21 @@ interface LogForm {
   sport: ActivityType;
 }
 
+function getSportInfo(type: string) {
+  return SPORTS.find((s) => s.id === type) ?? SPORTS[0];
+}
+
 export default function Activities() {
   const { data: activities, isLoading } = useActivities();
   const deleteActivity = useDeleteActivity();
-  const addActivity = useAddActivity();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [sportFilter, setSportFilter] = useState("all");
+  const [dateRange, setDateRange] = useState("30");
   const [form, setForm] = useState<LogForm>({
-    route: "",
-    date: new Date().toISOString().split("T")[0],
-    miles: "",
-    elevation: "",
-    notes: "",
-    sport: "hiking",
+    route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking",
   });
 
   const resetForm = () => {
@@ -124,68 +140,128 @@ export default function Activities() {
     }
   };
 
+  // Filter activities
+  const now = new Date();
+  const filtered = activities
+    ?.filter((a) => {
+      // Sport filter
+      if (sportFilter === "gym") {
+        if (!["peloton", "orange_theory"].includes(a.type)) return false;
+      } else if (sportFilter !== "all" && a.type !== sportFilter) {
+        return false;
+      }
+      // Date range filter
+      if (dateRange !== "all") {
+        const days = parseInt(dateRange);
+        const cutoff = new Date(now.getTime() - days * 86400000);
+        if (new Date(a.start_time) < cutoff) return false;
+      }
+      return true;
+    })
+    .sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
+
   return (
     <div className="min-h-screen bg-background pb-24">
-      <main className="mx-auto max-w-5xl px-4 pt-8 space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-foreground">Activity Logs</h1>
-          <Button onClick={openAdd} className="gap-2">
-            <Plus className="h-4 w-4" /> Add Entry
+      <main className="mx-auto max-w-5xl px-4 pt-6 space-y-4">
+        {/* Header */}
+        <header className="flex items-center justify-between">
+          <h1 className="text-[22px] font-semibold tracking-tight text-foreground">PS FitTrackr</h1>
+          <Button onClick={openAdd} size="sm" className="gap-1.5 rounded-xl">
+            <Plus className="h-4 w-4" /> Add
           </Button>
+        </header>
+
+        {/* Hero Banner */}
+        <HeroBanner title="Logs" />
+
+        {/* Filters Row */}
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex gap-1.5">
+            {FILTERS.map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setSportFilter(f.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  sportFilter === f.id
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-muted-foreground border border-border hover:bg-muted"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <select
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value)}
+            className="text-xs font-medium rounded-lg border border-border bg-card px-3 py-1.5 text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+          >
+            {DATE_RANGES.map((r) => (
+              <option key={r.id} value={r.id}>{r.label}</option>
+            ))}
+          </select>
         </div>
 
+        {/* Table */}
         {isLoading ? (
           <div className="flex justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-card">
+          <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-card">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-border text-muted-foreground text-sm">
-                  <th className="p-4 font-medium">Route / Activity</th>
-                  <th className="p-4 font-medium">Date</th>
-                  <th className="p-4 font-medium">Miles</th>
-                  <th className="p-4 font-medium">Sport</th>
-                  <th className="p-4 font-medium hidden md:table-cell">Notes</th>
-                  <th className="p-4 font-medium"></th>
+                <tr className="border-b border-border text-muted-foreground text-xs">
+                  <th className="px-4 py-3 font-medium">Route / Activity</th>
+                  <th className="px-4 py-3 font-medium">Date</th>
+                  <th className="px-4 py-3 font-medium">Miles</th>
+                  <th className="px-4 py-3 font-medium">Elevation</th>
+                  <th className="px-4 py-3 font-medium">Sport</th>
+                  <th className="px-4 py-3 font-medium hidden md:table-cell">Notes</th>
+                  <th className="px-4 py-3 font-medium w-16"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {activities?.length === 0 && (
+                {filtered?.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-muted-foreground italic">
-                      No activities logged yet. Click "Add Entry" to start.
+                    <td colSpan={7} className="py-12 text-center text-muted-foreground text-sm italic">
+                      No activities found.
                     </td>
                   </tr>
                 )}
-                {activities?.slice().sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime()).map((a) => {
-                  const sport = SPORTS.find((s) => s.id === a.type);
+                {filtered?.map((a) => {
+                  const sport = getSportInfo(a.type);
+                  const Icon = sport.icon;
                   return (
                     <tr key={a.id} className="hover:bg-muted/50 transition-colors">
-                      <td className="p-4 font-medium text-foreground">{(a as any).route || "—"}</td>
-                      <td className="p-4 text-muted-foreground text-sm whitespace-nowrap">
-                        {format(new Date(a.start_time), "MMM d, yyyy")}
-                      </td>
-                      <td className="p-4 font-mono text-foreground">{a.distance || "—"}</td>
-                      <td className="p-4">
-                        <span
-                          className="px-2 py-1 rounded-md text-xs font-semibold uppercase tracking-tighter inline-flex items-center gap-1"
-                          style={{ backgroundColor: (sport?.color || "#888") + "20", color: sport?.color }}
-                        >
-                          {sport?.label || a.type}
+                      <td className="px-4 py-3 text-sm font-medium text-foreground">
+                        <span className="inline-flex items-center gap-2">
+                          <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
+                          {(a as any).route || sport.label}
                         </span>
                       </td>
-                      <td className="p-4 text-muted-foreground text-sm max-w-xs truncate hidden md:table-cell">
+                      <td className="px-4 py-3 text-sm text-muted-foreground whitespace-nowrap">
+                        {format(new Date(a.start_time), "EEE, MMM d")}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-semibold text-foreground">
+                        {a.distance ? `${a.distance} mi` : "—"}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">
+                        {a.elevation_gain ? `+ ${a.elevation_gain.toLocaleString()} ft` : ""}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">
+                        {sport.label}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground max-w-xs truncate hidden md:table-cell">
                         {a.notes || ""}
                       </td>
-                      <td className="p-4">
+                      <td className="px-4 py-3">
                         <div className="flex gap-2">
                           <button onClick={() => openEdit(a)} className="text-muted-foreground hover:text-primary transition-colors">
-                            <Edit2 className="h-4 w-4" />
+                            <Edit2 className="h-3.5 w-3.5" />
                           </button>
                           <button onClick={() => handleDelete(a.id)} className="text-muted-foreground hover:text-destructive transition-colors">
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       </td>
@@ -207,41 +283,22 @@ export default function Activities() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <Label>Route / Class Name</Label>
-              <Input
-                value={form.route}
-                onChange={(e) => setForm({ ...form, route: e.target.value })}
-                placeholder="e.g. Si Mount Hiking"
-              />
+              <Input value={form.route} onChange={(e) => setForm({ ...form, route: e.target.value })} placeholder="e.g. Si Mount Hiking" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label>Date</Label>
-                <Input
-                  type="date"
-                  value={form.date}
-                  onChange={(e) => setForm({ ...form, date: e.target.value })}
-                />
+                <Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
               </div>
               <div className="space-y-1.5">
                 <Label>Miles</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={form.miles}
-                  onChange={(e) => setForm({ ...form, miles: e.target.value })}
-                  placeholder="0.0"
-                />
+                <Input type="number" step="0.1" value={form.miles} onChange={(e) => setForm({ ...form, miles: e.target.value })} placeholder="0.0" />
               </div>
             </div>
-            {["hiking", "xc_skiing"].includes(form.sport) && (
+            {["hiking", "xc_skiing", "kayaking"].includes(form.sport) && (
               <div className="space-y-1.5">
                 <Label>Elevation Gain (ft)</Label>
-                <Input
-                  type="number"
-                  value={form.elevation}
-                  onChange={(e) => setForm({ ...form, elevation: e.target.value })}
-                  placeholder="e.g. 1200"
-                />
+                <Input type="number" value={form.elevation} onChange={(e) => setForm({ ...form, elevation: e.target.value })} placeholder="e.g. 1200" />
               </div>
             )}
             <div className="space-y-1.5">
@@ -251,23 +308,18 @@ export default function Activities() {
                 onChange={(e) => setForm({ ...form, sport: e.target.value as ActivityType })}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                {SPORTS.map((s) => (
-                  <option key={s.id} value={s.id}>{s.label}</option>
-                ))}
+                <option value="kayaking">Kayak</option>
+                <option value="hiking">Hike</option>
+                <option value="xc_skiing">XC Ski</option>
+                <option value="orange_theory">Orange Theory</option>
+                <option value="peloton">Peloton</option>
               </select>
             </div>
             <div className="space-y-1.5">
               <Label>Notes</Label>
-              <Textarea
-                value={form.notes}
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                placeholder="Notes..."
-                rows={3}
-              />
+              <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Notes..." rows={3} />
             </div>
-            <Button type="submit" className="w-full">
-              {editingId ? "Update Entry" : "Save Entry"}
-            </Button>
+            <Button type="submit" className="w-full">{editingId ? "Update Entry" : "Save Entry"}</Button>
           </form>
         </DialogContent>
       </Dialog>
