@@ -14,6 +14,9 @@ export interface Profile {
   goal_exercises_per_week: number;
   goal_outdoor_per_week: number;
   goal_kayak_per_week: number;
+  goal_kayak_quarterly_miles: number;
+  goal_hiking_quarterly_miles: number;
+  goal_elevation_avg: number;
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string;

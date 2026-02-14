@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, ClipboardList, Target } from "lucide-react";
+// All icons render in neutral muted-foreground via className
 
 const links = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
