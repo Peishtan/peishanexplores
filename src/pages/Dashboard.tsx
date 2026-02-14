@@ -125,7 +125,7 @@ export default function Dashboard() {
 
         {/* Miles Summary */}
         <div className="grid grid-cols-3 gap-3">
-          <MilesCard label="Weekly Story" value={insights?.wtd.miles ?? 0} delta={insights?.weekDelta} />
+          <MilesCard label="Weekly" value={insights?.wtd.miles ?? 0} delta={insights?.weekDelta} />
           <MilesCard label="Quarterly" value={insights?.qtd.miles ?? 0} />
           <MilesCard label="Year to Date" value={insights?.ytd.miles ?? 0} />
         </div>
