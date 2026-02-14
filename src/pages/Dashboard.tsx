@@ -1,9 +1,11 @@
 import { useProfile } from "@/hooks/useProfile";
 import { useActivities } from "@/hooks/useActivities";
 import { useDashboardInsights } from "@/hooks/useDashboardInsights";
+import { useRecentlyCompletedMilestones } from "@/hooks/useMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
-import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints } from "lucide-react";
+import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints, Trophy } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 export default function Dashboard() {
   const { data: profile } = useProfile();
@@ -127,6 +129,10 @@ export default function Dashboard() {
           <MilesCard label="Quarterly" value={insights?.qtd.miles ?? 0} />
           <MilesCard label="Year to Date" value={insights?.ytd.miles ?? 0} />
         </div>
+
+        {/* Milestone Spotlight */}
+        <MilestoneSpotlight />
+
       </main>
       <BottomNav />
     </div>
@@ -208,6 +214,36 @@ function MilesCard({ label, value, delta }: { label: string; value: number; delt
           {delta >= 0 ? "+" : ""}{delta.toFixed(1)} vs last wk
         </p>
       )}
+    </div>
+  );
+}
+
+function MilestoneSpotlight() {
+  const { data: milestones } = useRecentlyCompletedMilestones(5);
+
+  if (!milestones || milestones.length === 0) return null;
+
+  return (
+    <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
+      <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+        <Trophy className="h-4 w-4 text-muted-foreground" />
+        Milestone Spotlight
+      </h3>
+      <div className="space-y-0 divide-y divide-border">
+        {milestones.map((m) => (
+          <div key={m.id} className="flex items-center justify-between py-2.5">
+            <div className="flex items-center gap-2.5">
+              <CheckCircle2 className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">{m.title}</span>
+            </div>
+            {m.completed_at && (
+              <span className="text-[10px] text-muted-foreground">
+                {formatDistanceToNow(new Date(m.completed_at), { addSuffix: true })}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
