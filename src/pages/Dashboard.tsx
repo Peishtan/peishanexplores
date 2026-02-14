@@ -4,7 +4,7 @@ import { useDashboardInsights } from "@/hooks/useDashboardInsights";
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
-import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints, Trophy, Target } from "lucide-react";
+import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints, Trophy, Target, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
@@ -89,7 +89,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Weekly Goals + Milestone Spotlight */}
+        {/* Weekly Goals + Momentum */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="md:col-span-2 rounded-2xl bg-card p-4 border border-border shadow-card">
             <h3 className="text-sm font-semibold text-foreground mb-4">{qLabel} Weekly Goals</h3>
@@ -123,7 +123,7 @@ export default function Dashboard() {
               />
             </div>
           </div>
-          <MilestoneSpotlight />
+          <MomentumCard momentum={insights?.momentum ?? null} />
         </div>
 
         {/* Miles Summary */}
@@ -132,6 +132,9 @@ export default function Dashboard() {
           <MilesCard label="Quarterly" value={insights?.qtd.miles ?? 0} />
           <MilesCard label="Year to Date" value={insights?.ytd.miles ?? 0} />
         </div>
+
+        {/* Milestone Spotlight */}
+        <MilestoneSpotlight />
 
       </main>
       <BottomNav />
@@ -199,6 +202,62 @@ function GoalRow({ icon, label, weekResults, total, description, met, streak }: 
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+function MomentumCard({ momentum }: { momentum: import("@/hooks/useDashboardInsights").MomentumData | null }) {
+  if (!momentum) return null;
+  const { fourWeekAvgMiles, fourWeekDelta, elevTrendPct, longestHikeThisQ, longestHikeLastQ } = momentum;
+  const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
+  const lastQLabel = `Q${((Math.floor(new Date().getMonth() / 3) - 1 + 4) % 4) + 1}`;
+
+  const TrendIcon = elevTrendPct > 0 ? TrendingUp : elevTrendPct < 0 ? TrendingDown : Minus;
+  const elevColor = elevTrendPct > 0 ? "text-primary" : elevTrendPct < 0 ? "text-destructive" : "text-muted-foreground";
+
+  return (
+    <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
+      <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+        Momentum
+      </h3>
+      <div className="space-y-4">
+        {/* 4-week avg miles */}
+        <div>
+          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">4-Week Avg Miles</p>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-xl font-bold text-foreground">{fourWeekAvgMiles.toFixed(1)}</span>
+            <span className={`text-xs font-semibold ${fourWeekDelta >= 0 ? "text-primary" : "text-destructive"}`}>
+              {fourWeekDelta >= 0 ? "+" : ""}{fourWeekDelta.toFixed(1)} vs prior 4 wks
+            </span>
+          </div>
+        </div>
+
+        {/* Elevation trend */}
+        <div>
+          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Elevation Trend</p>
+          <div className="flex items-center gap-1.5 mt-1">
+            <TrendIcon className={`h-4 w-4 ${elevColor}`} />
+            <span className={`text-xl font-bold ${elevColor}`}>
+              {elevTrendPct > 0 ? "+" : ""}{elevTrendPct}%
+            </span>
+          </div>
+        </div>
+
+        {/* Longest hike */}
+        <div>
+          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Longest Hike</p>
+          <div className="flex items-baseline gap-1 mt-1">
+            <span className="text-xl font-bold text-foreground">{longestHikeThisQ.toFixed(1)}</span>
+            <span className="text-xs text-muted-foreground">mi ({qLabel})</span>
+          </div>
+          {longestHikeLastQ > 0 && (
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {lastQLabel}: {longestHikeLastQ.toFixed(1)} mi
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -18,6 +18,15 @@ export interface QuarterChallenge {
   pace: "ahead" | "on_pace" | "behind";
 }
 
+export interface MomentumData {
+  fourWeekAvgMiles: number;
+  priorFourWeekAvgMiles: number;
+  fourWeekDelta: number;
+  elevTrendPct: number; // % change recent 4wk avg vs prior 4wk avg
+  longestHikeThisQ: number;
+  longestHikeLastQ: number;
+}
+
 export interface DashboardInsights {
   wtd: WeekData;
   mtd: { miles: number };
@@ -35,6 +44,7 @@ export interface DashboardInsights {
   kayakChallenge: QuarterChallenge;
   hikingChallenge: QuarterChallenge;
   hikingTotal: { miles: number; count: number; avgElevation: number; maxElevation: number };
+  momentum: MomentumData;
 }
 
 function getWeekData(activities: Activity[], weekStart: number, weekEnd: number): WeekData {
@@ -164,6 +174,50 @@ export function useDashboardInsights(
       return results;
     };
 
+    // Momentum computations
+    const fourWeeksAgo = subWeeks(thisWeekStart, 4).getTime();
+    const eightWeeksAgo = subWeeks(thisWeekStart, 8).getTime();
+
+    const milesInRange = (start: number, end: number) =>
+      activities.filter(a => { const t = new Date(a.start_time).getTime(); return t >= start && t < end; })
+        .filter(a => MILE_ACTIVITIES.includes(a.type as any))
+        .reduce((s, a) => s + (a.distance || 0), 0);
+
+    const recent4Miles = milesInRange(fourWeeksAgo, thisWeekStart.getTime());
+    const prior4Miles = milesInRange(eightWeeksAgo, fourWeeksAgo);
+    const fourWeekAvgMiles = recent4Miles / 4;
+    const priorFourWeekAvgMiles = prior4Miles / 4;
+
+    const elevInRange = (start: number, end: number) => {
+      const logs = activities.filter(a => { const t = new Date(a.start_time).getTime(); return t >= start && t < end && (a.elevation_gain ?? 0) > 0; });
+      return logs.length > 0 ? logs.reduce((s, a) => s + (a.elevation_gain ?? 0), 0) / logs.length : 0;
+    };
+    const recentElev = elevInRange(fourWeeksAgo, thisWeekStart.getTime());
+    const priorElev = elevInRange(eightWeeksAgo, fourWeeksAgo);
+    const elevTrendPct = priorElev > 0 ? ((recentElev - priorElev) / priorElev) * 100 : 0;
+
+    // Longest hike this Q vs last Q
+    const hikingDistancesThisQ = activities
+      .filter(a => new Date(a.start_time).getTime() >= qStartMs && ["hiking", "xc_skiing"].includes(a.type) && a.distance)
+      .map(a => a.distance!);
+    const longestHikeThisQ = hikingDistancesThisQ.length > 0 ? Math.max(...hikingDistancesThisQ) : 0;
+
+    const lastQStart = new Date(qStart.getFullYear(), qStart.getMonth() - 3, 1);
+    const lastQEnd = qStart;
+    const hikingDistancesLastQ = activities
+      .filter(a => { const t = new Date(a.start_time); return t >= lastQStart && t < lastQEnd && ["hiking", "xc_skiing"].includes(a.type) && a.distance; })
+      .map(a => a.distance!);
+    const longestHikeLastQ = hikingDistancesLastQ.length > 0 ? Math.max(...hikingDistancesLastQ) : 0;
+
+    const momentum: MomentumData = {
+      fourWeekAvgMiles,
+      priorFourWeekAvgMiles,
+      fourWeekDelta: fourWeekAvgMiles - priorFourWeekAvgMiles,
+      elevTrendPct: Math.round(elevTrendPct),
+      longestHikeThisQ,
+      longestHikeLastQ,
+    };
+
     return {
       wtd, mtd: { miles: getMiles(monthStart) }, ytd: { miles: getMiles(yearStart) }, qtd: { miles: qtdMiles },
       lastWeek, weekDelta: wtd.miles - lastWeek.miles, threeWeekAvg: threeWeekMiles / 3, streaks,
@@ -174,6 +228,7 @@ export function useDashboardInsights(
       },
       kayakChallenge, hikingChallenge,
       hikingTotal: { miles: hikingMiles, count: hikingLogs.length, avgElevation: Math.round(avgElevation), maxElevation },
+      momentum,
     };
   }, [activities, goals.exercises, goals.outdoor, goals.kayak, goals.hikingTarget, goals.kayakTarget]);
 }
