@@ -79,7 +79,7 @@ export default function Dashboard() {
               {paceLabel(insights?.hikingChallenge?.pace ?? "on_pace")}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              {insights?.hikingTotal.count ?? 0} hikes this quarter
+              {insights?.hikingTotal.count ?? 0} hikes / XC ski this quarter
               {(insights?.hikingTotal.avgElevation ?? 0) > 0 && (
                 <> · Avg Elev {insights!.hikingTotal.avgElevation.toLocaleString()} ft · High {insights!.hikingTotal.maxElevation.toLocaleString()} ft</>
               )}
@@ -186,11 +186,12 @@ function GoalRow({ icon, label, hit, total, description, met, streak }: {
       </div>
       <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
         {Array.from({ length: Math.min(total, 13) }, (_, i) => (
-          <div key={i} className={`h-5 w-5 rounded-full flex items-center justify-center ${i < hit ? "bg-primary/15" : "bg-border"}`}>
-            {i < hit && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
+          <div key={i} className={`h-5 w-5 rounded-full flex items-center justify-center ${
+            i < hit ? "bg-primary/15" : i === hit && met ? "bg-primary/15" : "bg-border"
+          }`}>
+            {(i < hit || (i === hit && met)) && <CheckCircle2 className="h-3.5 w-3.5 text-primary" />}
           </div>
         ))}
-        {met && <CheckCircle2 className="h-5 w-5 text-primary ml-1" />}
       </div>
     </div>
   );
