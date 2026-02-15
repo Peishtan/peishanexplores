@@ -124,7 +124,7 @@ export default function Dashboard() {
               />
             </div>
           </div>
-          <MomentumCard momentum={insights?.momentum ?? null} />
+          <MomentumCard momentum={insights?.momentum ?? null} kayakChallenge={insights?.kayakChallenge ?? null} hikingChallenge={insights?.hikingChallenge ?? null} />
         </div>
 
         {/* Miles Summary */}
@@ -208,7 +208,43 @@ function GoalRow({ icon, label, weekResults, total, description, met, streak }: 
   );
 }
 
-function MomentumCard({ momentum }: { momentum: import("@/hooks/useDashboardInsights").MomentumData | null }) {
+function getEncouragement(kayak: import("@/hooks/useDashboardInsights").QuarterChallenge | null, hiking: import("@/hooks/useDashboardInsights").QuarterChallenge | null) {
+  if (!kayak || !hiking) return null;
+
+  const bothAhead = kayak.pace !== "behind" && hiking.pace !== "behind";
+  const bothBehind = kayak.pace === "behind" && hiking.pace === "behind";
+  const oneBehind = kayak.pace === "behind" || hiking.pace === "behind";
+
+  if (bothAhead) {
+    const bestPct = Math.max(kayak.pct, hiking.pct);
+    if (bestPct >= 90) return { emoji: "🔥", text: "Almost there — finish strong this quarter!" };
+    if (bestPct >= 50) return { emoji: "💪", text: "Solid momentum — keep this pace and you'll crush it." };
+    return { emoji: "✅", text: "On track across the board. Nice consistency!" };
+  }
+
+  if (bothBehind) {
+    const kayakGap = Math.max(kayak.target - kayak.current, 0);
+    const hikingGap = Math.max(hiking.target - hiking.current, 0);
+    return {
+      emoji: "🌱",
+      text: `Life happens! ${kayakGap.toFixed(0)} kayak mi + ${hikingGap.toFixed(0)} hike mi to go — one big weekend can close the gap.`,
+    };
+  }
+
+  if (oneBehind) {
+    const behind = kayak.pace === "behind" ? kayak : hiking!;
+    const label = kayak.pace === "behind" ? "paddle" : "hike/ski";
+    const gap = Math.max(behind.target - behind.current, 0);
+    return {
+      emoji: "👊",
+      text: `Just ${gap.toFixed(0)} more ${label} miles to catch up — you've got this.`,
+    };
+  }
+
+  return null;
+}
+
+function MomentumCard({ momentum, kayakChallenge, hikingChallenge }: { momentum: import("@/hooks/useDashboardInsights").MomentumData | null; kayakChallenge: import("@/hooks/useDashboardInsights").QuarterChallenge | null; hikingChallenge: import("@/hooks/useDashboardInsights").QuarterChallenge | null }) {
   if (!momentum) return null;
   const { fourWeekAvgMiles, fourWeekDelta, elevTrendPct, fourWeekAvgElev, priorFourWeekAvgElev, longestHikeThisQ, longestHikeLastQ } = momentum;
   const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
@@ -217,6 +253,8 @@ function MomentumCard({ momentum }: { momentum: import("@/hooks/useDashboardInsi
   const TrendIcon = elevTrendPct > 0 ? TrendingUp : elevTrendPct < 0 ? TrendingDown : Minus;
   const elevColor = elevTrendPct > 0 ? "text-primary" : elevTrendPct < 0 ? "text-destructive" : "text-muted-foreground";
 
+  const encouragement = getEncouragement(kayakChallenge, hikingChallenge);
+
   return (
     <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
       <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -224,6 +262,16 @@ function MomentumCard({ momentum }: { momentum: import("@/hooks/useDashboardInsi
         Momentum
       </h3>
       <div className="space-y-4">
+        {/* Encouragement */}
+        {encouragement && (
+          <div className="rounded-lg bg-muted/50 px-3 py-2.5">
+            <p className="text-xs text-foreground leading-relaxed">
+              <span className="mr-1.5">{encouragement.emoji}</span>
+              {encouragement.text}
+            </p>
+          </div>
+        )}
+
         {/* 4-week avg miles */}
         <div>
           <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">4-Week Avg Miles</p>
