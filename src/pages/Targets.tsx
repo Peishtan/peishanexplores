@@ -51,7 +51,7 @@ function TargetRow({ icon, label, value, isEditing, editValue, onEditChange, suf
       </div>
       {!isEditing && pacing && (
         <div className="ml-7 mt-1 flex flex-wrap gap-x-3 text-[11px] text-muted-foreground">
-          <span>{pacing.unit === "ft" ? `Target: ${pacing.needed.toLocaleString()} ${pacing.unit}` : `Need ${pacing.needed.toFixed(1)} ${pacing.unit}/wk`}</span>
+          <span>{pacing.unit === "ft" ? `Target: ${pacing.needed.toLocaleString()} ${pacing.unit}` : `Need ${pacing.needed.toFixed(1)} ${pacing.unit}/wk to finish`}</span>
           <span>•</span>
           <span className={pacing.current >= pacing.needed ? "text-primary font-medium" : "text-destructive font-medium"}>
             Avg: {pacing.unit === "ft" ? `${pacing.current.toLocaleString()} ${pacing.unit}` : `${pacing.current.toFixed(1)} ${pacing.unit}/wk`}
