@@ -328,7 +328,7 @@ function MilesCard({ label, value, spark }: { label: string; value: number; spar
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={spark}>
               <defs>
-                <linearGradient id={`spark-${label}`} x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id={`spark-${label.replace(/\s+/g, '-')}`} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
                   <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
                 </linearGradient>
@@ -338,7 +338,7 @@ function MilesCard({ label, value, spark }: { label: string; value: number; spar
                 dataKey="miles"
                 stroke="hsl(var(--primary))"
                 strokeWidth={1.5}
-                fill={`url(#spark-${label})`}
+                fill={`url(#spark-${label.replace(/\s+/g, '-')})`}
                 dot={false}
                 isAnimationActive={false}
               />
