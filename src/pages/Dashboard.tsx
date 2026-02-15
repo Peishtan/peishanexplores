@@ -1,12 +1,13 @@
 import { useProfile } from "@/hooks/useProfile";
 import { format } from "date-fns";
 import { useActivities } from "@/hooks/useActivities";
-import { useDashboardInsights } from "@/hooks/useDashboardInsights";
+import { useDashboardInsights, type SparkPoint } from "@/hooks/useDashboardInsights";
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { CheckCircle2, Flame, Waves, Mountain, Dumbbell, Footprints, Trophy, Target, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 export default function Dashboard() {
   const { data: profile } = useProfile();
@@ -129,9 +130,9 @@ export default function Dashboard() {
 
         {/* Miles Summary */}
         <div className="grid grid-cols-3 gap-3">
-          <MilesCard label="Weekly" value={insights?.wtd.miles ?? 0} delta={insights?.weekDelta} />
-          <MilesCard label="Quarterly" value={insights?.qtd.miles ?? 0} />
-          <MilesCard label="Year to Date" value={insights?.ytd.miles ?? 0} />
+          <MilesCard label="Weekly" value={insights?.wtd.miles ?? 0} spark={insights?.sparkWeekly} />
+          <MilesCard label="Quarterly" value={insights?.qtd.miles ?? 0} spark={insights?.sparkQuarterly} />
+          <MilesCard label="Year to Date" value={insights?.ytd.miles ?? 0} spark={insights?.sparkYtd} />
         </div>
 
         {/* Milestone Spotlight */}
@@ -316,16 +317,34 @@ function MomentumCard({ momentum, kayakChallenge, hikingChallenge }: { momentum:
   );
 }
 
-function MilesCard({ label, value, delta }: { label: string; value: number; delta?: number }) {
+function MilesCard({ label, value, spark }: { label: string; value: number; spark?: SparkPoint[] }) {
   return (
     <div className="rounded-2xl bg-card p-4 border border-border shadow-card text-center">
       <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
       <p className="text-2xl font-bold text-foreground mt-1">{value.toFixed(1)}</p>
       <p className="text-[10px] text-muted-foreground">mi</p>
-      {delta !== undefined && (
-        <p className={`text-[10px] font-semibold mt-1 ${delta >= 0 ? "text-primary" : "text-destructive"}`}>
-          {delta >= 0 ? "+" : ""}{delta.toFixed(1)} vs last wk
-        </p>
+      {spark && spark.length > 1 && (
+        <div className="mt-2 h-8">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={spark}>
+              <defs>
+                <linearGradient id={`spark-${label}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
+                </linearGradient>
+              </defs>
+              <Area
+                type="monotone"
+                dataKey="miles"
+                stroke="hsl(var(--primary))"
+                strokeWidth={1.5}
+                fill={`url(#spark-${label})`}
+                dot={false}
+                isAnimationActive={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       )}
     </div>
   );

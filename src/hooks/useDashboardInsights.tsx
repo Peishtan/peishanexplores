@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { startOfWeek, subWeeks, startOfMonth, startOfYear, differenceInCalendarDays, addDays, format } from "date-fns";
+import { startOfWeek, subWeeks, startOfMonth, startOfYear, differenceInCalendarDays, addDays, format, startOfDay, eachDayOfInterval } from "date-fns";
 import { Activity, MILE_ACTIVITIES } from "./useActivities";
 
 export interface WeekData {
@@ -29,11 +29,16 @@ export interface MomentumData {
   longestHikeLastQ: number;
 }
 
+export interface SparkPoint { day: number; miles: number }
+
 export interface DashboardInsights {
   wtd: WeekData;
   mtd: { miles: number };
   ytd: { miles: number };
   qtd: { miles: number };
+  sparkWeekly: SparkPoint[];
+  sparkQuarterly: SparkPoint[];
+  sparkYtd: SparkPoint[];
   lastWeek: WeekData;
   weekDelta: number;
   threeWeekAvg: number;
@@ -222,8 +227,29 @@ export function useDashboardInsights(
       longestHikeLastQ,
     };
 
+    // Sparkline data: cumulative miles per day
+    const buildSparkline = (periodStart: Date, periodEnd: Date): SparkPoint[] => {
+      const days = eachDayOfInterval({ start: periodStart, end: periodEnd > now ? now : periodEnd });
+      let cumulative = 0;
+      return days.map((d, i) => {
+        const dayStart = startOfDay(d).getTime();
+        const dayEnd = dayStart + 86400000;
+        const dayMiles = activities
+          .filter(a => { const t = new Date(a.start_time).getTime(); return t >= dayStart && t < dayEnd; })
+          .filter(a => MILE_ACTIVITIES.includes(a.type as any))
+          .reduce((s, a) => s + (a.distance || 0), 0);
+        cumulative += dayMiles;
+        return { day: i, miles: Math.round(cumulative * 10) / 10 };
+      });
+    };
+
+    const sparkWeekly = buildSparkline(thisWeekStart, new Date(thisWeekStart.getTime() + 6 * 86400000));
+    const sparkQuarterly = buildSparkline(qStart, new Date(qEnd.getTime() - 86400000));
+    const sparkYtd = buildSparkline(new Date(now.getFullYear(), 0, 1), new Date(now.getFullYear(), 11, 31));
+
     return {
       wtd, mtd: { miles: getMiles(monthStart) }, ytd: { miles: getMiles(yearStart) }, qtd: { miles: qtdMiles },
+      sparkWeekly, sparkQuarterly, sparkYtd,
       lastWeek, weekDelta: wtd.miles - lastWeek.miles, threeWeekAvg: threeWeekMiles / 3, streaks,
       quarterWeeklyGoals: {
         kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak), total: weeksInQuarter },
