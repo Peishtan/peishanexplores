@@ -125,7 +125,7 @@ export default function Dashboard() {
               />
             </div>
           </div>
-          <MomentumCard momentum={insights?.momentum ?? null} kayakChallenge={insights?.kayakChallenge ?? null} hikingChallenge={insights?.hikingChallenge ?? null} />
+          <MomentumCard momentum={insights?.momentum ?? null} kayakChallenge={insights?.kayakChallenge ?? null} hikingChallenge={insights?.hikingChallenge ?? null} elevationGoal={profile?.goal_elevation_avg ?? 1200} />
         </div>
 
         {/* Miles Summary */}
@@ -209,43 +209,74 @@ function GoalRow({ icon, label, weekResults, total, description, met, streak }: 
   );
 }
 
-function getEncouragement(kayak: import("@/hooks/useDashboardInsights").QuarterChallenge | null, hiking: import("@/hooks/useDashboardInsights").QuarterChallenge | null) {
-  if (!kayak || !hiking) return null;
+function getEncouragement(
+  kayak: import("@/hooks/useDashboardInsights").QuarterChallenge | null,
+  hiking: import("@/hooks/useDashboardInsights").QuarterChallenge | null,
+  elevTrendPct: number,
+  elevationGoal: number,
+  fourWeekAvgElev: number
+): { emoji: string; text: string }[] {
+  if (!kayak || !hiking) return [];
+  const insights: { emoji: string; text: string }[] = [];
 
-  const bothAhead = kayak.pace !== "behind" && hiking.pace !== "behind";
-  const bothBehind = kayak.pace === "behind" && hiking.pace === "behind";
-  const oneBehind = kayak.pace === "behind" || hiking.pace === "behind";
+  const now = new Date();
+  const qEnd = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3 + 3, 1);
+  const weeksLeft = Math.max(Math.ceil((qEnd.getTime() - now.getTime()) / (7 * 86400000)), 1);
 
-  if (bothAhead) {
-    const bestPct = Math.max(kayak.pct, hiking.pct);
-    if (bestPct >= 90) return { emoji: "🔥", text: "Almost there — finish strong this quarter!" };
-    if (bestPct >= 50) return { emoji: "💪", text: "Solid momentum — keep this pace and you'll crush it." };
-    return { emoji: "✅", text: "On track across the board. Nice consistency!" };
+  // Per-challenge projected finish insights
+  [kayak, hiking].forEach((ch) => {
+    if (ch.pct >= 100) {
+      insights.push({ emoji: "🏆", text: `${ch.label.split(" ")[1]} goal done!` });
+    } else if (ch.pace === "ahead" && ch.projectedFinish && ch.projectedFinish !== "Done!") {
+      // Calculate weeks early
+      const projDate = new Date(`${ch.projectedFinish}, ${now.getFullYear()}`);
+      const weeksEarly = Math.floor((qEnd.getTime() - projDate.getTime()) / (7 * 86400000));
+      if (weeksEarly >= 2) {
+        insights.push({ emoji: "🚀", text: `At this rate you'll finish ${ch.label.split(" ")[1]} ~${weeksEarly} weeks early.` });
+      } else if (weeksEarly >= 1) {
+        insights.push({ emoji: "📈", text: `${ch.label.split(" ")[1]} on pace to wrap up a week ahead.` });
+      }
+    } else if (ch.pace === "behind") {
+      const remaining = Math.max(ch.target - ch.current, 0);
+      const neededPerWk = remaining / weeksLeft;
+      insights.push({ emoji: "⚡", text: `Need ${neededPerWk.toFixed(1)} mi/wk to finish ${ch.label.split(" ")[1]}.` });
+    }
+  });
+
+  // "Skip a week" buffer insight — only if both ahead
+  if (kayak.pace !== "behind" && hiking.pace !== "behind") {
+    const kayakRemaining = Math.max(kayak.target - kayak.current, 0);
+    const hikingRemaining = Math.max(hiking.target - hiking.current, 0);
+    const kayakBuffer = weeksLeft > 1 ? kayakRemaining / (weeksLeft - 1) : Infinity;
+    const hikingBuffer = weeksLeft > 1 ? hikingRemaining / (weeksLeft - 1) : Infinity;
+    // Check if skipping a week is still feasible (required pace stays reasonable)
+    const kayakCurrentPace = kayak.current / Math.max(13 - weeksLeft, 1) * 1; // approx weekly
+    const hikingCurrentPace = hiking.current / Math.max(13 - weeksLeft, 1) * 1;
+    if (kayakBuffer <= kayakCurrentPace * 1.15 && hikingBuffer <= hikingCurrentPace * 1.15 && weeksLeft > 2) {
+      insights.push({ emoji: "😎", text: "Skipping next week still keeps you on track." });
+    }
   }
 
-  if (bothBehind) {
-    const kayakGap = Math.max(kayak.target - kayak.current, 0);
-    const hikingGap = Math.max(hiking.target - hiking.current, 0);
-    return {
-      emoji: "🌱",
-      text: `Life happens! ${kayakGap.toFixed(0)} kayak mi + ${hikingGap.toFixed(0)} hike mi to go — one big weekend can close the gap.`,
-    };
+  // Elevation insight
+  if (fourWeekAvgElev > 0 && elevationGoal > 0) {
+    if (fourWeekAvgElev < elevationGoal * 0.85) {
+      insights.push({ emoji: "⛰️", text: `Elevation trending ${Math.round(((elevationGoal - fourWeekAvgElev) / elevationGoal) * 100)}% below your ${elevationGoal.toLocaleString()} ft target.` });
+    } else if (elevTrendPct < -15) {
+      insights.push({ emoji: "📉", text: `Elevation dropped ${Math.abs(elevTrendPct)}% vs prior 4 weeks.` });
+    } else if (fourWeekAvgElev >= elevationGoal) {
+      insights.push({ emoji: "🏔️", text: `Elevation avg exceeding target — strong climbing!` });
+    }
   }
 
-  if (oneBehind) {
-    const behind = kayak.pace === "behind" ? kayak : hiking!;
-    const label = kayak.pace === "behind" ? "paddle" : "hike/ski";
-    const gap = Math.max(behind.target - behind.current, 0);
-    return {
-      emoji: "👊",
-      text: `Just ${gap.toFixed(0)} more ${label} miles to catch up — you've got this.`,
-    };
+  // Fallback if nothing specific
+  if (insights.length === 0) {
+    insights.push({ emoji: "✅", text: "Steady across the board. Nice consistency!" });
   }
 
-  return null;
+  return insights.slice(0, 3); // Cap at 3 insights
 }
 
-function MomentumCard({ momentum, kayakChallenge, hikingChallenge }: { momentum: import("@/hooks/useDashboardInsights").MomentumData | null; kayakChallenge: import("@/hooks/useDashboardInsights").QuarterChallenge | null; hikingChallenge: import("@/hooks/useDashboardInsights").QuarterChallenge | null }) {
+function MomentumCard({ momentum, kayakChallenge, hikingChallenge, elevationGoal }: { momentum: import("@/hooks/useDashboardInsights").MomentumData | null; kayakChallenge: import("@/hooks/useDashboardInsights").QuarterChallenge | null; hikingChallenge: import("@/hooks/useDashboardInsights").QuarterChallenge | null; elevationGoal: number }) {
   if (!momentum) return null;
   const { fourWeekAvgMiles, fourWeekDelta, elevTrendPct, fourWeekAvgElev, priorFourWeekAvgElev, longestHikeThisQ, longestHikeLastQ } = momentum;
   const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
@@ -254,7 +285,7 @@ function MomentumCard({ momentum, kayakChallenge, hikingChallenge }: { momentum:
   const TrendIcon = elevTrendPct > 0 ? TrendingUp : elevTrendPct < 0 ? TrendingDown : Minus;
   const elevColor = elevTrendPct > 0 ? "text-primary" : elevTrendPct < 0 ? "text-destructive" : "text-muted-foreground";
 
-  const encouragement = getEncouragement(kayakChallenge, hikingChallenge);
+  const encouragements = getEncouragement(kayakChallenge, hikingChallenge, elevTrendPct, elevationGoal, fourWeekAvgElev);
 
   return (
     <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
@@ -264,12 +295,14 @@ function MomentumCard({ momentum, kayakChallenge, hikingChallenge }: { momentum:
       </h3>
       <div className="space-y-4">
         {/* Encouragement */}
-        {encouragement && (
-          <div className="rounded-lg bg-muted/50 px-3 py-2.5">
-            <p className="text-xs text-foreground leading-relaxed">
-              <span className="mr-1.5">{encouragement.emoji}</span>
-              {encouragement.text}
-            </p>
+        {encouragements.length > 0 && (
+          <div className="rounded-lg bg-muted/50 px-3 py-2.5 space-y-1.5">
+            {encouragements.map((e, i) => (
+              <p key={i} className="text-xs text-foreground leading-relaxed">
+                <span className="mr-1.5">{e.emoji}</span>
+                {e.text}
+              </p>
+            ))}
           </div>
         )}
 
