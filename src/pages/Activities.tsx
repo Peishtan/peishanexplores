@@ -169,7 +169,7 @@ export default function Activities() {
         </header>
 
         {/* Hero Banner */}
-        <HeroBanner title="Logs" />
+        <HeroBanner title="Logs" compact />
 
         {/* Action button */}
         <div className="flex justify-end">

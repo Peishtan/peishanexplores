@@ -153,7 +153,7 @@ export default function Targets() {
           <h1 className="text-[22px] font-semibold tracking-tight text-foreground">PS FitTrackr</h1>
         </header>
 
-        <HeroBanner title="Targets" />
+        <HeroBanner title="Targets" compact />
 
         <div className="flex justify-end">
           {editing ? (
