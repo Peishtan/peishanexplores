@@ -277,7 +277,7 @@ export default function Activities() {
                         {a.distance ? `${a.distance} mi` : "—"}
                       </td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">
-                        {a.elevation_gain ? `+ ${a.elevation_gain.toLocaleString()} ft` : ""}
+                        {a.elevation_gain ? `${a.elevation_gain.toLocaleString()} ft` : ""}
                       </td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">
                         {sport.label}
