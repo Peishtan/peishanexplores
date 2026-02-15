@@ -273,7 +273,7 @@ export default function Activities() {
                       <td className="px-4 py-3 text-sm text-muted-foreground whitespace-nowrap">
                         {format(new Date(a.start_time), "EEE, MMM d")}
                       </td>
-                      <td className="px-4 py-3 text-sm font-semibold text-foreground">
+                      <td className="px-4 py-3 text-sm text-foreground">
                         {a.distance ? `${a.distance} mi` : "—"}
                       </td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">
