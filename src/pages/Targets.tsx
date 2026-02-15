@@ -178,7 +178,7 @@ export default function Targets() {
           <p className="text-xs text-muted-foreground mb-3">Goals to hit each quarter</p>
           <div className="divide-y divide-border">
             <TargetRow icon={<Waves className="h-4 w-4" />} label="Kayak" value={`${kayakQ} miles`} isEditing={editing} editValue={kayakQ} onEditChange={setKayakQ} suffix="mi" pacing={pacing.kayak} />
-            <TargetRow icon={<Footprints className="h-4 w-4" />} label="Hiking" value={`${hikingQ} miles`} isEditing={editing} editValue={hikingQ} onEditChange={setHikingQ} suffix="mi" pacing={pacing.hiking} />
+            <TargetRow icon={<Footprints className="h-4 w-4" />} label="Hiking / XC Ski" value={`${hikingQ} miles`} isEditing={editing} editValue={hikingQ} onEditChange={setHikingQ} suffix="mi" pacing={pacing.hiking} />
             <TargetRow icon={<Mountain className="h-4 w-4" />} label="Elevation avg" value={`${parseInt(elevAvg).toLocaleString()} ft`} isEditing={editing} editValue={elevAvg} onEditChange={setElevAvg} suffix="ft" pacing={{ needed: pacing.elev.needed, current: pacing.elev.current, unit: "ft" }} />
           </div>
         </div>
