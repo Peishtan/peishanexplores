@@ -130,8 +130,8 @@ export default function Dashboard() {
 
         {/* Miles Summary */}
         <div className="grid grid-cols-3 gap-3">
-          <MilesCard label="Weekly" value={insights?.wtd.miles ?? 0} spark={insights?.sparkWeekly} />
-          <MilesCard label="Quarterly" value={insights?.qtd.miles ?? 0} spark={insights?.sparkQuarterly} />
+          <MilesCard label="Week to Date" value={insights?.wtd.miles ?? 0} spark={insights?.sparkWeekly} />
+          <MilesCard label="Quarter to Date" value={insights?.qtd.miles ?? 0} spark={insights?.sparkQuarterly} />
           <MilesCard label="Year to Date" value={insights?.ytd.miles ?? 0} spark={insights?.sparkYtd} />
         </div>
 
