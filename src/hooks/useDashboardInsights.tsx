@@ -176,7 +176,7 @@ export function useDashboardInsights(
         const ws = new Date(firstMonday.getTime() + i * 7 * 86400000);
         const we = new Date(ws.getTime() + 7 * 86400000);
         const effectiveStart = Math.max(ws.getTime(), qStartMs);
-        results.push(check(getWeekData(activities, effectiveStart, Math.min(we.getTime(), now.getTime()))));
+        results.push(check(getWeekData(activities, effectiveStart, we.getTime())));
       }
       return results;
     };
