@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useSkillMilestones, useSkillMilestoneProgress, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
+import { useState, useEffect } from "react";
+import { useSkillMilestones, useSkillMilestoneProgress, useRecomputeMilestones, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, CheckCircle2, Circle, Loader2, X, Compass, TrendingUp, Crown } from "lucide-react";
 import { format } from "date-fns";
@@ -43,9 +43,15 @@ function getMilestoneTier(ms: { milestone_type: string; threshold_elevation_ft?:
 export default function SkillMilestonesCard() {
   const { data: milestones, isLoading: loadingDefs } = useSkillMilestones();
   const { data: progress, isLoading: loadingProgress } = useSkillMilestoneProgress();
+  const recompute = useRecomputeMilestones();
   const [selectedProgress, setSelectedProgress] = useState<SkillMilestoneProgress | null>(null);
   const [evidenceLogs, setEvidenceLogs] = useState<EvidenceLog[]>([]);
   const [loadingEvidence, setLoadingEvidence] = useState(false);
+
+  // Auto-recompute on mount to catch any missed updates
+  useEffect(() => {
+    recompute.mutate();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isLoading = loadingDefs || loadingProgress;
 
