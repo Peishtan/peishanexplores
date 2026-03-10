@@ -79,8 +79,8 @@ export default function Dashboard() {
                 style={{ width: `${Math.min(((insights?.hikingTotal.miles ?? 0) / hikingTarget) * 100, 100)}%` }}
               />
             </div>
-            <p className={`text-sm font-medium italic ${paceColor(insights?.hikingChallenge?.pace ?? "on_pace")}`}>
-              {paceLabel(insights?.hikingChallenge?.pace ?? "on_pace")}
+            <p className={`text-sm font-medium italic ${paceColor(insights?.hikingChallenge?.pace ?? "on_pace", insights?.hikingChallenge?.pct ?? 0)}`}>
+              {paceLabel(insights?.hikingChallenge?.pace ?? "on_pace", insights?.hikingChallenge?.pct ?? 0)}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {insights?.hikingTotal.count ?? 0} hikes / XC ski this quarter
