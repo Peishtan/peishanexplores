@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { startOfWeek, subWeeks, startOfMonth, startOfYear, differenceInCalendarDays, addDays, format, startOfDay, eachDayOfInterval } from "date-fns";
+import { startOfWeek, subWeeks, startOfMonth, startOfYear, differenceInCalendarDays, addDays, addWeeks, format, startOfDay, eachDayOfInterval } from "date-fns";
 import { Activity, MILE_ACTIVITIES } from "./useActivities";
 
 export interface WeekData {
@@ -83,11 +83,15 @@ function buildChallenge(
   label: string, current: number, target: number,
   daysPassed: number, totalDays: number, now: Date
 ): QuarterChallenge {
+  // If target is already met, mark as achieved
+  if (current >= target) {
+    return { label, current, target, pct: 100, projectedFinish: "Done!", pace: "ahead" as const };
+  }
   const dailyRate = current / Math.max(daysPassed, 1);
   const daysToFinish = dailyRate > 0 ? Math.ceil((target - current) / dailyRate) : null;
   const projectedFinish = daysToFinish !== null && daysToFinish > 0
     ? format(addDays(now, daysToFinish), "MMM d")
-    : current >= target ? "Done!" : null;
+    : null;
   const expectedPct = daysPassed / totalDays;
   const actualPct = current / target;
   const pace = actualPct >= expectedPct * 1.05 ? "ahead" as const
@@ -169,12 +173,13 @@ export function useDashboardInsights(
     // Use Monday-aligned weeks for quarter goal tracking
     const firstMonday = startOfWeek(qStart, { weekStartsOn: 1 });
     const currentMonday = startOfWeek(now, { weekStartsOn: 1 });
-    const weeksInQuarter = Math.floor((currentMonday.getTime() - firstMonday.getTime()) / (7 * 86400000)) + 1;
+    // Use calendar days to avoid DST-related off-by-one errors
+    const weeksInQuarter = Math.floor(differenceInCalendarDays(currentMonday, firstMonday) / 7) + 1;
     const getWeekResults = (check: (w: WeekData) => boolean): boolean[] => {
       const results: boolean[] = [];
       for (let i = 0; i < weeksInQuarter; i++) {
-        const ws = new Date(firstMonday.getTime() + i * 7 * 86400000);
-        const we = new Date(ws.getTime() + 7 * 86400000);
+        const ws = addWeeks(firstMonday, i);
+        const we = addWeeks(firstMonday, i + 1);
         const effectiveStart = Math.max(ws.getTime(), qStartMs);
         results.push(check(getWeekData(activities, effectiveStart, we.getTime())));
       }

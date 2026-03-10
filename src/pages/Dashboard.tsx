@@ -27,10 +27,10 @@ export default function Dashboard() {
     kayakTarget,
   });
 
-  const paceColor = (pace: string) =>
-    pace === "ahead" ? "text-primary" : pace === "on_pace" ? "text-muted-foreground" : "text-destructive";
-  const paceLabel = (pace: string) =>
-    pace === "ahead" ? "Ahead of pace" : pace === "on_pace" ? "On Track" : "Behind pace";
+  const paceColor = (pace: string, pct: number) =>
+    pct >= 100 ? "text-primary" : pace === "ahead" ? "text-primary" : pace === "on_pace" ? "text-muted-foreground" : "text-destructive";
+  const paceLabel = (pace: string, pct: number) =>
+    pct >= 100 ? "🏆 Target Achieved!" : pace === "ahead" ? "Ahead of pace" : pace === "on_pace" ? "On Track" : "Behind pace";
 
   const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
 
@@ -79,8 +79,8 @@ export default function Dashboard() {
                 style={{ width: `${Math.min(((insights?.hikingTotal.miles ?? 0) / hikingTarget) * 100, 100)}%` }}
               />
             </div>
-            <p className={`text-sm font-medium italic ${paceColor(insights?.hikingChallenge?.pace ?? "on_pace")}`}>
-              {paceLabel(insights?.hikingChallenge?.pace ?? "on_pace")}
+            <p className={`text-sm font-medium italic ${paceColor(insights?.hikingChallenge?.pace ?? "on_pace", insights?.hikingChallenge?.pct ?? 0)}`}>
+              {paceLabel(insights?.hikingChallenge?.pace ?? "on_pace", insights?.hikingChallenge?.pct ?? 0)}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {insights?.hikingTotal.count ?? 0} hikes / XC ski this quarter
@@ -148,7 +148,7 @@ function ChallengeCard({
   icon, title, current, target, pct, pace, paceColor, paceLabel, projectedFinish,
 }: {
   icon: React.ReactNode; title: string; current: number; target: number; pct: number;
-  pace: string; paceColor: (p: string) => string; paceLabel: (p: string) => string;
+  pace: string; paceColor: (p: string, pct: number) => string; paceLabel: (p: string, pct: number) => string;
   projectedFinish: string | null;
 }) {
   return (
@@ -163,8 +163,8 @@ function ChallengeCard({
       <div className="h-2.5 rounded-full bg-border overflow-hidden mb-3">
         <div className="h-full rounded-full bg-primary transition-all duration-700 ease-out" style={{ width: `${pct}%` }} />
       </div>
-      <p className={`text-sm font-medium italic ${paceColor(pace)}`}>{paceLabel(pace)}</p>
-      {projectedFinish && (
+      <p className={`text-sm font-medium italic ${paceColor(pace, pct)}`}>{paceLabel(pace, pct)}</p>
+      {projectedFinish && projectedFinish !== "Done!" && (
         <p className="text-xs text-muted-foreground mt-1">
           Projected finish: <span className="font-semibold text-foreground">{projectedFinish}</span> ({pct.toFixed(0)}%)
         </p>
