@@ -169,12 +169,13 @@ export function useDashboardInsights(
     // Use Monday-aligned weeks for quarter goal tracking
     const firstMonday = startOfWeek(qStart, { weekStartsOn: 1 });
     const currentMonday = startOfWeek(now, { weekStartsOn: 1 });
-    const weeksInQuarter = Math.floor((currentMonday.getTime() - firstMonday.getTime()) / (7 * 86400000)) + 1;
+    // Use calendar days to avoid DST-related off-by-one errors
+    const weeksInQuarter = Math.floor(differenceInCalendarDays(currentMonday, firstMonday) / 7) + 1;
     const getWeekResults = (check: (w: WeekData) => boolean): boolean[] => {
       const results: boolean[] = [];
       for (let i = 0; i < weeksInQuarter; i++) {
-        const ws = new Date(firstMonday.getTime() + i * 7 * 86400000);
-        const we = new Date(ws.getTime() + 7 * 86400000);
+        const ws = addWeeks(firstMonday, i);
+        const we = addWeeks(firstMonday, i + 1);
         const effectiveStart = Math.max(ws.getTime(), qStartMs);
         results.push(check(getWeekData(activities, effectiveStart, we.getTime())));
       }
