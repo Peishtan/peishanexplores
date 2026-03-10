@@ -27,10 +27,10 @@ export default function Dashboard() {
     kayakTarget,
   });
 
-  const paceColor = (pace: string) =>
-    pace === "ahead" ? "text-primary" : pace === "on_pace" ? "text-muted-foreground" : "text-destructive";
-  const paceLabel = (pace: string) =>
-    pace === "ahead" ? "Ahead of pace" : pace === "on_pace" ? "On Track" : "Behind pace";
+  const paceColor = (pace: string, pct: number) =>
+    pct >= 100 ? "text-primary" : pace === "ahead" ? "text-primary" : pace === "on_pace" ? "text-muted-foreground" : "text-destructive";
+  const paceLabel = (pace: string, pct: number) =>
+    pct >= 100 ? "🏆 Target Achieved!" : pace === "ahead" ? "Ahead of pace" : pace === "on_pace" ? "On Track" : "Behind pace";
 
   const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
 
