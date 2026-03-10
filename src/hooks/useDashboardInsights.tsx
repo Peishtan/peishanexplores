@@ -83,11 +83,15 @@ function buildChallenge(
   label: string, current: number, target: number,
   daysPassed: number, totalDays: number, now: Date
 ): QuarterChallenge {
+  // If target is already met, mark as achieved
+  if (current >= target) {
+    return { label, current, target, pct: 100, projectedFinish: "Done!", pace: "ahead" as const };
+  }
   const dailyRate = current / Math.max(daysPassed, 1);
   const daysToFinish = dailyRate > 0 ? Math.ceil((target - current) / dailyRate) : null;
   const projectedFinish = daysToFinish !== null && daysToFinish > 0
     ? format(addDays(now, daysToFinish), "MMM d")
-    : current >= target ? "Done!" : null;
+    : null;
   const expectedPct = daysPassed / totalDays;
   const actualPct = current / target;
   const pace = actualPct >= expectedPct * 1.05 ? "ahead" as const
