@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { startOfWeek, subWeeks, startOfMonth, startOfYear, differenceInCalendarDays, addDays, format, startOfDay, eachDayOfInterval } from "date-fns";
+import { startOfWeek, subWeeks, startOfMonth, startOfYear, differenceInCalendarDays, addDays, addWeeks, format, startOfDay, eachDayOfInterval } from "date-fns";
 import { Activity, MILE_ACTIVITIES } from "./useActivities";
 
 export interface WeekData {
