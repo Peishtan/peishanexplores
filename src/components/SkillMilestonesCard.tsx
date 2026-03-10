@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useSkillMilestones, useSkillMilestoneProgress, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
+import { useState, useEffect } from "react";
+import { useSkillMilestones, useSkillMilestoneProgress, useRecomputeMilestones, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, CheckCircle2, Circle, Loader2, X, Compass, TrendingUp, Crown } from "lucide-react";
 import { format } from "date-fns";
