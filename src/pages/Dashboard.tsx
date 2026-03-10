@@ -163,8 +163,8 @@ function ChallengeCard({
       <div className="h-2.5 rounded-full bg-border overflow-hidden mb-3">
         <div className="h-full rounded-full bg-primary transition-all duration-700 ease-out" style={{ width: `${pct}%` }} />
       </div>
-      <p className={`text-sm font-medium italic ${paceColor(pace)}`}>{paceLabel(pace)}</p>
-      {projectedFinish && (
+      <p className={`text-sm font-medium italic ${paceColor(pace, pct)}`}>{paceLabel(pace, pct)}</p>
+      {projectedFinish && projectedFinish !== "Done!" && (
         <p className="text-xs text-muted-foreground mt-1">
           Projected finish: <span className="font-semibold text-foreground">{projectedFinish}</span> ({pct.toFixed(0)}%)
         </p>
