@@ -148,7 +148,7 @@ function ChallengeCard({
   icon, title, current, target, pct, pace, paceColor, paceLabel, projectedFinish,
 }: {
   icon: React.ReactNode; title: string; current: number; target: number; pct: number;
-  pace: string; paceColor: (p: string) => string; paceLabel: (p: string) => string;
+  pace: string; paceColor: (p: string, pct: number) => string; paceLabel: (p: string, pct: number) => string;
   projectedFinish: string | null;
 }) {
   return (
