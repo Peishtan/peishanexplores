@@ -65,7 +65,7 @@ export default function Dashboard() {
 
         {/* Weekly Goals */}
         <SectionLabel>Weekly Goals</SectionLabel>
-        <div className="px-4 space-y-2.5 animate-fade-slide-up" style={{ animationDelay: '0.2s' }}>
+        <div className="px-4 space-y-2.5 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.2s' }}>
           <WeeklyCard
             icon={<Waves className="h-5 w-5 text-fog" strokeWidth={1.5} />}
             name="Kayak"
@@ -134,7 +134,7 @@ export default function Dashboard() {
 /* ── Section Label ── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[36px] mb-[18px]">
+    <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[40px] mb-[16px]">
       {children}
     </div>
   );
@@ -148,7 +148,7 @@ function AchievementBanner({ title, label, current, target, stats }: {
   return (
     <>
       <SectionLabel>Completed</SectionLabel>
-      <div className="mx-4 rounded-2xl border border-moss p-5 relative overflow-hidden animate-fade-slide-up"
+      <div className="mx-4 mb-4 rounded-2xl border border-moss p-5 relative overflow-hidden animate-fade-slide-up"
            style={{ background: 'linear-gradient(135deg, hsl(123 20% 20%) 0%, #1a3020 100%)' }}>
         <div className="absolute -top-[30px] -right-[30px] w-[120px] h-[120px] rounded-full"
              style={{ background: 'radial-gradient(circle, rgba(90,125,91,0.3) 0%, transparent 70%)' }} />
@@ -191,7 +191,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
   return (
     <>
       <SectionLabel>In Progress</SectionLabel>
-      <div className="mx-4 rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-5 animate-fade-slide-up" style={{ animationDelay: '0.1s' }}>
+      <div className="mx-4 mb-4 rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-5 animate-fade-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="flex justify-between items-start mb-4">
           <h3 className="font-display text-lg font-bold leading-tight">
             {challenge.label.replace("Challenge", "").trim()}<br />Challenge
@@ -343,7 +343,7 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal }: {
   const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
 
   return (
-    <div className="px-4 animate-fade-slide-up" style={{ animationDelay: '0.3s' }}>
+    <div className="px-4 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.3s' }}>
       <div className="grid grid-cols-2 gap-2.5 mb-2.5">
         <MomentumCard label="4-wk avg miles" value={fourWeekAvgMiles.toFixed(1)}>
           <p className={`font-mono-dm text-[10px] mt-1 ${fourWeekDelta >= 0 ? "text-done" : "text-amber"}`}>
@@ -421,7 +421,7 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
   }
 
   return (
-    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.35s' }}>
+    <div className="mx-4 mb-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.35s' }}>
       {insights.slice(0, 4).map((insight, i) => (
         <div key={i} className={`flex items-start gap-3 px-[18px] py-3.5 ${i < insights.length - 1 ? "border-b border-[rgba(255,255,255,0.04)]" : ""}`}>
           <span className={`text-sm mt-0.5 flex-shrink-0 ${insight.color}`}>●</span>
@@ -441,7 +441,7 @@ function TotalsBar({ wtd, qtd, ytd, sparkWeekly, sparkQuarterly, sparkYtd }: {
   sparkWeekly?: SparkPoint[]; sparkQuarterly?: SparkPoint[]; sparkYtd?: SparkPoint[];
 }) {
   return (
-    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl grid grid-cols-3 overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.45s' }}>
+    <div className="mx-4 mb-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl grid grid-cols-3 overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.45s' }}>
       <TotalItem label="Week" value={wtd.toFixed(1)} spark={sparkWeekly} />
       <TotalItem label="Quarter" value={qtd.toFixed(0)} spark={sparkQuarterly} border />
       <TotalItem label="Year" value={ytd.toFixed(0)} spark={sparkYtd} />
@@ -482,7 +482,7 @@ function MilestoneSpotlight() {
   const { data: achieved } = useAchievedMilestones(3);
 
   return (
-    <div className="mx-4 animate-fade-slide-up" style={{ animationDelay: '0.4s' }}>
+    <div className="mx-4 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.4s' }}>
       {!achieved || achieved.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-6 text-center">
           <Target className="h-8 w-8 text-fog/40 mb-2" />
