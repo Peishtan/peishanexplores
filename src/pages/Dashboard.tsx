@@ -32,7 +32,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <HeroBanner title="Dashboard" subtitle={`${qLabel} ${qMonths}`} />
+      <HeroBanner title="Dashboard" subtitle={`${qLabel} ${qMonths}`} compact />
 
       <div className="mx-auto max-w-[420px] space-y-0">
         {/* Achievement Banner (if hiking done) */}
