@@ -361,15 +361,15 @@ function RhythmCard({ icon, name, rule, current, goal, editing, editValue, onEdi
         </div>
       </div>
       <div className="flex-shrink-0">
-        <span className={`font-mono-dm text-[11px] px-2.5 py-1 rounded-full tracking-[0.08em] ${
+        <span className={`inline-flex items-center gap-1 font-mono-dm text-[11px] px-2.5 py-1 rounded-full tracking-[0.08em] ${
           done
             ? "bg-[rgba(122,184,124,0.15)] text-moss-light border border-[rgba(122,184,124,0.25)]"
             : "bg-[rgba(224,149,72,0.12)] text-amber border border-[rgba(224,149,72,0.25)]"
         }`}>
           {done ? (
-            <span className="flex items-center gap-1">
+            <>
               <Check className="h-3 w-3" strokeWidth={2.5} /> Done
-            </span>
+            </>
           ) : (
             `${current} / ${goal}`
           )}
