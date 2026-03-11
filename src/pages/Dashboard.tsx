@@ -288,7 +288,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses }: {
     <div className="rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
       <div className="flex justify-between items-center mb-3.5">
         <div className="flex items-center gap-2">
-          <span className="text-base">🏋️</span>
+          <Dumbbell className="h-5 w-5 text-fog" strokeWidth={1.5} />
           <div>
             <p className="text-sm font-medium">Gym</p>
             <p className="text-[11px] text-fog font-light">{rule}</p>
