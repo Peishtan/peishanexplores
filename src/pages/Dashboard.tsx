@@ -65,7 +65,7 @@ export default function Dashboard() {
 
         {/* Weekly Goals */}
         <SectionLabel>Weekly Goals</SectionLabel>
-        <div className="px-4 space-y-2.5 animate-fade-slide-up" style={{ animationDelay: '0.2s' }}>
+        <div className="px-4 space-y-2.5 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.2s' }}>
           <WeeklyCard
             icon={<Waves className="h-5 w-5 text-fog" strokeWidth={1.5} />}
             name="Kayak"
