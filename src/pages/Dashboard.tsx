@@ -75,7 +75,7 @@ export default function Dashboard() {
             streak={insights?.streaks.water ?? 0}
           />
           <WeeklyCard
-            icon="⛰️"
+            icon={<Mountain className="h-5 w-5 text-fog" strokeWidth={1.5} />}
             name="Hiking / XC Ski"
             rule={`${outdoorGoal} hike or XC ski / week`}
             weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
