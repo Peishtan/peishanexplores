@@ -233,7 +233,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
 
 /* ── Weekly Dot Card ── */
 function WeeklyCard({ icon, name, rule, weekResults, total, streak }: {
-  icon: string; name: string; rule: string; weekResults: boolean[]; total: number; streak: number;
+  icon: React.ReactNode; name: string; rule: string; weekResults: boolean[]; total: number; streak: number;
 }) {
   const totalWeeks = 13;
   return (
