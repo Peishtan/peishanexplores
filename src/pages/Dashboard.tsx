@@ -5,7 +5,7 @@ import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type Mome
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
-import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target } from "lucide-react";
+import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
@@ -67,7 +67,7 @@ export default function Dashboard() {
         <SectionLabel>Weekly Goals</SectionLabel>
         <div className="px-4 space-y-2.5 animate-fade-slide-up" style={{ animationDelay: '0.2s' }}>
           <WeeklyCard
-            icon="🛶"
+            icon={<Waves className="h-5 w-5 text-fog" strokeWidth={1.5} />}
             name="Kayak"
             rule={`${kayakGoal} paddle / week`}
             weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
@@ -75,7 +75,7 @@ export default function Dashboard() {
             streak={insights?.streaks.water ?? 0}
           />
           <WeeklyCard
-            icon="⛰️"
+            icon={<Mountain className="h-5 w-5 text-fog" strokeWidth={1.5} />}
             name="Hiking / XC Ski"
             rule={`${outdoorGoal} hike or XC ski / week`}
             weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
@@ -134,7 +134,7 @@ export default function Dashboard() {
 /* ── Section Label ── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-8 mb-3.5">
+    <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-10 mb-4">
       {children}
     </div>
   );
@@ -233,14 +233,14 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
 
 /* ── Weekly Dot Card ── */
 function WeeklyCard({ icon, name, rule, weekResults, total, streak }: {
-  icon: string; name: string; rule: string; weekResults: boolean[]; total: number; streak: number;
+  icon: React.ReactNode; name: string; rule: string; weekResults: boolean[]; total: number; streak: number;
 }) {
   const totalWeeks = 13;
   return (
     <div className="rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
       <div className="flex justify-between items-center mb-3.5">
         <div className="flex items-center gap-2">
-          <span className="text-base">{icon}</span>
+          <span className="flex-shrink-0">{icon}</span>
           <div>
             <p className="text-sm font-medium">{name}</p>
             <p className="text-[11px] text-fog font-light">{rule}</p>
@@ -288,7 +288,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses }: {
     <div className="rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
       <div className="flex justify-between items-center mb-3.5">
         <div className="flex items-center gap-2">
-          <span className="text-base">🏋️</span>
+          <Dumbbell className="h-5 w-5 text-fog" strokeWidth={1.5} />
           <div>
             <p className="text-sm font-medium">Gym</p>
             <p className="text-[11px] text-fog font-light">{rule}</p>
