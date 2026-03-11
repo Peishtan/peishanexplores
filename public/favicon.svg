@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <clipPath id="circle-clip">
+      <circle cx="16" cy="16" r="15"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#0d0f0e"/>
+
+  <!-- Subtle inner ring -->
+  <circle cx="16" cy="16" r="14.5" fill="none" stroke="#1c2420" stroke-width="1"/>
+
+  <!-- Back mountain range (dim) -->
+  <polyline
+    points="2,24 8,14 12,18 16,10 20,16 24,12 30,22"
+    fill="none"
+    stroke="#2a3d2b"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    clip-path="url(#circle-clip)"
+  />
+
+  <!-- Front mountain (bright) -->
+  <polyline
+    points="4,26 11,16 14,20 16,13 18,20 21,17 28,26"
+    fill="none"
+    stroke="#7ab87c"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    clip-path="url(#circle-clip)"
+  />
+
+  <!-- Snow cap highlight -->
+  <polyline
+    points="14.5,15.5 16,13 17.5,15.5"
+    fill="none"
+    stroke="#c4cec9"
+    stroke-width="1.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    clip-path="url(#circle-clip)"
+  />
+
+  <!-- Outer border -->
+  <circle cx="16" cy="16" r="15" fill="none" stroke="#1c2420" stroke-width="1"/>
+</svg>
