@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSkillMilestones, useSkillMilestoneProgress, useRecomputeMilestones, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
 import { supabase } from "@/integrations/supabase/client";
-import { Trophy, CheckCircle2, Circle, Loader2, X, Compass, TrendingUp, Crown } from "lucide-react";
+import { CheckCircle2, Lock, Loader2, X, Compass, TrendingUp, Crown } from "lucide-react";
 import { format } from "date-fns";
 
 interface EvidenceLog {
@@ -16,21 +16,19 @@ interface EvidenceLog {
 
 type Tier = "foundation" | "intermediate" | "advanced";
 
-const TIER_CONFIG: Record<Tier, { label: string; icon: typeof Compass; badgeClass: string }> = {
-  foundation: { label: "Foundation", icon: Compass, badgeClass: "bg-muted text-muted-foreground" },
-  intermediate: { label: "Intermediate", icon: TrendingUp, badgeClass: "bg-accent/15 text-accent-foreground" },
-  advanced: { label: "Advanced", icon: Crown, badgeClass: "bg-primary/15 text-primary" },
+const TIER_CONFIG: Record<Tier, { label: string; color: string }> = {
+  foundation: { label: "Beginner", color: "text-moss-light" },
+  intermediate: { label: "Intermediate", color: "text-amber" },
+  advanced: { label: "Advanced", color: "text-[#b0b4e0]" },
 };
 
 function getMilestoneTier(ms: { milestone_type: string; threshold_elevation_ft?: number | null; threshold_distance_mi?: number | null }): Tier {
-  // Elevation milestones by threshold
   if (ms.milestone_type === "SINGLE_ACTIVITY_OVER_ELEVATION") {
     const ft = ms.threshold_elevation_ft ?? 0;
     if (ft >= 5000) return "advanced";
     if (ft >= 3000) return "intermediate";
     return "foundation";
   }
-  // Distance milestones
   if (ms.milestone_type === "SINGLE_ACTIVITY_OVER_DISTANCE") {
     const mi = ms.threshold_distance_mi ?? 0;
     if (mi >= 20) return "advanced";
@@ -48,7 +46,6 @@ export default function SkillMilestonesCard() {
   const [evidenceLogs, setEvidenceLogs] = useState<EvidenceLog[]>([]);
   const [loadingEvidence, setLoadingEvidence] = useState(false);
 
-  // Auto-recompute on mount to catch any missed updates
   useEffect(() => {
     recompute.mutate();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -58,7 +55,6 @@ export default function SkillMilestonesCard() {
   const progressMap = new Map<string, SkillMilestoneProgress>();
   progress?.forEach((p) => progressMap.set(p.milestone_id, p));
 
-  // Group milestones by tier
   const grouped = milestones?.reduce<Record<Tier, typeof milestones>>((acc, ms) => {
     const tier = getMilestoneTier(ms);
     if (!acc[tier]) acc[tier] = [];
@@ -83,147 +79,127 @@ export default function SkillMilestonesCard() {
 
   const tierOrder: Tier[] = ["foundation", "intermediate", "advanced"];
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-6">
+        <Loader2 className="h-5 w-5 animate-spin text-fog" />
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="rounded-2xl bg-card p-4 border border-border shadow-card">
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-muted-foreground" />
-              Skill Milestones
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Automatically unlocked from your activity logs</p>
-          </div>
-        </div>
+      <div className="space-y-0">
+        {tierOrder.map((tier) => {
+          const items = grouped?.[tier];
+          if (!items || items.length === 0) return null;
+          const config = TIER_CONFIG[tier];
 
-        {isLoading ? (
-          <div className="flex justify-center py-4">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {tierOrder.map((tier) => {
-              const items = grouped?.[tier];
-              if (!items || items.length === 0) return null;
-              const config = TIER_CONFIG[tier];
-              const TierIcon = config.icon;
+          return (
+            <div key={tier}>
+              {/* Tier heading with line */}
+              <div className={`font-mono-dm text-[10px] tracking-[0.2em] uppercase flex items-center gap-2 py-2 mt-5 ${config.color}`}>
+                <Compass className="h-3 w-3" strokeWidth={1.5} />
+                {config.label}
+                <div className="flex-1 h-px bg-current opacity-15" />
+              </div>
 
-              return (
-                <div key={tier}>
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${config.badgeClass}`}>
-                      <TierIcon className="h-3 w-3" />
-                      {config.label}
-                    </span>
-                  </div>
-                  <div className="space-y-0 divide-y divide-border">
-                    {items.map((ms) => {
-                      const p = progressMap.get(ms.id);
-                      const status = p?.status ?? "locked";
-                      const current = p?.progress_current ?? 0;
-                      const target = p?.progress_target ?? 1;
-                      const pct = status === "achieved" ? 100 : Math.min((current / target) * 100, 100);
+              <div className="flex flex-col gap-1.5 mb-1">
+                {items.map((ms) => {
+                  const p = progressMap.get(ms.id);
+                  const status = p?.status ?? "locked";
+                  const current = p?.progress_current ?? 0;
+                  const target = p?.progress_target ?? 1;
+                  const unlocked = status === "achieved";
 
-                      return (
-                        <button
-                          key={ms.id}
-                          onClick={() => p && handleViewEvidence(p)}
-                          className="flex items-center justify-between py-3 w-full text-left hover:bg-muted/50 transition-colors -mx-1 px-1 rounded"
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            {status === "achieved" ? (
-                              <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                            ) : (
-                              <div className="relative shrink-0">
-                                <Circle className="h-4 w-4 text-muted-foreground" />
-                                {status === "in_progress" && pct > 0 && (
-                                  <svg className="absolute inset-0 h-4 w-4 -rotate-90" viewBox="0 0 16 16">
-                                    <circle cx="8" cy="8" r="6" fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5"
-                                      strokeDasharray={`${(pct / 100) * 37.7} 37.7`} strokeLinecap="round" />
-                                  </svg>
-                                )}
-                              </div>
-                            )}
-                            <div className="min-w-0">
-                              <span className="text-sm font-medium text-foreground block truncate">
-                                {ms.title}
-                              </span>
-                              <p className="text-[11px] text-muted-foreground">
-                                {status === "achieved" && p?.achieved_at
-                                  ? `Unlocked ${format(new Date(p.achieved_at), "MMM d")}`
-                                  : status === "in_progress"
-                                  ? `In progress`
-                                  : "Not started"}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="text-right shrink-0">
-                            {status === "achieved" ? (
-                              <span className="text-xs font-semibold text-primary">✅ Unlocked</span>
-                            ) : (
-                              <span className="text-sm font-bold text-muted-foreground">
-                                {current} / {target}
-                                {(ms.milestone_type === "QUARTERLY_DISTANCE_TARGET") && " mi"}
-                                {(ms.milestone_type === "QUARTERLY_ELEVATION_AVG_TARGET") && " ft"}
-                              </span>
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-            {(!milestones || milestones.length === 0) && (
-              <p className="text-xs text-muted-foreground py-3 text-center">No milestones configured.</p>
-            )}
-          </div>
+                  return (
+                    <button
+                      key={ms.id}
+                      onClick={() => p && handleViewEvidence(p)}
+                      className={`flex items-center gap-3 p-3 rounded-xl bg-card border transition-colors text-left ${
+                        unlocked ? "border-[rgba(122,184,124,0.15)]" : "border-[rgba(255,255,255,0.05)] opacity-75"
+                      }`}
+                    >
+                      {unlocked ? (
+                        <div className="w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done"
+                             style={{ background: 'rgba(106,191,122,0.15)' }}>
+                          <CheckCircle2 className="h-[11px] w-[11px] text-done" strokeWidth={2.5} />
+                        </div>
+                      ) : (
+                        <div className="w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-[rgba(255,255,255,0.15)]">
+                          <Lock className="h-[11px] w-[11px] text-fog" strokeWidth={1.5} />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-normal text-mist leading-snug">{ms.title}</p>
+                        {unlocked && p?.achieved_at ? (
+                          <p className="font-mono-dm text-[10px] text-done mt-0.5">
+                            Unlocked {format(new Date(p.achieved_at), "MMM d")}
+                          </p>
+                        ) : status === "in_progress" ? (
+                          <p className="font-mono-dm text-[10px] text-fog mt-0.5">
+                            {current > 0 ? `Longest so far: ${current}${ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}` : "In progress"}
+                          </p>
+                        ) : null}
+                      </div>
+                      {!unlocked && (
+                        <span className="font-mono-dm text-[10px] text-fog text-right flex-shrink-0 whitespace-nowrap">
+                          {current} / {target}{ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+        {(!milestones || milestones.length === 0) && (
+          <p className="text-xs text-fog py-4 text-center">No milestones configured.</p>
         )}
       </div>
 
       {/* Evidence Modal */}
       {selectedProgress && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setSelectedProgress(null)}>
-          <div className="bg-card rounded-2xl border border-border shadow-lg max-w-md w-full mx-4 p-5" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-card rounded-2xl border border-[rgba(255,255,255,0.1)] max-w-md w-full mx-4 p-5" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-foreground">
+              <h3 className="font-display text-sm font-bold">
                 {selectedProgress.skill_milestones?.title ?? "Milestone"}
               </h3>
-              <button onClick={() => setSelectedProgress(null)} className="p-1 rounded hover:bg-muted text-muted-foreground">
+              <button onClick={() => setSelectedProgress(null)} className="p-1 rounded hover:bg-secondary text-fog">
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             <div className="mb-3">
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+              <span className={`font-mono-dm text-[10px] tracking-[0.1em] uppercase px-2 py-1 rounded-full ${
                 selectedProgress.status === "achieved"
-                  ? "bg-primary/15 text-primary"
-                  : "bg-muted text-muted-foreground"
+                  ? "bg-[rgba(106,191,122,0.15)] text-done border border-[rgba(106,191,122,0.3)]"
+                  : "bg-secondary text-fog"
               }`}>
                 {selectedProgress.status === "achieved"
-                  ? `✅ Unlocked${selectedProgress.achieved_at ? ` ${format(new Date(selectedProgress.achieved_at), "MMM d, yyyy")}` : ""}`
+                  ? `Unlocked${selectedProgress.achieved_at ? ` ${format(new Date(selectedProgress.achieved_at), "MMM d, yyyy")}` : ""}`
                   : `${selectedProgress.progress_current} / ${selectedProgress.progress_target}`}
               </span>
             </div>
 
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Evidence Logs</h4>
+            <h4 className="font-mono-dm text-[9px] uppercase tracking-[0.15em] text-fog mb-2">Evidence Logs</h4>
             {loadingEvidence ? (
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground mx-auto" />
+              <Loader2 className="h-4 w-4 animate-spin text-fog mx-auto" />
             ) : evidenceLogs.length === 0 ? (
-              <p className="text-xs text-muted-foreground">No qualifying logs yet.</p>
+              <p className="text-xs text-fog">No qualifying logs yet.</p>
             ) : (
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {evidenceLogs.map((log) => (
-                  <div key={log.id} className="text-xs bg-muted/50 rounded-lg p-2.5 border border-border">
+                  <div key={log.id} className="text-xs bg-secondary rounded-xl p-2.5 border border-[rgba(255,255,255,0.06)]">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold text-foreground capitalize">{log.type.replace("_", " ")}</span>
-                      <span className="text-muted-foreground">{format(new Date(log.start_time), "MMM d, yyyy")}</span>
+                      <span className="font-medium capitalize">{log.type.replace("_", " ")}</span>
+                      <span className="text-fog font-mono-dm text-[10px]">{format(new Date(log.start_time), "MMM d, yyyy")}</span>
                     </div>
-                    <div className="flex gap-3 text-muted-foreground">
+                    <div className="flex gap-3 text-fog">
                       {log.distance != null && <span>{log.distance} mi</span>}
                       {log.elevation_gain != null && <span>{log.elevation_gain.toLocaleString()} ft</span>}
-                      <span>{log.duration} min</span>
                       {log.route && <span>{log.route}</span>}
                     </div>
                   </div>
