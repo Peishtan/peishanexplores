@@ -207,20 +207,8 @@ export default function Targets() {
               </div>
             </div>
 
-            {/* Save button in edit mode */}
-            {editing && (
-              <div className="px-4 pt-4">
-                <button onClick={handleSave} className="w-full font-mono-dm text-xs tracking-[0.12em] uppercase bg-moss text-paper py-3.5 rounded-xl hover:bg-moss-light hover:text-ink transition-colors">
-                  Save changes
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Right Column: Weekly Rhythm + Milestones */}
-          <div>
             {/* Weekly Rhythm */}
-            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] md:mt-[28px] mb-[14px]">
+            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
               Weekly Rhythm
             </div>
             <div className="px-4 space-y-2">
@@ -255,7 +243,10 @@ export default function Targets() {
                 onEditChange={setGymW}
               />
             </div>
+          </div>
 
+          {/* Right Column: Skill Milestones */}
+          <div>
             {/* Skill Milestones */}
             <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
               Skill Milestones
