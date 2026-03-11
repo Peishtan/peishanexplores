@@ -270,6 +270,8 @@ export default function Activities() {
         </div>
 
         <div className="h-24" />
+        </div>{/* end right column */}
+        </div>{/* end grid */}
       </div>
 
       {/* FAB */}
