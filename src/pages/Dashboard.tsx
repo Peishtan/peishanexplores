@@ -421,7 +421,7 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
   }
 
   return (
-    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.35s' }}>
+    <div className="mx-4 mb-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.35s' }}>
       {insights.slice(0, 4).map((insight, i) => (
         <div key={i} className={`flex items-start gap-3 px-[18px] py-3.5 ${i < insights.length - 1 ? "border-b border-[rgba(255,255,255,0.04)]" : ""}`}>
           <span className={`text-sm mt-0.5 flex-shrink-0 ${insight.color}`}>●</span>
