@@ -151,6 +151,7 @@ export default function Dashboard() {
         </div>
 
         <div className="h-20" />
+      </div>
       <BottomNav />
     </div>
   );
