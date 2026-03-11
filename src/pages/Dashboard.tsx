@@ -34,95 +34,113 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background pb-24">
       <HeroBanner title="Dashboard" subtitle={`${qLabel} ${qMonths}`} compact />
 
-      <div className="mx-auto max-w-[420px] space-y-0">
+      <div className="mx-auto max-w-[420px]">
         {/* Achievement Banner (if hiking done) */}
         {insights?.hikingChallenge && insights.hikingChallenge.pct >= 100 && (
-          <AchievementBanner
-            title="Hiking & XC Ski Challenge"
-            label={`${qLabel} Target Achieved`}
-            current={insights.hikingChallenge.current}
-            target={insights.hikingChallenge.target}
-            stats={insights.hikingTotal}
-          />
+          <div className="pt-[40px]">
+            <AchievementBanner
+              title="Hiking & XC Ski Challenge"
+              label={`${qLabel} Target Achieved`}
+              current={insights.hikingChallenge.current}
+              target={insights.hikingChallenge.target}
+              stats={insights.hikingTotal}
+            />
+          </div>
         )}
 
         {/* Kayak Achievement or In-Progress */}
         {insights?.kayakChallenge && insights.kayakChallenge.pct >= 100 ? (
-          <AchievementBanner
-            title="Kayak Challenge"
-            label={`${qLabel} Target Achieved`}
-            current={insights.kayakChallenge.current}
-            target={insights.kayakChallenge.target}
-          />
+          <div className="pt-[40px]">
+            <AchievementBanner
+              title="Kayak Challenge"
+              label={`${qLabel} Target Achieved`}
+              current={insights.kayakChallenge.current}
+              target={insights.kayakChallenge.target}
+            />
+          </div>
         ) : insights?.kayakChallenge ? (
-          <ChallengeCard challenge={insights.kayakChallenge} />
+          <div className="pt-[40px]">
+            <ChallengeCard challenge={insights.kayakChallenge} />
+          </div>
         ) : null}
 
         {/* Hiking In-Progress (if not done) */}
         {insights?.hikingChallenge && insights.hikingChallenge.pct < 100 && (
-          <ChallengeCard challenge={insights.hikingChallenge} />
+          <div className="pt-[40px]">
+            <ChallengeCard challenge={insights.hikingChallenge} />
+          </div>
         )}
 
         {/* Weekly Goals */}
-        <SectionLabel>Weekly Goals</SectionLabel>
-        <div className="px-4 space-y-2.5 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.2s' }}>
-          <WeeklyCard
-            icon={<Waves className="h-5 w-5 text-fog" strokeWidth={1.5} />}
-            name="Kayak"
-            rule={`${kayakGoal} paddle / week`}
-            weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
-            total={insights?.quarterWeeklyGoals.kayak.total ?? 0}
-            streak={insights?.streaks.water ?? 0}
-          />
-          <WeeklyCard
-            icon={<Mountain className="h-5 w-5 text-fog" strokeWidth={1.5} />}
-            name="Hiking / XC Ski"
-            rule={`${outdoorGoal} hike or XC ski / week`}
-            weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
-            total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
-            streak={insights?.streaks.outdoor ?? 0}
-          />
-          <GymCard
-            rule={`${exerciseGoal} sessions / week`}
-            weekResults={insights?.quarterWeeklyGoals.classes.weekResults ?? []}
-            total={insights?.quarterWeeklyGoals.classes.total ?? 0}
-            maxPerWeek={exerciseGoal}
-            wtdClasses={insights?.wtd.classes ?? 0}
-          />
+        <div className="pt-[40px]">
+          <SectionLabel>Weekly Goals</SectionLabel>
+          <div className="px-4 space-y-2.5 animate-fade-slide-up" style={{ animationDelay: '0.2s' }}>
+            <WeeklyCard
+              icon={<Waves className="h-5 w-5 text-fog" strokeWidth={1.5} />}
+              name="Kayak"
+              rule={`${kayakGoal} paddle / week`}
+              weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
+              total={insights?.quarterWeeklyGoals.kayak.total ?? 0}
+              streak={insights?.streaks.water ?? 0}
+            />
+            <WeeklyCard
+              icon={<Mountain className="h-5 w-5 text-fog" strokeWidth={1.5} />}
+              name="Hiking / XC Ski"
+              rule={`${outdoorGoal} hike or XC ski / week`}
+              weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
+              total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
+              streak={insights?.streaks.outdoor ?? 0}
+            />
+            <GymCard
+              rule={`${exerciseGoal} sessions / week`}
+              weekResults={insights?.quarterWeeklyGoals.classes.weekResults ?? []}
+              total={insights?.quarterWeeklyGoals.classes.total ?? 0}
+              maxPerWeek={exerciseGoal}
+              wtdClasses={insights?.wtd.classes ?? 0}
+            />
+          </div>
         </div>
 
         {/* Momentum */}
-        <SectionLabel>Momentum</SectionLabel>
-        <MomentumSection
-          momentum={insights?.momentum ?? null}
-          wtdMiles={insights?.wtd.miles ?? 0}
-          elevationGoal={profile?.goal_elevation_avg ?? 1200}
-        />
+        <div className="pt-[40px]">
+          <SectionLabel>Momentum</SectionLabel>
+          <MomentumSection
+            momentum={insights?.momentum ?? null}
+            wtdMiles={insights?.wtd.miles ?? 0}
+            elevationGoal={profile?.goal_elevation_avg ?? 1200}
+          />
+        </div>
 
         {/* Insights */}
-        <SectionLabel>Insights</SectionLabel>
-        <InsightsList
-          kayakChallenge={insights?.kayakChallenge ?? null}
-          hikingChallenge={insights?.hikingChallenge ?? null}
-          elevTrendPct={insights?.momentum?.elevTrendPct ?? 0}
-          elevationGoal={profile?.goal_elevation_avg ?? 1200}
-          fourWeekAvgElev={insights?.momentum?.fourWeekAvgElev ?? 0}
-        />
+        <div className="pt-[40px]">
+          <SectionLabel>Insights</SectionLabel>
+          <InsightsList
+            kayakChallenge={insights?.kayakChallenge ?? null}
+            hikingChallenge={insights?.hikingChallenge ?? null}
+            elevTrendPct={insights?.momentum?.elevTrendPct ?? 0}
+            elevationGoal={profile?.goal_elevation_avg ?? 1200}
+            fourWeekAvgElev={insights?.momentum?.fourWeekAvgElev ?? 0}
+          />
+        </div>
 
         {/* Distance Totals */}
-        <SectionLabel>Distance</SectionLabel>
-        <TotalsBar
-          wtd={insights?.wtd.miles ?? 0}
-          qtd={insights?.qtd.miles ?? 0}
-          ytd={insights?.ytd.miles ?? 0}
-          sparkWeekly={insights?.sparkWeekly}
-          sparkQuarterly={insights?.sparkQuarterly}
-          sparkYtd={insights?.sparkYtd}
-        />
+        <div className="pt-[40px]">
+          <SectionLabel>Distance</SectionLabel>
+          <TotalsBar
+            wtd={insights?.wtd.miles ?? 0}
+            qtd={insights?.qtd.miles ?? 0}
+            ytd={insights?.ytd.miles ?? 0}
+            sparkWeekly={insights?.sparkWeekly}
+            sparkQuarterly={insights?.sparkQuarterly}
+            sparkYtd={insights?.sparkYtd}
+          />
+        </div>
 
         {/* Milestones */}
-        <SectionLabel>Latest Milestones</SectionLabel>
-        <MilestoneSpotlight />
+        <div className="pt-[40px]">
+          <SectionLabel>Latest Milestones</SectionLabel>
+          <MilestoneSpotlight />
+        </div>
 
         <div className="h-20" />
       </div>
@@ -134,7 +152,7 @@ export default function Dashboard() {
 /* ── Section Label ── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[40px] mb-[16px]">
+    <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mb-[16px]">
       {children}
     </div>
   );
@@ -148,7 +166,7 @@ function AchievementBanner({ title, label, current, target, stats }: {
   return (
     <>
       <SectionLabel>Completed</SectionLabel>
-      <div className="mx-4 mb-4 rounded-2xl border border-moss p-5 relative overflow-hidden animate-fade-slide-up"
+      <div className="mx-4 rounded-2xl border border-moss p-5 relative overflow-hidden animate-fade-slide-up"
            style={{ background: 'linear-gradient(135deg, hsl(123 20% 20%) 0%, #1a3020 100%)' }}>
         <div className="absolute -top-[30px] -right-[30px] w-[120px] h-[120px] rounded-full"
              style={{ background: 'radial-gradient(circle, rgba(90,125,91,0.3) 0%, transparent 70%)' }} />
@@ -191,7 +209,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
   return (
     <>
       <SectionLabel>In Progress</SectionLabel>
-      <div className="mx-4 mb-4 rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-5 animate-fade-slide-up" style={{ animationDelay: '0.1s' }}>
+      <div className="mx-4 rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-5 animate-fade-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="flex justify-between items-start mb-4">
           <h3 className="font-display text-lg font-bold leading-tight">
             {challenge.label.replace("Challenge", "").trim()}<br />Challenge
@@ -343,8 +361,8 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal }: {
   const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
 
   return (
-    <div className="px-4 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.3s' }}>
-      <div className="grid grid-cols-2 gap-2.5 mb-2.5">
+    <div className="px-4 animate-fade-slide-up" style={{ animationDelay: '0.3s' }}>
+      <div className="grid grid-cols-2 gap-2.5">
         <MomentumCard label="4-wk avg miles" value={fourWeekAvgMiles.toFixed(1)}>
           <p className={`font-mono-dm text-[10px] mt-1 ${fourWeekDelta >= 0 ? "text-done" : "text-amber"}`}>
             {fourWeekDelta >= 0 ? "↑" : "↓"} {Math.abs(fourWeekDelta).toFixed(1)} vs prior 4 wks
@@ -421,7 +439,7 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
   }
 
   return (
-    <div className="mx-4 mb-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.35s' }}>
+    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.35s' }}>
       {insights.slice(0, 4).map((insight, i) => (
         <div key={i} className={`flex items-start gap-3 px-[18px] py-3.5 ${i < insights.length - 1 ? "border-b border-[rgba(255,255,255,0.04)]" : ""}`}>
           <span className={`text-sm mt-0.5 flex-shrink-0 ${insight.color}`}>●</span>
@@ -441,7 +459,7 @@ function TotalsBar({ wtd, qtd, ytd, sparkWeekly, sparkQuarterly, sparkYtd }: {
   sparkWeekly?: SparkPoint[]; sparkQuarterly?: SparkPoint[]; sparkYtd?: SparkPoint[];
 }) {
   return (
-    <div className="mx-4 mb-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl grid grid-cols-3 overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.45s' }}>
+    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl grid grid-cols-3 overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.45s' }}>
       <TotalItem label="Week" value={wtd.toFixed(1)} spark={sparkWeekly} />
       <TotalItem label="Quarter" value={qtd.toFixed(0)} spark={sparkQuarterly} border />
       <TotalItem label="Year" value={ytd.toFixed(0)} spark={sparkYtd} />
@@ -482,7 +500,7 @@ function MilestoneSpotlight() {
   const { data: achieved } = useAchievedMilestones(3);
 
   return (
-    <div className="mx-4 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.4s' }}>
+    <div className="mx-4 animate-fade-slide-up" style={{ animationDelay: '0.4s' }}>
       {!achieved || achieved.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-6 text-center">
           <Target className="h-8 w-8 text-fog/40 mb-2" />
