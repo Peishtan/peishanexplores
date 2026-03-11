@@ -361,8 +361,8 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal }: {
   const qLabel = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
 
   return (
-    <div className="px-4 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.3s' }}>
-      <div className="grid grid-cols-2 gap-2.5 mb-2.5">
+    <div className="px-4 animate-fade-slide-up" style={{ animationDelay: '0.3s' }}>
+      <div className="grid grid-cols-2 gap-2.5">
         <MomentumCard label="4-wk avg miles" value={fourWeekAvgMiles.toFixed(1)}>
           <p className={`font-mono-dm text-[10px] mt-1 ${fourWeekDelta >= 0 ? "text-done" : "text-amber"}`}>
             {fourWeekDelta >= 0 ? "↑" : "↓"} {Math.abs(fourWeekDelta).toFixed(1)} vs prior 4 wks
