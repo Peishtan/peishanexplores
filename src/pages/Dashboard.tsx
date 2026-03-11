@@ -191,7 +191,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
   return (
     <>
       <SectionLabel>In Progress</SectionLabel>
-      <div className="mx-4 rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-5 animate-fade-slide-up" style={{ animationDelay: '0.1s' }}>
+      <div className="mx-4 mb-4 rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-5 animate-fade-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="flex justify-between items-start mb-4">
           <h3 className="font-display text-lg font-bold leading-tight">
             {challenge.label.replace("Challenge", "").trim()}<br />Challenge
