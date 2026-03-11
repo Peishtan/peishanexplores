@@ -177,105 +177,113 @@ export default function Activities() {
     <div className="min-h-screen bg-background pb-24">
       <HeroBanner title="Logs" subtitle="Activity history" compact />
 
-      <div className="mx-auto max-w-[420px]">
-        {/* Summary Chips */}
-        {chips.length > 0 && (
-          <div className="flex flex-wrap gap-2 px-4 pt-5">
-            {chips.map((chip, i) => (
-              <span key={i} className="font-mono-dm text-[11px] tracking-[0.08em] text-mist bg-card border border-[rgba(255,255,255,0.07)] px-2.5 py-1 rounded-full">
-                {chip}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Filter Pills */}
-        <div className="flex gap-2 px-4 pt-4 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-          {FILTERS.map((f) => (
-            <button
-              key={f.id}
-              onClick={() => setSportFilter(f.id)}
-              className={`font-mono-dm text-[11px] tracking-[0.1em] uppercase px-3.5 py-1.5 rounded-full border whitespace-nowrap flex-shrink-0 transition-all ${
-                sportFilter === f.id
-                  ? "bg-moss text-paper border-moss-light"
-                  : "bg-card text-fog border-[rgba(255,255,255,0.07)] hover:border-[rgba(255,255,255,0.15)]"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            className="font-mono-dm text-[11px] tracking-[0.1em] uppercase bg-card text-fog border border-[rgba(255,255,255,0.07)] px-3 py-1.5 rounded-full outline-none flex-shrink-0"
-          >
-            {DATE_RANGES.map((r) => (
-              <option key={r.id} value={r.id}>{r.label}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Section Label */}
-        <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-6 mb-3">
-          {DATE_RANGES.find(r => r.id === dateRange)?.label ?? "Activities"}
-        </div>
-
-        {/* Log List */}
-        <div className="px-4 space-y-2">
-          {isLoading ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-moss-light" />
-            </div>
-          ) : filtered?.length === 0 ? (
-            <p className="font-mono-dm text-xs text-[rgba(255,255,255,0.12)] italic text-center py-8">
-              No activities found.
-            </p>
-          ) : (
-            filtered?.map((a) => {
-              const sport = getSportInfo(a.type);
-              return (
-                <div key={a.id} className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[14px] p-3.5 flex items-center gap-3.5 hover:border-[rgba(255,255,255,0.14)] transition-colors group">
-                  <span className={`font-mono-dm text-[9px] tracking-[0.15em] uppercase px-2 py-1 rounded-md border flex-shrink-0 w-[52px] text-center ${sport.pillClass}`}>
-                    {sport.label}
+      <div className="mx-auto max-w-[420px] md:max-w-[880px]">
+        <div className="md:grid md:grid-cols-[280px_1fr] md:gap-x-6">
+          {/* Left: Summary + Filters (sidebar on desktop) */}
+          <div className="md:sticky md:top-4 md:self-start">
+            {/* Summary Chips */}
+            {chips.length > 0 && (
+              <div className="flex flex-wrap gap-2 px-4 pt-5">
+                {chips.map((chip, i) => (
+                  <span key={i} className="font-mono-dm text-[11px] tracking-[0.08em] text-mist bg-card border border-[rgba(255,255,255,0.07)] px-2.5 py-1 rounded-full">
+                    {chip}
                   </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-display text-[15px] font-bold leading-tight truncate">
-                      {(a as any).route || sport.label}
-                    </p>
-                    <p className="font-mono-dm text-[10px] text-fog mt-0.5 tracking-[0.06em]">
-                      {format(new Date(a.start_time), "EEE, MMM d")}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
-                    {a.distance ? (
-                      <span className="font-display text-[17px] font-bold leading-none">{a.distance}</span>
-                    ) : null}
-                    {a.elevation_gain ? (
-                      <span className="font-mono-dm text-[10px] text-fog">{a.elevation_gain.toLocaleString()} ft</span>
-                    ) : null}
-                  </div>
-                  {/* Edit/Delete on hover */}
-                  <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                    <button onClick={() => openEdit(a)} className="text-fog hover:text-moss-light transition-colors">
-                      <Edit2 className="h-3.5 w-3.5" />
-                    </button>
-                    <button onClick={() => handleDelete(a.id)} className="text-fog hover:text-amber transition-colors">
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
+                ))}
+              </div>
+            )}
 
-        <div className="h-24" />
+            {/* Filter Pills */}
+            <div className="flex md:flex-wrap gap-2 px-4 pt-4 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+              {FILTERS.map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setSportFilter(f.id)}
+                  className={`font-mono-dm text-[11px] tracking-[0.1em] uppercase px-3.5 py-1.5 rounded-full border whitespace-nowrap flex-shrink-0 transition-all ${
+                    sportFilter === f.id
+                      ? "bg-moss text-paper border-moss-light"
+                      : "bg-card text-fog border-[rgba(255,255,255,0.07)] hover:border-[rgba(255,255,255,0.15)]"
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+              <select
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value)}
+                className="font-mono-dm text-[11px] tracking-[0.1em] uppercase bg-card text-fog border border-[rgba(255,255,255,0.07)] px-3 py-1.5 rounded-full outline-none flex-shrink-0"
+              >
+                {DATE_RANGES.map((r) => (
+                  <option key={r.id} value={r.id}>{r.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Right: Log List */}
+          <div>
+            {/* Section Label */}
+            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 md:px-0 mt-6 md:mt-5 mb-3">
+              {DATE_RANGES.find(r => r.id === dateRange)?.label ?? "Activities"}
+            </div>
+
+            {/* Log List */}
+            <div className="px-4 md:px-0 space-y-2">
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-moss-light" />
+                </div>
+              ) : filtered?.length === 0 ? (
+                <p className="font-mono-dm text-xs text-[rgba(255,255,255,0.12)] italic text-center py-8">
+                  No activities found.
+                </p>
+              ) : (
+                filtered?.map((a) => {
+                  const sport = getSportInfo(a.type);
+                  return (
+                    <div key={a.id} className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[14px] p-3.5 flex items-center gap-3.5 hover:border-[rgba(255,255,255,0.14)] transition-colors group">
+                      <span className={`font-mono-dm text-[9px] tracking-[0.15em] uppercase px-2 py-1 rounded-md border flex-shrink-0 w-[52px] text-center ${sport.pillClass}`}>
+                        {sport.label}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-display text-[15px] font-bold leading-tight truncate">
+                          {(a as any).route || sport.label}
+                        </p>
+                        <p className="font-mono-dm text-[10px] text-fog mt-0.5 tracking-[0.06em]">
+                          {format(new Date(a.start_time), "EEE, MMM d")}
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
+                        {a.distance ? (
+                          <span className="font-display text-[17px] font-bold leading-none">{a.distance}</span>
+                        ) : null}
+                        {a.elevation_gain ? (
+                          <span className="font-mono-dm text-[10px] text-fog">{a.elevation_gain.toLocaleString()} ft</span>
+                        ) : null}
+                      </div>
+                      {/* Edit/Delete on hover */}
+                      <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                        <button onClick={() => openEdit(a)} className="text-fog hover:text-moss-light transition-colors">
+                          <Edit2 className="h-3.5 w-3.5" />
+                        </button>
+                        <button onClick={() => handleDelete(a.id)} className="text-fog hover:text-amber transition-colors">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div className="h-24" />
+          </div>
+        </div>
       </div>
 
       {/* FAB */}
       <button
         onClick={openAdd}
-        className="fixed bottom-[84px] right-[calc(50%-190px)] w-[52px] h-[52px] rounded-full bg-moss-light text-ink text-[28px] font-light flex items-center justify-center z-[90] hover:scale-105 transition-transform"
+        className="fixed bottom-[84px] right-6 md:right-[calc(50%-420px)] w-[52px] h-[52px] rounded-full bg-moss-light text-ink text-[28px] font-light flex items-center justify-center z-[90] hover:scale-105 transition-transform"
         style={{ boxShadow: '0 4px 20px rgba(122,184,124,0.35)' }}
       >
         +

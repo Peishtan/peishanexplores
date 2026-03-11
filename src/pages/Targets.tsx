@@ -91,7 +91,6 @@ export default function Targets() {
     };
   }, [activities, kayakQ, hikingQ, elevAvg]);
 
-  // Weekly status
   const weeklyStatus = useMemo(() => {
     if (!activities) return { kayak: 0, outdoor: 0, gym: 0 };
     const now = new Date();
@@ -121,145 +120,153 @@ export default function Targets() {
     <div className="min-h-screen bg-background pb-24">
       <HeroBanner title="Targets" subtitle="Goals & milestones" compact />
 
-      <div className="mx-auto max-w-[420px]">
-        {/* Quarterly Targets header */}
-        <div className="flex items-center justify-between px-6 mt-[28px] mb-[14px]">
-          <span className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog">Quarterly Targets</span>
-          <button
-            onClick={() => editing ? handleSave() : setEditing(true)}
-            className={`font-mono-dm text-[11px] tracking-[0.1em] px-3 py-1.5 rounded-full border transition-all ${
-              editing
-                ? "text-amber border-[rgba(224,149,72,0.35)] bg-[rgba(224,149,72,0.1)]"
-                : "text-fog bg-card border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.2)]"
-            }`}
-          >
-            {editing ? "Save" : "Edit"}
-          </button>
-        </div>
+      <div className="mx-auto max-w-[420px] md:max-w-[880px]">
+        <div className="md:grid md:grid-cols-2 md:gap-x-6">
+          {/* Left Column: Quarterly Targets */}
+          <div>
+            {/* Quarterly Targets header */}
+            <div className="flex items-center justify-between px-6 mt-[28px] mb-[14px]">
+              <span className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog">Quarterly Targets</span>
+              <button
+                onClick={() => editing ? handleSave() : setEditing(true)}
+                className={`font-mono-dm text-[11px] tracking-[0.1em] px-3 py-1.5 rounded-full border transition-all ${
+                  editing
+                    ? "text-amber border-[rgba(224,149,72,0.35)] bg-[rgba(224,149,72,0.1)]"
+                    : "text-fog bg-card border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.2)]"
+                }`}
+              >
+                {editing ? "Save" : "Edit"}
+              </button>
+            </div>
 
-        <div className="px-4 space-y-2.5">
-          {/* Kayak Target */}
-          <TargetCard
-            name="Kayak"
-            current={pacing.kayak.current}
-            target={pacing.kayak.target}
-            unit="mi"
-            done={pacing.kayak.done}
-            avg={pacing.kayak.avg}
-            needed={pacing.kayak.needed}
-            editing={editing}
-            editValue={kayakQ}
-            onEditChange={setKayakQ}
-            editLabel={`${qLabel} target (miles)`}
-          />
+            <div className="px-4 space-y-2.5">
+              {/* Kayak Target */}
+              <TargetCard
+                name="Kayak"
+                current={pacing.kayak.current}
+                target={pacing.kayak.target}
+                unit="mi"
+                done={pacing.kayak.done}
+                avg={pacing.kayak.avg}
+                needed={pacing.kayak.needed}
+                editing={editing}
+                editValue={kayakQ}
+                onEditChange={setKayakQ}
+                editLabel={`${qLabel} target (miles)`}
+              />
 
-          {/* Hiking Target */}
-          <TargetCard
-            name="Hiking / XC Ski"
-            current={pacing.hiking.current}
-            target={pacing.hiking.target}
-            unit="mi"
-            done={pacing.hiking.done}
-            avg={pacing.hiking.avg}
-            needed={pacing.hiking.needed}
-            editing={editing}
-            editValue={hikingQ}
-            onEditChange={setHikingQ}
-            editLabel={`${qLabel} target (miles)`}
-          />
+              {/* Hiking Target */}
+              <TargetCard
+                name="Hiking / XC Ski"
+                current={pacing.hiking.current}
+                target={pacing.hiking.target}
+                unit="mi"
+                done={pacing.hiking.done}
+                avg={pacing.hiking.avg}
+                needed={pacing.hiking.needed}
+                editing={editing}
+                editValue={hikingQ}
+                onEditChange={setHikingQ}
+                editLabel={`${qLabel} target (miles)`}
+              />
 
-          {/* Elevation Target */}
-          <div className={`bg-card border rounded-[14px] p-4 ${pacing.elev.done ? "border-[rgba(122,184,124,0.2)]" : "border-[rgba(255,255,255,0.06)]"}`}>
-            <div className="flex justify-between items-start gap-3 mb-3.5">
-              <div className="flex-1">
-                <p className="font-display text-[17px] font-bold mb-1">Elevation avg</p>
-                <p className="text-xs text-fog font-light">
-                  Avg <span className="text-moss-light font-medium">{pacing.elev.current.toLocaleString()} ft</span> · target {pacing.elev.target.toLocaleString()} ft
-                </p>
-              </div>
-              <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
-                <p className="font-display text-[28px] font-black leading-none tracking-tight">
-                  {pacing.elev.current.toLocaleString()}<span className="font-mono-dm text-xs font-normal text-fog ml-1">ft</span>
-                </p>
-                <span className="font-mono-dm text-[10px] text-fog">avg</span>
-                {pacing.elev.done && (
-                  <span className="font-mono-dm text-[9px] tracking-[0.12em] uppercase px-2 py-0.5 rounded-full bg-[rgba(122,184,124,0.15)] text-moss-light border border-[rgba(122,184,124,0.25)] mt-0.5">
-                    Above target
-                  </span>
+              {/* Elevation Target */}
+              <div className={`bg-card border rounded-[14px] p-4 ${pacing.elev.done ? "border-[rgba(122,184,124,0.2)]" : "border-[rgba(255,255,255,0.06)]"}`}>
+                <div className="flex justify-between items-start gap-3 mb-3.5">
+                  <div className="flex-1">
+                    <p className="font-display text-[17px] font-bold mb-1">Elevation avg</p>
+                    <p className="text-xs text-fog font-light">
+                      Avg <span className="text-moss-light font-medium">{pacing.elev.current.toLocaleString()} ft</span> · target {pacing.elev.target.toLocaleString()} ft
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
+                    <p className="font-display text-[28px] font-black leading-none tracking-tight">
+                      {pacing.elev.current.toLocaleString()}<span className="font-mono-dm text-xs font-normal text-fog ml-1">ft</span>
+                    </p>
+                    <span className="font-mono-dm text-[10px] text-fog">avg</span>
+                    {pacing.elev.done && (
+                      <span className="font-mono-dm text-[9px] tracking-[0.12em] uppercase px-2 py-0.5 rounded-full bg-[rgba(122,184,124,0.15)] text-moss-light border border-[rgba(122,184,124,0.25)] mt-0.5">
+                        Above target
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="relative h-[5px] rounded-full bg-[rgba(255,255,255,0.06)] overflow-hidden">
+                  <div className="h-full rounded-full" style={{
+                    width: `${Math.min((pacing.elev.current / pacing.elev.target) * 100, 100)}%`,
+                    background: 'linear-gradient(90deg, hsl(var(--moss)) 0%, hsl(var(--moss-light)) 100%)'
+                  }} />
+                </div>
+                {editing && (
+                  <div className="flex items-center justify-between pt-3 mt-3 border-t border-[rgba(255,255,255,0.06)] animate-fade-slide-up">
+                    <label className="font-mono-dm text-[11px] text-fog tracking-[0.08em]">Target avg elevation (ft)</label>
+                    <input type="number" value={elevAvg} onChange={(e) => setElevAvg(e.target.value)}
+                      className="bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.12)] rounded-lg text-foreground font-mono-dm text-sm px-2.5 py-1.5 w-20 text-right outline-none focus:border-moss-light" />
+                  </div>
                 )}
               </div>
             </div>
-            <div className="relative h-[5px] rounded-full bg-[rgba(255,255,255,0.06)] overflow-hidden">
-              <div className="h-full rounded-full" style={{
-                width: `${Math.min((pacing.elev.current / pacing.elev.target) * 100, 100)}%`,
-                background: 'linear-gradient(90deg, hsl(var(--moss)) 0%, hsl(var(--moss-light)) 100%)'
-              }} />
-            </div>
+
+            {/* Save button in edit mode */}
             {editing && (
-              <div className="flex items-center justify-between pt-3 mt-3 border-t border-[rgba(255,255,255,0.06)] animate-fade-slide-up">
-                <label className="font-mono-dm text-[11px] text-fog tracking-[0.08em]">Target avg elevation (ft)</label>
-                <input type="number" value={elevAvg} onChange={(e) => setElevAvg(e.target.value)}
-                  className="bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.12)] rounded-lg text-foreground font-mono-dm text-sm px-2.5 py-1.5 w-20 text-right outline-none focus:border-moss-light" />
+              <div className="px-4 pt-4">
+                <button onClick={handleSave} className="w-full font-mono-dm text-xs tracking-[0.12em] uppercase bg-moss text-paper py-3.5 rounded-xl hover:bg-moss-light hover:text-ink transition-colors">
+                  Save changes
+                </button>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Weekly Rhythm */}
-        <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
-          Weekly Rhythm
-        </div>
-        <div className="px-4 space-y-2">
-          <RhythmCard
-            icon={<Waves className="h-5 w-5 text-fog" strokeWidth={1.5} />}
-            name="Paddle"
-            rule={`${kayakW} session / week`}
-            current={weeklyStatus.kayak}
-            goal={parseInt(kayakW) || 1}
-            editing={editing}
-            editValue={kayakW}
-            onEditChange={setKayakW}
-          />
-          <RhythmCard
-            icon={<Footprints className="h-5 w-5 text-fog" strokeWidth={1.5} />}
-            name="Hike or Ski"
-            rule={`${outdoorW} session / week`}
-            current={weeklyStatus.outdoor}
-            goal={parseInt(outdoorW) || 1}
-            editing={editing}
-            editValue={outdoorW}
-            onEditChange={setOutdoorW}
-          />
-          <RhythmCard
-            icon={<Dumbbell className="h-5 w-5 text-fog" strokeWidth={1.5} />}
-            name="Gym classes"
-            rule={`${gymW} sessions / week`}
-            current={weeklyStatus.gym}
-            goal={parseInt(gymW) || 3}
-            editing={editing}
-            editValue={gymW}
-            onEditChange={setGymW}
-          />
-        </div>
+          {/* Right Column: Weekly Rhythm + Milestones */}
+          <div>
+            {/* Weekly Rhythm */}
+            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] md:mt-[28px] mb-[14px]">
+              Weekly Rhythm
+            </div>
+            <div className="px-4 space-y-2">
+              <RhythmCard
+                icon={<Waves className="h-5 w-5 text-fog" strokeWidth={1.5} />}
+                name="Paddle"
+                rule={`${kayakW} session / week`}
+                current={weeklyStatus.kayak}
+                goal={parseInt(kayakW) || 1}
+                editing={editing}
+                editValue={kayakW}
+                onEditChange={setKayakW}
+              />
+              <RhythmCard
+                icon={<Footprints className="h-5 w-5 text-fog" strokeWidth={1.5} />}
+                name="Hike or Ski"
+                rule={`${outdoorW} session / week`}
+                current={weeklyStatus.outdoor}
+                goal={parseInt(outdoorW) || 1}
+                editing={editing}
+                editValue={outdoorW}
+                onEditChange={setOutdoorW}
+              />
+              <RhythmCard
+                icon={<Dumbbell className="h-5 w-5 text-fog" strokeWidth={1.5} />}
+                name="Gym classes"
+                rule={`${gymW} sessions / week`}
+                current={weeklyStatus.gym}
+                goal={parseInt(gymW) || 3}
+                editing={editing}
+                editValue={gymW}
+                onEditChange={setGymW}
+              />
+            </div>
 
-        {/* Save button in edit mode */}
-        {editing && (
-          <div className="px-4 pt-4">
-            <button onClick={handleSave} className="w-full font-mono-dm text-xs tracking-[0.12em] uppercase bg-moss text-paper py-3.5 rounded-xl hover:bg-moss-light hover:text-ink transition-colors">
-              Save changes
-            </button>
+            {/* Skill Milestones */}
+            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
+              Skill Milestones
+            </div>
+            <div className="px-4">
+              <SkillMilestonesCard />
+            </div>
+
+            <div className="h-24" />
           </div>
-        )}
-
-        {/* Skill Milestones */}
-        <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
-          Skill Milestones
         </div>
-        <div className="px-4">
-          <SkillMilestonesCard />
-        </div>
-
-        <div className="h-24" />
       </div>
       <BottomNav />
     </div>
@@ -315,7 +322,7 @@ function TargetCard({ name, current, target, unit, done, avg, needed, editing, e
         </div>
       </div>
       <div className="relative h-[5px] rounded-full bg-[rgba(255,255,255,0.06)] overflow-visible">
-        <div className={`h-full rounded-full ${done ? "" : ""}`} style={{
+        <div className={`h-full rounded-full`} style={{
           width: `${pct}%`,
           background: done
             ? 'linear-gradient(90deg, hsl(var(--moss)) 0%, hsl(var(--done)) 100%)'
