@@ -134,7 +134,7 @@ export default function Dashboard() {
 /* ── Section Label ── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-8 mb-3.5">
+    <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-10 mb-4">
       {children}
     </div>
   );
