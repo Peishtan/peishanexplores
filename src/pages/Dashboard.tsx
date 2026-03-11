@@ -459,7 +459,7 @@ function TotalsBar({ wtd, qtd, ytd, sparkWeekly, sparkQuarterly, sparkYtd }: {
   sparkWeekly?: SparkPoint[]; sparkQuarterly?: SparkPoint[]; sparkYtd?: SparkPoint[];
 }) {
   return (
-    <div className="mx-4 mb-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl grid grid-cols-3 overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.45s' }}>
+    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl grid grid-cols-3 overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.45s' }}>
       <TotalItem label="Week" value={wtd.toFixed(1)} spark={sparkWeekly} />
       <TotalItem label="Quarter" value={qtd.toFixed(0)} spark={sparkQuarterly} border />
       <TotalItem label="Year" value={ytd.toFixed(0)} spark={sparkYtd} />
