@@ -482,7 +482,7 @@ function MilestoneSpotlight() {
   const { data: achieved } = useAchievedMilestones(3);
 
   return (
-    <div className="mx-4 animate-fade-slide-up" style={{ animationDelay: '0.4s' }}>
+    <div className="mx-4 mb-4 animate-fade-slide-up" style={{ animationDelay: '0.4s' }}>
       {!achieved || achieved.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-6 text-center">
           <Target className="h-8 w-8 text-fog/40 mb-2" />
