@@ -167,9 +167,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 /* ── Achievement Banner ── */
-function AchievementBanner({ title, label, current, target, stats }: {
+function AchievementBanner({ title, label, current, target, stats, extraStats }: {
   title: string; label: string; current: number; target: number;
   stats?: { count: number; avgElevation: number; maxElevation: number };
+  extraStats?: { label: string; value: string }[];
 }) {
   return (
     <>
