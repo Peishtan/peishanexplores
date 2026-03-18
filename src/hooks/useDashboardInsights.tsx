@@ -265,6 +265,7 @@ export function useDashboardInsights(
       },
       kayakChallenge, hikingChallenge,
       hikingTotal: { miles: hikingMiles, count: hikingLogs.length, avgElevation: Math.round(avgElevation), maxElevation },
+      kayakTotal: { miles: kayakQtd, count: kayakLogs.length, avgDistance: Math.round(kayakAvgDistance * 10) / 10 },
       momentum,
     };
   }, [activities, goals.exercises, goals.outdoor, goals.kayak, goals.hikingTarget, goals.kayakTarget]);
