@@ -59,6 +59,10 @@ export default function Dashboard() {
                   label={`${qLabel} Target Achieved`}
                   current={insights.kayakChallenge.current}
                   target={insights.kayakChallenge.target}
+                  extraStats={insights.kayakTotal ? [
+                    { label: "Outings", value: insights.kayakTotal.count.toString() },
+                    { label: "Avg Distance", value: `${insights.kayakTotal.avgDistance} mi` },
+                  ] : undefined}
                 />
               </div>
             ) : insights?.kayakChallenge ? (
@@ -167,9 +171,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 /* ── Achievement Banner ── */
-function AchievementBanner({ title, label, current, target, stats }: {
+function AchievementBanner({ title, label, current, target, stats, extraStats }: {
   title: string; label: string; current: number; target: number;
   stats?: { count: number; avgElevation: number; maxElevation: number };
+  extraStats?: { label: string; value: string }[];
 }) {
   return (
     <>
@@ -189,6 +194,13 @@ function AchievementBanner({ title, label, current, target, stats }: {
             <StatItem value={stats.count.toString()} label="Outings" />
             <StatItem value={`${stats.avgElevation.toLocaleString()} ft`} label="Avg Elev" />
             <StatItem value={`${stats.maxElevation.toLocaleString()} ft`} label="Peak Elev" />
+          </div>
+        )}
+        {extraStats && (
+          <div className="flex gap-5 mt-3.5 pt-3.5 border-t border-[rgba(90,125,91,0.25)]">
+            {extraStats.map((s) => (
+              <StatItem key={s.label} value={s.value} label={s.label} />
+            ))}
           </div>
         )}
       </div>

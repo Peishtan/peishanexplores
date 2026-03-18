@@ -51,6 +51,7 @@ export interface DashboardInsights {
   kayakChallenge: QuarterChallenge;
   hikingChallenge: QuarterChallenge;
   hikingTotal: { miles: number; count: number; avgElevation: number; maxElevation: number };
+  kayakTotal: { miles: number; count: number; avgDistance: number };
   momentum: MomentumData;
 }
 
@@ -153,10 +154,11 @@ export function useDashboardInsights(
 
     const qtdMiles = getMiles(qStartMs);
 
-    // Kayak challenge
-    const kayakQtd = activities.filter((a) => new Date(a.start_time).getTime() >= qStartMs && a.type === "kayaking")
-      .reduce((s, a) => s + (a.distance || 0), 0);
+    // Kayak challenge + totals
+    const kayakLogs = activities.filter((a) => new Date(a.start_time).getTime() >= qStartMs && a.type === "kayaking");
+    const kayakQtd = kayakLogs.reduce((s, a) => s + (a.distance || 0), 0);
     const kayakChallenge = buildChallenge(`${getQuarterLabel(now)} Kayak Challenge`, kayakQtd, goals.kayakTarget, daysPassed, totalDays, now);
+    const kayakAvgDistance = kayakLogs.length > 0 ? kayakQtd / kayakLogs.length : 0;
 
     // Hiking challenge + totals
     const hikingLogs = activities.filter((a) => new Date(a.start_time).getTime() >= qStartMs && (a.type === "hiking" || a.type === "xc_skiing"));
@@ -263,6 +265,7 @@ export function useDashboardInsights(
       },
       kayakChallenge, hikingChallenge,
       hikingTotal: { miles: hikingMiles, count: hikingLogs.length, avgElevation: Math.round(avgElevation), maxElevation },
+      kayakTotal: { miles: kayakQtd, count: kayakLogs.length, avgDistance: Math.round(kayakAvgDistance * 10) / 10 },
       momentum,
     };
   }, [activities, goals.exercises, goals.outdoor, goals.kayak, goals.hikingTarget, goals.kayakTarget]);
