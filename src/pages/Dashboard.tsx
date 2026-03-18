@@ -59,6 +59,10 @@ export default function Dashboard() {
                   label={`${qLabel} Target Achieved`}
                   current={insights.kayakChallenge.current}
                   target={insights.kayakChallenge.target}
+                  extraStats={insights.kayakTotal ? [
+                    { label: "Outings", value: insights.kayakTotal.count.toString() },
+                    { label: "Avg Distance", value: `${insights.kayakTotal.avgDistance} mi` },
+                  ] : undefined}
                 />
               </div>
             ) : insights?.kayakChallenge ? (
