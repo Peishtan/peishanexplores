@@ -191,6 +191,13 @@ function AchievementBanner({ title, label, current, target, stats }: {
             <StatItem value={`${stats.maxElevation.toLocaleString()} ft`} label="Peak Elev" />
           </div>
         )}
+        {extraStats && (
+          <div className="flex gap-5 mt-3.5 pt-3.5 border-t border-[rgba(90,125,91,0.25)]">
+            {extraStats.map((s) => (
+              <StatItem key={s.label} value={s.value} label={s.label} />
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
