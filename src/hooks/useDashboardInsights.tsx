@@ -51,6 +51,7 @@ export interface DashboardInsights {
   kayakChallenge: QuarterChallenge;
   hikingChallenge: QuarterChallenge;
   hikingTotal: { miles: number; count: number; avgElevation: number; maxElevation: number };
+  kayakTotal: { miles: number; count: number; avgDistance: number };
   momentum: MomentumData;
 }
 
