@@ -345,7 +345,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses }: {
                 if (isFuture) {
                   cls += "bg-[rgba(255,255,255,0.05)]";
                 } else if (isCurrent) {
-                  cls += pip < wtdClasses ? "bg-moss-light" : "bg-transparent border border-[rgba(255,255,255,0.15)]";
+                  cls += pip < wtdClasses ? "bg-moss-light" : "border-[1.5px] border-moss-light animate-pulse-dot bg-transparent";
                 } else {
                   // Past week: show filled if goal was met, partially if not
                   const wasHit = weekIdx < weekResults.length ? weekResults[weekIdx] : false;
