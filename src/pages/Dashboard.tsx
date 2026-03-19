@@ -444,7 +444,16 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
     }
   }
 
-  if (kayakChallenge && hikingChallenge && kayakChallenge.pace !== "behind" && hikingChallenge.pace !== "behind") {
+  const bothDone = kayakChallenge && hikingChallenge && kayakChallenge.pct >= 100 && hikingChallenge.pct >= 100;
+  if (bothDone) {
+    const totalMiles = Math.round(kayakChallenge.current + hikingChallenge.current);
+    const nextMilestone = Math.ceil(totalMiles / 25) * 25; // round up to nearest 25
+    if (nextMilestone > totalMiles) {
+      insights.push({ type: "Stretch Goal", text: `Both targets crushed! You're at ${totalMiles} combined miles — push for ${nextMilestone}?`, color: "text-amber" });
+    } else {
+      insights.push({ type: "Stretch Goal", text: `Both targets crushed! Keep stacking miles this quarter.`, color: "text-amber" });
+    }
+  } else if (kayakChallenge && hikingChallenge && kayakChallenge.pace !== "behind" && hikingChallenge.pace !== "behind") {
     insights.push({ type: "Flexibility", text: "Skipping next week still keeps you on track.", color: "text-fog" });
   }
 
