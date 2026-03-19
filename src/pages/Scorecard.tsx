@@ -61,7 +61,7 @@ export default function Scorecard() {
             <OverallGrade scorecard={scorecard} />
 
             {/* ── Targets Hit / Missed ── */}
-            <ScorecardSection title="Targets" icon={<Trophy className="h-4 w-4 text-amber" />}>
+            <ScorecardSection title="Targets" icon={<Trophy className="h-4 w-4 text-muted-foreground" />}>
               <div className="space-y-3">
                 {scorecard.targets.map((t) => (
                   <TargetRow key={t.label} {...t} />
