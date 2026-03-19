@@ -50,6 +50,7 @@ export interface ScorecardData {
   totalMiles: number;
   totalElevation: number;
   milestonesUnlocked: number;
+  milestonesAchievedTotal: number;
   totalMilestones: number;
 }
 
@@ -253,6 +254,7 @@ export function computeScorecard(
     totalMiles: Math.round(totalMiles * 10) / 10,
     totalElevation: Math.round(totalElevation),
     milestonesUnlocked: qMilestones.length,
+    milestonesAchievedTotal: milestones.filter((m) => m.status === "achieved").length,
     totalMilestones: totalMilestoneCount,
   };
 }

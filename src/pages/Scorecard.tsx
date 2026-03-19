@@ -156,10 +156,10 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const kayakPct = kayakTargetHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
   const dependentScore = (outdoorPct + kayakPct) / 2;
 
-  // 10% Milestones (capped — full marks when all achieved)
+  // 10% Milestones — use cumulative achieved vs total catalog
   const milestoneScore = scorecard.totalMilestones > 0
-    ? Math.min((scorecard.milestonesUnlocked / scorecard.totalMilestones) * 100, 100)
-    : 100; // no milestones = full marks (non-factor)
+    ? Math.min((scorecard.milestonesAchievedTotal / scorecard.totalMilestones) * 100, 100)
+    : 100;
 
   const score = targetScore * 0.45 + independentScore * 0.25 + dependentScore * 0.20 + milestoneScore * 0.10;
 
@@ -169,6 +169,9 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
     : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
 
+  // Generate review topline
+  const topline = buildTopline(targetsHit, totalTargets, gymCons?.pct ?? 0, dependentScore, milestoneScore, score);
+
   return (
     <div className="rounded-2xl border border-border bg-card p-6 text-center">
       <p className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
@@ -176,6 +179,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
       </p>
       <p className={`font-display text-[72px] font-black leading-none ${gradeColor}`}>{grade}</p>
       <p className="font-mono-dm text-sm text-muted-foreground mt-1">{label}</p>
+      <p className="text-xs text-muted-foreground/80 mt-3 leading-relaxed max-w-[300px] mx-auto">{topline}</p>
       <div className="flex justify-center gap-6 mt-4">
         <div>
           <p className="text-lg font-bold text-foreground">{targetsHit}/{totalTargets}</p>
@@ -183,12 +187,39 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
         </div>
         <div className="w-px bg-border" />
         <div>
-          <p className="text-lg font-bold text-foreground">{scorecard.overallConsistency}%</p>
-          <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Consistency</p>
+          <p className="text-lg font-bold text-foreground">{Math.round(score)}%</p>
+          <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Score</p>
         </div>
       </div>
     </div>
   );
+}
+
+function buildTopline(
+  targetsHit: number, totalTargets: number,
+  gymPct: number, dependentScore: number, milestoneScore: number, score: number
+): string {
+  const parts: string[] = [];
+
+  if (targetsHit === totalTargets) {
+    parts.push("All distance targets crushed");
+  } else if (targetsHit > 0) {
+    parts.push(`${targetsHit}/${totalTargets} targets hit`);
+  }
+
+  // Find the weakest link
+  const factors = [
+    { label: "gym consistency", score: gymPct, weight: 0.25 },
+    { label: "weekly rhythm", score: dependentScore, weight: 0.20 },
+    { label: "milestone progression", score: milestoneScore, weight: 0.10 },
+  ].sort((a, b) => a.score - b.score);
+
+  const weakest = factors[0];
+  if (weakest.score < 80) {
+    parts.push(`${weakest.label} (${Math.round(weakest.score)}%) is the main area to improve`);
+  }
+
+  return parts.join(" — ") + ".";
 }
 
 function ScorecardSection({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
