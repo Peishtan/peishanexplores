@@ -49,6 +49,7 @@ function AppRoutes() {
       <Route path="/" element={<Dashboard />} />
       <Route path="/logs" element={<Activities />} />
       <Route path="/targets" element={<Targets />} />
+      <Route path="/scorecard" element={<Scorecard />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
