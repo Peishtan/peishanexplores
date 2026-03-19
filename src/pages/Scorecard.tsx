@@ -169,12 +169,14 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
 
 function ScorecardSection({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
-      <div className="flex items-center gap-2">
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 mb-4">
         {icon}
         <h2 className="font-mono-dm text-[11px] uppercase tracking-[0.15em] text-muted-foreground">{title}</h2>
       </div>
-      {children}
+      <div className="rounded-2xl border border-border bg-card p-4">
+        {children}
+      </div>
     </div>
   );
 }
