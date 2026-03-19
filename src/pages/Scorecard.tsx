@@ -226,10 +226,18 @@ function ConsistencyRow({ label, weeksHit, totalWeeks, pct }: { label: string; w
   );
 }
 
+const highlightIcons: Record<string, React.ReactNode> = {
+  medal: <Medal className="h-5 w-5 text-muted-foreground" />,
+  footprints: <Footprints className="h-5 w-5 text-muted-foreground" />,
+  waves: <Waves className="h-5 w-5 text-muted-foreground" />,
+  mountain: <Mountain className="h-5 w-5 text-muted-foreground" />,
+  ruler: <Ruler className="h-5 w-5 text-muted-foreground" />,
+};
+
 function HighlightCard({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div className="rounded-xl bg-secondary/60 border border-border p-3 text-center">
-      <span className="text-2xl">{icon}</span>
+      <div className="flex justify-center">{highlightIcons[icon] ?? null}</div>
       <p className="text-lg font-bold text-foreground mt-1">{value}</p>
       <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">{label}</p>
     </div>
