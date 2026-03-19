@@ -49,6 +49,8 @@ export interface ScorecardData {
   totalActivities: number;
   totalMiles: number;
   totalElevation: number;
+  milestonesUnlocked: number;
+  totalMilestones: number;
 }
 
 function getQuarterStart(year: number, q: number): Date {
@@ -120,7 +122,8 @@ export function computeScorecard(
   quarter: QuarterInfo,
   activities: Activity[],
   profile: Profile,
-  milestones: SkillMilestoneProgress[]
+  milestones: SkillMilestoneProgress[],
+  totalMilestoneCount: number
 ): ScorecardData {
   const qStartMs = quarter.start.getTime();
   const qEndMs = quarter.end.getTime();
@@ -249,5 +252,7 @@ export function computeScorecard(
     totalActivities: qActivities.length,
     totalMiles: Math.round(totalMiles * 10) / 10,
     totalElevation: Math.round(totalElevation),
+    milestonesUnlocked: qMilestones.length,
+    totalMilestones: totalMilestoneCount,
   };
 }
