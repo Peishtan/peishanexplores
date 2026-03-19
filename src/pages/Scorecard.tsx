@@ -61,7 +61,7 @@ export default function Scorecard() {
             <OverallGrade scorecard={scorecard} />
 
             {/* ── Targets Hit / Missed ── */}
-            <ScorecardSection title="Targets" icon={<Trophy className="h-4 w-4 text-amber" />}>
+            <ScorecardSection title="Targets" icon={<Trophy className="h-4 w-4 text-muted-foreground" />}>
               <div className="space-y-3">
                 {scorecard.targets.map((t) => (
                   <TargetRow key={t.label} {...t} />
@@ -70,7 +70,7 @@ export default function Scorecard() {
             </ScorecardSection>
 
             {/* ── Consistency ── */}
-            <ScorecardSection title="Consistency" icon={<TrendingUp className="h-4 w-4 text-moss-light" />}>
+            <ScorecardSection title="Consistency" icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}>
               <div className="space-y-3">
                 {scorecard.consistency.map((c) => (
                   <ConsistencyRow key={c.label} {...c} />
@@ -80,7 +80,7 @@ export default function Scorecard() {
 
             {/* ── Highlights Reel ── */}
             {scorecard.highlights.length > 0 && (
-              <ScorecardSection title="Highlights" icon={<Sparkles className="h-4 w-4 text-amber" />}>
+              <ScorecardSection title="Highlights" icon={<Sparkles className="h-4 w-4 text-muted-foreground" />}>
                 <div className="grid grid-cols-2 gap-3">
                   {scorecard.highlights.map((h) => (
                     <HighlightCard key={h.label} {...h} />
@@ -91,7 +91,7 @@ export default function Scorecard() {
 
             {/* ── Strengths & Gaps ── */}
             {scorecard.insights.length > 0 && (
-              <ScorecardSection title="Review" icon={<Sparkles className="h-4 w-4 text-moss-light" />}>
+              <ScorecardSection title="Review" icon={<Sparkles className="h-4 w-4 text-muted-foreground" />}>
                 <div className="space-y-2">
                   {scorecard.insights.map((ins, i) => (
                     <InsightRow key={i} {...ins} />
