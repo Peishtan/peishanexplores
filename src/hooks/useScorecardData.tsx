@@ -122,7 +122,8 @@ export function computeScorecard(
   quarter: QuarterInfo,
   activities: Activity[],
   profile: Profile,
-  milestones: SkillMilestoneProgress[]
+  milestones: SkillMilestoneProgress[],
+  totalMilestoneCount: number
 ): ScorecardData {
   const qStartMs = quarter.start.getTime();
   const qEndMs = quarter.end.getTime();
