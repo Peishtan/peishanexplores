@@ -70,7 +70,7 @@ export default function Scorecard() {
             </ScorecardSection>
 
             {/* ── Consistency ── */}
-            <ScorecardSection title="Consistency" icon={<TrendingUp className="h-4 w-4 text-moss-light" />}>
+            <ScorecardSection title="Consistency" icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}>
               <div className="space-y-3">
                 {scorecard.consistency.map((c) => (
                   <ConsistencyRow key={c.label} {...c} />
