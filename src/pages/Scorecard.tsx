@@ -183,7 +183,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
         </div>
         <div className="w-px bg-border" />
         <div>
-          <p className="text-lg font-bold text-foreground">{cons}%</p>
+          <p className="text-lg font-bold text-foreground">{scorecard.overallConsistency}%</p>
           <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Consistency</p>
         </div>
       </div>
