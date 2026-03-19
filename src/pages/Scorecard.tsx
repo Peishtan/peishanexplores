@@ -80,7 +80,7 @@ export default function Scorecard() {
 
             {/* ── Highlights Reel ── */}
             {scorecard.highlights.length > 0 && (
-              <ScorecardSection title="Highlights" icon={<Sparkles className="h-4 w-4 text-amber" />}>
+              <ScorecardSection title="Highlights" icon={<Sparkles className="h-4 w-4 text-muted-foreground" />}>
                 <div className="grid grid-cols-2 gap-3">
                   {scorecard.highlights.map((h) => (
                     <HighlightCard key={h.label} {...h} />
