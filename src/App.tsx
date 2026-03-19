@@ -10,6 +10,7 @@ import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Activities from "./pages/Activities";
 import Targets from "./pages/Targets";
+import Scorecard from "./pages/Scorecard";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -48,6 +49,7 @@ function AppRoutes() {
       <Route path="/" element={<Dashboard />} />
       <Route path="/logs" element={<Activities />} />
       <Route path="/targets" element={<Targets />} />
+      <Route path="/scorecard" element={<Scorecard />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

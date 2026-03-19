@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, Target } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Target, Award } from "lucide-react";
 
 const links = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/logs", icon: ClipboardList, label: "Logs" },
   { to: "/targets", icon: Target, label: "Targets" },
+  { to: "/scorecard", icon: Award, label: "Scorecard" },
 ];
 
 export default function BottomNav() {
