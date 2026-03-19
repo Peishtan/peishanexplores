@@ -138,13 +138,36 @@ export default function Scorecard() {
 function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const targetsHit = scorecard.targets.filter((t) => t.hit).length;
   const totalTargets = scorecard.targets.length;
-  const cons = scorecard.overallConsistency;
 
-  // Compute a letter grade
-  const score = (targetsHit / Math.max(totalTargets, 1)) * 50 + (cons / 100) * 50;
-  const grade = score >= 90 ? "A" : score >= 75 ? "B" : score >= 60 ? "C" : score >= 40 ? "D" : "F";
-  const gradeColor = score >= 75 ? "text-done" : score >= 50 ? "text-amber" : "text-destructive";
-  const label = score >= 90 ? "Outstanding" : score >= 75 ? "Strong" : score >= 60 ? "Solid" : score >= 40 ? "Building" : "Getting Started";
+  // ── Weighted grading model ──
+  // 45% Targets (outcomes)
+  const targetScore = (targetsHit / Math.max(totalTargets, 1)) * 100;
+
+  // 25% Independent consistency (gym — no mileage target absorbs it)
+  const gymCons = scorecard.consistency.find((c) => c.label === "Gym Sessions");
+  const independentScore = gymCons?.pct ?? 0;
+
+  // 20% Dependent consistency (outdoor/kayak) — floor at 75% if related target hit
+  const outdoorCons = scorecard.consistency.find((c) => c.label === "Outdoor Outings");
+  const kayakCons = scorecard.consistency.find((c) => c.label === "Kayak Sessions");
+  const hikingTargetHit = scorecard.targets.find((t) => t.label.includes("Hiking"))?.hit ?? false;
+  const kayakTargetHit = scorecard.targets.find((t) => t.label.includes("Kayak"))?.hit ?? false;
+  const outdoorPct = hikingTargetHit ? Math.max(outdoorCons?.pct ?? 0, 75) : (outdoorCons?.pct ?? 0);
+  const kayakPct = kayakTargetHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
+  const dependentScore = (outdoorPct + kayakPct) / 2;
+
+  // 10% Milestones (capped — full marks when all achieved)
+  const milestoneScore = scorecard.totalMilestones > 0
+    ? Math.min((scorecard.milestonesUnlocked / scorecard.totalMilestones) * 100, 100)
+    : 100; // no milestones = full marks (non-factor)
+
+  const score = targetScore * 0.45 + independentScore * 0.25 + dependentScore * 0.20 + milestoneScore * 0.10;
+
+  const grade = score >= 93 ? "A" : score >= 90 ? "A-" : score >= 87 ? "B+" : score >= 83 ? "B" : score >= 80 ? "B-"
+    : score >= 77 ? "C+" : score >= 73 ? "C" : score >= 70 ? "C-" : score >= 60 ? "D" : "F";
+  const gradeColor = score >= 87 ? "text-done" : score >= 73 ? "text-amber" : "text-destructive";
+  const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
+    : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6 text-center">
