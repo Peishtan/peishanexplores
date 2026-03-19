@@ -24,8 +24,8 @@ export default function Scorecard() {
 
   const scorecard = useMemo(() => {
     if (!activities || !profile || !milestoneProgress || !selectedQuarter) return null;
-    return computeScorecard(selectedQuarter, activities, profile, milestoneProgress);
-  }, [activities, profile, milestoneProgress, selectedQuarter]);
+    return computeScorecard(selectedQuarter, activities, profile, milestoneProgress, allMilestones?.length ?? 9);
+  }, [activities, profile, milestoneProgress, selectedQuarter, allMilestones]);
 
   const isLoading = activitiesLoading || profileLoading || milestonesLoading;
 
