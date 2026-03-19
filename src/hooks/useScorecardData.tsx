@@ -200,7 +200,6 @@ export function computeScorecard(
   if (totalMiles > 0) {
     highlights.push({ icon: "ruler", label: "Total Miles", value: `${Math.round(totalMiles * 10) / 10} mi` });
   }
-  }
 
   // ── Strengths & Gaps ──
   const insights: Insight[] = [];
