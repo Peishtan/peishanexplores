@@ -12,6 +12,7 @@ export default function Scorecard() {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: milestoneProgress, isLoading: milestonesLoading } = useSkillMilestoneProgress();
+  const { data: allMilestones } = useSkillMilestones();
 
   const quarters = useMemo(() => {
     if (!activities) return [];
