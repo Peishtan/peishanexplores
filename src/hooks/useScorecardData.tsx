@@ -186,19 +186,19 @@ export function computeScorecard(
 
   const highlights: Highlight[] = [];
   if (qMilestones.length > 0) {
-    highlights.push({ icon: "🏅", label: "Milestones Unlocked", value: qMilestones.length.toString() });
+    highlights.push({ icon: "medal", label: "Milestones Unlocked", value: qMilestones.length.toString() });
   }
   if (longestHike > 0) {
-    highlights.push({ icon: "🥾", label: "Longest Hike", value: `${Math.round(longestHike * 10) / 10} mi` });
+    highlights.push({ icon: "footprints", label: "Longest Hike", value: `${Math.round(longestHike * 10) / 10} mi` });
   }
   if (longestKayak > 0) {
-    highlights.push({ icon: "🛶", label: "Longest Paddle", value: `${Math.round(longestKayak * 10) / 10} mi` });
+    highlights.push({ icon: "waves", label: "Longest Paddle", value: `${Math.round(longestKayak * 10) / 10} mi` });
   }
   if (highestElevation > 0) {
-    highlights.push({ icon: "⛰️", label: "Peak Elevation Gain", value: `${highestElevation.toLocaleString()} ft` });
+    highlights.push({ icon: "mountain", label: "Peak Elevation Gain", value: `${highestElevation.toLocaleString()} ft` });
   }
   if (totalMiles > 0) {
-    highlights.push({ icon: "📏", label: "Total Miles", value: `${Math.round(totalMiles * 10) / 10} mi` });
+    highlights.push({ icon: "ruler", label: "Total Miles", value: `${Math.round(totalMiles * 10) / 10} mi` });
   }
 
   // ── Strengths & Gaps ──
