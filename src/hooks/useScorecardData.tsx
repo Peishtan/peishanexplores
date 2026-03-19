@@ -254,6 +254,7 @@ export function computeScorecard(
     totalMiles: Math.round(totalMiles * 10) / 10,
     totalElevation: Math.round(totalElevation),
     milestonesUnlocked: qMilestones.length,
+    milestonesAchievedTotal: milestones.filter((m) => m.status === "achieved").length,
     totalMilestones: totalMilestoneCount,
   };
 }

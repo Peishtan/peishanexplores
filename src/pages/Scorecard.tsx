@@ -156,9 +156,9 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const kayakPct = kayakTargetHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
   const dependentScore = (outdoorPct + kayakPct) / 2;
 
-  // 10% Milestones — use cumulative achieved vs total (not just this quarter)
+  // 10% Milestones — use cumulative achieved vs total catalog
   const milestoneScore = scorecard.totalMilestones > 0
-    ? Math.min((scorecard.milestonesUnlocked / scorecard.totalMilestones) * 100, 100)
+    ? Math.min((scorecard.milestonesAchievedTotal / scorecard.totalMilestones) * 100, 100)
     : 100;
 
   const score = targetScore * 0.45 + independentScore * 0.25 + dependentScore * 0.20 + milestoneScore * 0.10;
