@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useActivities } from "@/hooks/useActivities";
 import { useProfile } from "@/hooks/useProfile";
-import { useSkillMilestoneProgress } from "@/hooks/useSkillMilestones";
+import { useSkillMilestoneProgress, useSkillMilestones } from "@/hooks/useSkillMilestones";
 import { getAvailableQuarters, computeScorecard, type QuarterInfo, type ScorecardData } from "@/hooks/useScorecardData";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
