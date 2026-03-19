@@ -50,6 +50,7 @@ export interface ScorecardData {
   totalMiles: number;
   totalElevation: number;
   milestonesUnlocked: number;
+  milestonesAchievedTotal: number;
   totalMilestones: number;
 }
 
