@@ -183,7 +183,43 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   );
 }
 
-/* buildTopline removed — review insights handle this now */
+function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
+  const gymCons = scorecard.consistency.find((c) => c.label === "Gym Sessions");
+  const outdoorCons = scorecard.consistency.find((c) => c.label === "Outdoor Sessions");
+  const kayakCons = scorecard.consistency.find((c) => c.label === "Kayak Sessions");
+
+  // Find weakest area by weighted impact
+  const areas: { label: string; pct: number; weight: number; tip: string }[] = [
+    { label: "gym consistency", pct: gymCons?.pct ?? 0, weight: 0.25, tip: "hitting your weekly gym sessions" },
+    { label: "outdoor rhythm", pct: outdoorCons?.pct ?? 0, weight: 0.10, tip: "getting outside more regularly each week" },
+    { label: "kayak rhythm", pct: kayakCons?.pct ?? 0, weight: 0.10, tip: "paddling more consistently each week" },
+  ];
+
+  const targetsHit = scorecard.targets.filter((t) => t.hit).length;
+  if (targetsHit < scorecard.targets.length) {
+    const missed = scorecard.targets.filter((t) => !t.hit);
+    areas.push({ label: "distance targets", pct: (targetsHit / Math.max(scorecard.targets.length, 1)) * 100, weight: 0.45, tip: `logging more ${missed.map((m) => m.label.toLowerCase()).join(" and ")} miles` });
+  }
+
+  // Sort by potential impact (gap * weight)
+  areas.sort((a, b) => (100 - a.pct) * a.weight - (100 - b.pct) * b.weight).reverse();
+
+  const top = areas.find((a) => a.pct < 80);
+
+  if (!top) {
+    return (
+      <p className="text-sm text-foreground/70 leading-relaxed">
+        🔥 Exceptional quarter — all areas are firing. Keep this momentum going!
+      </p>
+    );
+  }
+
+  return (
+    <p className="text-sm text-foreground/70 leading-relaxed">
+      💡 <span className="font-medium text-foreground">Biggest lever to raise your score:</span> Focus on {top.tip}. Your {top.label} is at {top.pct}% — improving this could add the most points.
+    </p>
+  );
+}
 
 function ScorecardSection({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
