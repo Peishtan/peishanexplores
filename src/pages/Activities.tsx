@@ -87,18 +87,51 @@ export default function Activities() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Validate date format
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(form.date)) {
+        toast.error("Invalid date format");
+        return;
+      }
       const [year, month, day] = form.date.split("-").map(Number);
+      if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
+        toast.error("Invalid date");
+        return;
+      }
       const localDate = new Date(year, month - 1, day);
+
+      // Validate numeric fields
+      const miles = form.miles ? parseFloat(form.miles) : null;
+      if (miles !== null && (isNaN(miles) || miles < 0 || miles > 1000)) {
+        toast.error("Distance must be between 0 and 1000 miles");
+        return;
+      }
+      const elevation = form.elevation ? parseInt(form.elevation, 10) : null;
+      if (elevation !== null && (isNaN(elevation) || elevation < 0 || elevation > 50000)) {
+        toast.error("Elevation must be between 0 and 50,000 ft");
+        return;
+      }
+
+      // Validate text fields
+      const route = (form.route || "").trim().slice(0, 500) || null;
+      const notes = (form.notes || "").trim().slice(0, 5000) || null;
+
+      // Validate sport type
+      const validSports: ActivityType[] = ["kayaking", "hiking", "xc_skiing", "orange_theory", "peloton"];
+      if (!validSports.includes(form.sport)) {
+        toast.error("Invalid activity type");
+        return;
+      }
+
       if (editingId) {
         const { error } = await supabase
           .from("activities")
           .update({
-            route: form.route || null,
+            route,
             type: form.sport,
             start_time: localDate.toISOString(),
-            distance: form.miles ? parseFloat(form.miles) : null,
-            elevation_gain: form.elevation ? parseInt(form.elevation) : null,
-            notes: form.notes || null,
+            distance: miles,
+            elevation_gain: elevation,
+            notes,
           })
           .eq("id", editingId);
         if (error) throw error;
@@ -111,12 +144,12 @@ export default function Activities() {
             type: form.sport,
             start_time: localDate.toISOString(),
             duration: 0,
-            distance: form.miles ? parseFloat(form.miles) : null,
-            elevation_gain: form.elevation ? parseInt(form.elevation) : null,
+            distance: miles,
+            elevation_gain: elevation,
             calories: null,
             intensity: "moderate" as const,
-            notes: form.notes || null,
-            route: form.route || null,
+            notes,
+            route,
             user_id: user!.id,
           });
         if (error) throw error;
