@@ -180,32 +180,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   );
 }
 
-function buildTopline(
-  targetsHit: number, totalTargets: number,
-  gymPct: number, dependentScore: number, milestoneScore: number, score: number
-): string {
-  const parts: string[] = [];
-
-  if (targetsHit === totalTargets) {
-    parts.push("All distance targets crushed");
-  } else if (targetsHit > 0) {
-    parts.push(`${targetsHit}/${totalTargets} targets hit`);
-  }
-
-  // Find the weakest link
-  const factors = [
-    { label: "gym consistency", score: gymPct, weight: 0.25 },
-    { label: "weekly rhythm", score: dependentScore, weight: 0.20 },
-    { label: "milestone progression", score: milestoneScore, weight: 0.10 },
-  ].sort((a, b) => a.score - b.score);
-
-  const weakest = factors[0];
-  if (weakest.score < 80) {
-    parts.push(`${weakest.label} (${Math.round(weakest.score)}%) is the main area to improve`);
-  }
-
-  return parts.join(" — ") + ".";
-}
+/* buildTopline removed — review insights handle this now */
 
 function ScorecardSection({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
