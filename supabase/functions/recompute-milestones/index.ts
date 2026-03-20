@@ -281,7 +281,7 @@ Deno.serve(async (req) => {
     });
   } catch (err) {
     console.error("recompute-milestones error:", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
+    return new Response(JSON.stringify({ error: "Internal server error. Please try again later." }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
