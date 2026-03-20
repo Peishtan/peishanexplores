@@ -93,10 +93,13 @@ export default function Scorecard() {
             {/* ── Strengths & Gaps ── */}
             {scorecard.insights.length > 0 && (
               <ScorecardSection title="Review" icon={<Sparkles className="h-4 w-4 text-muted-foreground" />}>
-                <div className="space-y-2">
-                  {scorecard.insights.map((ins, i) => (
-                    <InsightRow key={i} {...ins} />
-                  ))}
+                <div className="space-y-3">
+                  <ReviewTopline scorecard={scorecard} />
+                  <div className="border-t border-border pt-3 space-y-2">
+                    {scorecard.insights.map((ins, i) => (
+                      <InsightRow key={i} {...ins} />
+                    ))}
+                  </div>
                 </div>
               </ScorecardSection>
             )}
