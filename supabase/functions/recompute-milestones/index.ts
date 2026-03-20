@@ -35,6 +35,25 @@ Deno.serve(async (req) => {
 
     const userId = user.id;
 
+    // Rate limit: check last recompute time
+    const { data: lastProgress } = await supabase
+      .from("skill_milestone_progress")
+      .select("updated_at")
+      .eq("user_id", userId)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (lastProgress?.updated_at) {
+      const elapsed = Date.now() - new Date(lastProgress.updated_at).getTime();
+      if (elapsed < 10000) {
+        return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again in a few seconds." }), {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     // Fetch all active milestones
     const { data: milestones, error: mErr } = await supabase
       .from("skill_milestones")
@@ -281,7 +300,7 @@ Deno.serve(async (req) => {
     });
   } catch (err) {
     console.error("recompute-milestones error:", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
+    return new Response(JSON.stringify({ error: "Internal server error. Please try again later." }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
