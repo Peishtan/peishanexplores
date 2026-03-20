@@ -151,7 +151,10 @@ export function computeScorecard(
   // ── Consistency (weekly goals) ──
   const firstMonday = startOfWeek(quarter.start, { weekStartsOn: 1 });
   const lastMonday = startOfWeek(effectiveEnd, { weekStartsOn: 1 });
-  const weeksInQuarter = Math.max(Math.floor(differenceInCalendarDays(lastMonday, firstMonday) / 7) + 1, 1);
+  const totalQuarterWeeks = 13;
+  const weeksInQuarter = quarter.isCurrent
+    ? Math.max(Math.min(Math.floor(differenceInCalendarDays(lastMonday, firstMonday) / 7) + 1, totalQuarterWeeks), 1)
+    : totalQuarterWeeks;
 
   const checkWeeks = (check: (w: ReturnType<typeof getWeekData>) => boolean) => {
     let hit = 0;
