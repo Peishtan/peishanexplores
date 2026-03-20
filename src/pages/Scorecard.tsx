@@ -6,7 +6,7 @@ import { getAvailableQuarters, computeScorecard, type QuarterInfo, type Scorecar
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, XCircle, TrendingUp, Sparkles, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Ruler } from "lucide-react";
+import { CheckCircle2, XCircle, TrendingUp, Sparkles, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake } from "lucide-react";
 
 export default function Scorecard() {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
