@@ -140,15 +140,12 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const totalTargets = scorecard.targets.length;
 
   // ── Weighted grading model ──
-  // 45% Targets (outcomes)
   const targetScore = (targetsHit / Math.max(totalTargets, 1)) * 100;
 
-  // 25% Independent consistency (gym — no mileage target absorbs it)
   const gymCons = scorecard.consistency.find((c) => c.label === "Gym Sessions");
   const independentScore = gymCons?.pct ?? 0;
 
-  // 20% Dependent consistency (outdoor/kayak) — floor at 75% if related target hit
-  const outdoorCons = scorecard.consistency.find((c) => c.label === "Outdoor Outings");
+  const outdoorCons = scorecard.consistency.find((c) => c.label === "Outdoor Sessions");
   const kayakCons = scorecard.consistency.find((c) => c.label === "Kayak Sessions");
   const hikingTargetHit = scorecard.targets.find((t) => t.label.includes("Hiking"))?.hit ?? false;
   const kayakTargetHit = scorecard.targets.find((t) => t.label.includes("Kayak"))?.hit ?? false;
@@ -156,39 +153,27 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const kayakPct = kayakTargetHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
   const dependentScore = (outdoorPct + kayakPct) / 2;
 
-  // 10% Milestones — use cumulative achieved vs total catalog
   const milestoneScore = scorecard.totalMilestones > 0
     ? Math.min((scorecard.milestonesAchievedTotal / scorecard.totalMilestones) * 100, 100)
     : 100;
 
   const score = targetScore * 0.45 + independentScore * 0.25 + dependentScore * 0.20 + milestoneScore * 0.10;
 
-  const grade = score >= 93 ? "A" : score >= 90 ? "A-" : score >= 87 ? "B+" : score >= 83 ? "B" : score >= 80 ? "B-"
-    : score >= 77 ? "C+" : score >= 73 ? "C" : score >= 70 ? "C-" : score >= 60 ? "D" : "F";
-  const gradeColor = score >= 87 ? "text-done" : score >= 73 ? "text-amber" : "text-destructive";
+  const scoreColor = score >= 87 ? "text-done" : score >= 73 ? "text-amber" : "text-destructive";
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
     : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
-
-  // Generate review topline
-  const topline = buildTopline(targetsHit, totalTargets, gymCons?.pct ?? 0, dependentScore, milestoneScore, score);
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6 text-center">
       <p className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-        {scorecard.quarter.isCurrent ? "Current Quarter" : "Final Grade"}
+        {scorecard.quarter.isCurrent ? "Current Quarter" : "Final Score"}
       </p>
-      <p className={`font-display text-[72px] font-black leading-none ${gradeColor}`}>{grade}</p>
+      <p className={`font-display text-[72px] font-black leading-none ${scoreColor}`}>{Math.round(score)}%</p>
       <p className="font-mono-dm text-sm text-muted-foreground mt-1">{label}</p>
-      <p className="text-xs text-muted-foreground/80 mt-3 leading-relaxed max-w-[300px] mx-auto">{topline}</p>
       <div className="flex justify-center gap-6 mt-4">
         <div>
           <p className="text-lg font-bold text-foreground">{targetsHit}/{totalTargets}</p>
           <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Targets</p>
-        </div>
-        <div className="w-px bg-border" />
-        <div>
-          <p className="text-lg font-bold text-foreground">{Math.round(score)}%</p>
-          <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Score</p>
         </div>
       </div>
     </div>
