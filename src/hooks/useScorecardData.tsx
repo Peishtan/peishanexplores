@@ -182,6 +182,8 @@ export function computeScorecard(
   const longestHike = hikingLogs.length > 0 ? Math.max(...hikingLogs.map((a) => a.distance || 0)) : 0;
   const longestKayak = kayakLogs.length > 0 ? Math.max(...kayakLogs.map((a) => a.distance || 0)) : 0;
   const highestElevation = hikingLogs.length > 0 ? Math.max(...hikingLogs.map((a) => a.elevation_gain || 0)) : 0;
+  const xcSkiLogs = qActivities.filter((a) => a.type === "xc_skiing");
+  const xcSkiMiles = xcSkiLogs.reduce((s, a) => s + (a.distance || 0), 0);
 
   // Milestones achieved this quarter
   const qMilestones = milestones.filter(
@@ -201,8 +203,8 @@ export function computeScorecard(
   if (highestElevation > 0) {
     highlights.push({ icon: "mountain", label: "Peak Elevation Gain", value: `${highestElevation.toLocaleString()} ft` });
   }
-  if (totalMiles > 0) {
-    highlights.push({ icon: "ruler", label: "Total Miles", value: `${Math.round(totalMiles * 10) / 10} mi` });
+  if (xcSkiMiles > 0) {
+    highlights.push({ icon: "snowflake", label: "XC Ski Miles", value: `${Math.round(xcSkiMiles * 10) / 10} mi` });
   }
 
   // ── Strengths & Gaps ──
