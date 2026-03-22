@@ -329,13 +329,13 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
     : 100;
 
   const rows = [
-    { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: Math.round(targetScore * 0.45) },
-    { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: Math.round(independentScore * 0.25) },
-    { label: "Outdoor / Kayak Rhythm", weight: 20, value: Math.round(dependentScore), contribution: Math.round(dependentScore * 0.20) },
-    { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: Math.round(milestoneScore * 0.10) },
+    { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: targetScore * 0.45 },
+    { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: independentScore * 0.25 },
+    { label: "Outdoor / Kayak Rhythm", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
+    { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: milestoneScore * 0.10 },
   ];
 
-  const total = rows.reduce((s, r) => s + r.contribution, 0);
+  const total = Math.round(rows.reduce((s, r) => s + r.contribution, 0));
 
   return (
     <div className="space-y-2">
