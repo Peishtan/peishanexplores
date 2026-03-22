@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { startOfWeek, addWeeks, differenceInCalendarDays } from "date-fns";
+import { startOfWeek, addWeeks } from "date-fns";
 import { Activity, MILE_ACTIVITIES } from "./useActivities";
 import { SkillMilestoneProgress } from "./useSkillMilestones";
 import { Profile } from "./useProfile";
@@ -128,8 +128,6 @@ export function computeScorecard(
 ): ScorecardData {
   const qStartMs = quarter.start.getTime();
   const qEndMs = quarter.end.getTime();
-  const now = new Date();
-  const effectiveEnd = quarter.isCurrent ? now : quarter.end;
 
   // Filter activities for this quarter
   const qActivities = activities.filter((a) => {
@@ -150,11 +148,8 @@ export function computeScorecard(
 
   // ── Consistency (weekly goals) ──
   const firstMonday = startOfWeek(quarter.start, { weekStartsOn: 1 });
-  const lastMonday = startOfWeek(effectiveEnd, { weekStartsOn: 1 });
   const totalQuarterWeeks = 13;
-  const weeksInQuarter = quarter.isCurrent
-    ? Math.max(Math.min(Math.ceil(differenceInCalendarDays(effectiveEnd, firstMonday) / 7), totalQuarterWeeks), 1)
-    : totalQuarterWeeks;
+  const weeksInQuarter = totalQuarterWeeks;
 
   const checkWeeks = (check: (w: ReturnType<typeof getWeekData>) => boolean) => {
     let hit = 0;
