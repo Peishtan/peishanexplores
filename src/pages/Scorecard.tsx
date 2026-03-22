@@ -305,3 +305,70 @@ function InsightRow({ type, text }: { type: "strength" | "gap"; text: string }) 
     </div>
   );
 }
+
+function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
+  const [open, setOpen] = useState(false);
+
+  const targetsHit = scorecard.targets.filter((t) => t.hit).length;
+  const totalTargets = scorecard.targets.length;
+  const targetScore = (targetsHit / Math.max(totalTargets, 1)) * 100;
+
+  const gymCons = scorecard.consistency.find((c) => c.label === "Gym Sessions");
+  const independentScore = gymCons?.pct ?? 0;
+
+  const outdoorCons = scorecard.consistency.find((c) => c.label === "Outdoor Sessions");
+  const kayakCons = scorecard.consistency.find((c) => c.label === "Kayak Sessions");
+  const hikingTargetHit = scorecard.targets.find((t) => t.label.includes("Hiking"))?.hit ?? false;
+  const kayakTargetHit = scorecard.targets.find((t) => t.label.includes("Kayak"))?.hit ?? false;
+  const outdoorPct = hikingTargetHit ? Math.max(outdoorCons?.pct ?? 0, 75) : (outdoorCons?.pct ?? 0);
+  const kayakPct = kayakTargetHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
+  const dependentScore = (outdoorPct + kayakPct) / 2;
+
+  const milestoneScore = scorecard.totalMilestones > 0
+    ? Math.min((scorecard.milestonesAchievedTotal / scorecard.totalMilestones) * 100, 100)
+    : 100;
+
+  const rows = [
+    { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: Math.round(targetScore * 0.45) },
+    { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: Math.round(independentScore * 0.25) },
+    { label: "Outdoor / Kayak Rhythm", weight: 20, value: Math.round(dependentScore), contribution: Math.round(dependentScore * 0.20) },
+    { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: Math.round(milestoneScore * 0.10) },
+  ];
+
+  const total = rows.reduce((s, r) => s + r.contribution, 0);
+
+  return (
+    <div className="space-y-2">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 w-full"
+      >
+        <Info className="h-4 w-4 text-muted-foreground" />
+        <span className="font-mono-dm text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+          How the score works
+        </span>
+      </button>
+      {open && (
+        <div className="rounded-2xl border border-border bg-card p-4 space-y-3 animate-fade-slide-up">
+          <div className="space-y-2">
+            {rows.map((r) => (
+              <div key={r.label} className="flex items-center justify-between text-sm">
+                <span className="text-foreground/80">{r.label}</span>
+                <span className="font-mono-dm text-xs text-muted-foreground">
+                  {r.value}% × {r.weight}% = <span className="text-foreground font-bold">{r.contribution}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-border pt-2 flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">Total</span>
+            <span className="font-mono-dm text-sm font-bold text-foreground">{total}%</span>
+          </div>
+          <p className="text-[11px] text-muted-foreground leading-relaxed">
+            Outdoor & kayak rhythm scores get a 75% floor when the corresponding distance target is met.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
