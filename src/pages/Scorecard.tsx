@@ -6,7 +6,7 @@ import { getAvailableQuarters, computeScorecard, type QuarterInfo, type Scorecar
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, XCircle, TrendingUp, Sparkles, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake } from "lucide-react";
+import { CheckCircle2, XCircle, TrendingUp, Sparkles, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin } from "lucide-react";
 
 export default function Scorecard() {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
@@ -76,51 +76,22 @@ export default function Scorecard() {
             )}
 
             {/* ── Highlights ── */}
-            {scorecard.highlights.length > 0 && (
-              <ScorecardSection title="Highlights" icon={<Trophy className="h-4 w-4 text-muted-foreground" />}>
+            <ScorecardSection title="Highlights" icon={<Trophy className="h-4 w-4 text-muted-foreground" />}>
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                <HighlightCard icon="activity" label="Activities" value={scorecard.totalActivities.toString()} />
+                <HighlightCard icon="miles" label="Miles" value={scorecard.totalMiles.toString()} />
+                <HighlightCard icon="elevation" label="ft Elevation" value={scorecard.totalElevation.toLocaleString()} />
+              </div>
+              {scorecard.highlights.length > 0 && (
                 <div className="grid grid-cols-2 gap-3">
                   {scorecard.highlights.map((h, i) => (
                     <HighlightCard key={i} {...h} />
                   ))}
                 </div>
+              )}
             </ScorecardSection>
-            )}
 
             {/* ── Targets ── */}
-            <ScorecardSection title="Targets" icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}>
-              <div className="space-y-4">
-                {scorecard.targets.map((t, i) => (
-                  <TargetRow key={i} {...t} />
-                ))}
-              </div>
-            </ScorecardSection>
-
-            {/* ── Consistency ── */}
-            <ScorecardSection title="Consistency" icon={<CheckCircle2 className="h-4 w-4 text-muted-foreground" />}>
-              <div className="space-y-4">
-                {scorecard.consistency.map((c, i) => (
-                  <ConsistencyRow key={i} {...c} />
-                ))}
-              </div>
-            </ScorecardSection>
-
-            {/* ── Summary Stats ── */}
-            <div className="rounded-xl bg-secondary/50 border border-border p-4">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{scorecard.totalActivities}</p>
-                  <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Activities</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{scorecard.totalMiles}</p>
-                  <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Miles</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{scorecard.totalElevation.toLocaleString()}</p>
-                  <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">ft Elevation</p>
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
@@ -288,6 +259,9 @@ const highlightIcons: Record<string, React.ReactNode> = {
   waves: <Waves className="h-5 w-5 text-muted-foreground" />,
   mountain: <Mountain className="h-5 w-5 text-muted-foreground" />,
   snowflake: <Snowflake className="h-5 w-5 text-muted-foreground" />,
+  activity: <Activity className="h-5 w-5 text-muted-foreground" />,
+  miles: <Footprints className="h-5 w-5 text-muted-foreground" />,
+  elevation: <MapPin className="h-5 w-5 text-muted-foreground" />,
 };
 
 function HighlightCard({ icon, label, value }: { icon: string; label: string; value: string }) {
