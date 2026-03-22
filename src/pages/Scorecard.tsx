@@ -92,6 +92,25 @@ export default function Scorecard() {
             </ScorecardSection>
 
             {/* ── Targets ── */}
+            <ScorecardSection title="Targets" icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}>
+              <div className="space-y-4">
+                {scorecard.targets.map((t, i) => (
+                  <TargetRow key={i} {...t} />
+                ))}
+              </div>
+            </ScorecardSection>
+
+            {/* ── Consistency ── */}
+            <ScorecardSection title="Consistency" icon={<CheckCircle2 className="h-4 w-4 text-muted-foreground" />}>
+              <div className="space-y-4">
+                {scorecard.consistency.map((c, i) => (
+                  <ConsistencyRow key={i} {...c} />
+                ))}
+              </div>
+            </ScorecardSection>
+
+            {/* ── Score Formula ── */}
+            <ScoreFormula scorecard={scorecard} />
           </div>
         )}
 
