@@ -128,8 +128,6 @@ export function computeScorecard(
 ): ScorecardData {
   const qStartMs = quarter.start.getTime();
   const qEndMs = quarter.end.getTime();
-  const now = new Date();
-  const effectiveEnd = quarter.isCurrent ? now : quarter.end;
 
   // Filter activities for this quarter
   const qActivities = activities.filter((a) => {
