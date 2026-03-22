@@ -259,6 +259,9 @@ const highlightIcons: Record<string, React.ReactNode> = {
   waves: <Waves className="h-5 w-5 text-muted-foreground" />,
   mountain: <Mountain className="h-5 w-5 text-muted-foreground" />,
   snowflake: <Snowflake className="h-5 w-5 text-muted-foreground" />,
+  activity: <Activity className="h-5 w-5 text-muted-foreground" />,
+  miles: <Footprints className="h-5 w-5 text-muted-foreground" />,
+  elevation: <MapPin className="h-5 w-5 text-muted-foreground" />,
 };
 
 function HighlightCard({ icon, label, value }: { icon: string; label: string; value: string }) {
