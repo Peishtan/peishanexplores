@@ -358,8 +358,6 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
                   {r.value}% × {r.weight}% = <span className="text-foreground font-bold">{Math.round(r.contribution)}</span>
                 </span>
               </div>
-                </span>
-              </div>
             ))}
           </div>
           <div className="border-t border-border pt-2 flex items-center justify-between">
