@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { startOfWeek, addWeeks, differenceInCalendarDays } from "date-fns";
+import { startOfWeek, addWeeks } from "date-fns";
 import { Activity, MILE_ACTIVITIES } from "./useActivities";
 import { SkillMilestoneProgress } from "./useSkillMilestones";
 import { Profile } from "./useProfile";
