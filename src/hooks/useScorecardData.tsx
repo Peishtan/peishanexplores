@@ -153,7 +153,7 @@ export function computeScorecard(
   const lastMonday = startOfWeek(effectiveEnd, { weekStartsOn: 1 });
   const totalQuarterWeeks = 13;
   const weeksInQuarter = quarter.isCurrent
-    ? Math.max(Math.min(Math.floor(differenceInCalendarDays(lastMonday, firstMonday) / 7) + 1, totalQuarterWeeks), 1)
+    ? Math.max(Math.min(Math.ceil(differenceInCalendarDays(effectiveEnd, firstMonday) / 7), totalQuarterWeeks), 1)
     : totalQuarterWeeks;
 
   const checkWeeks = (check: (w: ReturnType<typeof getWeekData>) => boolean) => {
