@@ -355,7 +355,9 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
               <div key={r.label} className="flex items-center justify-between text-sm">
                 <span className="text-foreground/80">{r.label}</span>
                 <span className="font-mono-dm text-xs text-muted-foreground">
-                  {r.value}% × {r.weight}% = <span className="text-foreground font-bold">{r.contribution}</span>
+                  {r.value}% × {r.weight}% = <span className="text-foreground font-bold">{Math.round(r.contribution)}</span>
+                </span>
+              </div>
                 </span>
               </div>
             ))}
