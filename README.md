@@ -1,73 +1,100 @@
-# Welcome to your Lovable project
+# PS FitTrackr
 
-## Project info
+A bespoke fitness performance dashboard for multi-sport endurance athletes. Tracks sea kayaking, hiking, XC skiing, and strength training across 12-week quarterly cycles — with a focus on consistency, skill progression, and momentum rather than raw volume.
 
-**URL**: [https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID](https://peishanexplores.lovable.app/)
+---
 
-## How can I edit this code?
+## Why It Exists
 
-There are several ways of editing your application.
+Most fitness apps optimize for streaks and step counts. PS FitTrackr is built around a different set of questions: *Am I trending up or losing steam? Am I hitting my weekly rhythm? Have I unlocked the next level of physical capability?*
 
-**Use Lovable**
+Three principles shape every design decision:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+**Quarterly cycles.** Fitness targets run in 12-week blocks aligned to seasonal outdoor objectives (Q1 Jan–Mar, Q2 Apr–Jun, etc.). A quarter is long enough to build real fitness. Short enough to stay honest.
 
-Changes made via Lovable will be committed automatically to this repo.
+**Weekly rhythm.** The app tracks binary completion of weekly habits — 1 paddle/week, 3 gym sessions/week — not just cumulative distance. Showing up consistently matters more than occasional big efforts.
 
-**Use your preferred IDE**
+**Skill milestones.** Progression unlocks specific physical achievements organized by difficulty (Beginner → Intermediate → Advanced). A 10-mile hike. 2,000 ft of elevation on a single outing. A 15-mile paddle. These move the focus from vanity metrics to functional capability.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Screens
 
-Follow these steps:
+| Dashboard | Logs | Targets | Scorecard |
+|-----------|------|---------|-----------|
+| Q1 momentum, rolling averages, weekly habits | Full activity history with filters | Quarterly goals + milestone tracker | Season review with consistency score |
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Key Features
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Momentum Engine
+Calculates a 4-week rolling average for mileage and elevation. More useful than year-to-date totals — it shows whether fitness is building or declining right now.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Multi-Sport Tracking
+- **Sea Kayaking** — distance and outing frequency
+- **Hiking / XC Ski** — vertical gain and weekly consistency
+- **Gym** — session count as the injury-prevention baseline
+
+### Automated Scorecard
+Each quarter generates a weighted percentage score (e.g. *84% — Strong*) based on distance targets hit, milestones unlocked, and weekly rhythm adherence. The scorecard surfaces the single biggest lever to improve next quarter.
+
+### Skill Milestones
+Achievements unlock as real physical benchmarks are hit — not based on time or streaks. Organized into Beginner, Intermediate, and Advanced tiers across hiking, paddling, and elevation.
+
+---
+
+## Tech Stack
+
+| Layer | Choice |
+|-------|--------|
+| Frontend | React + TypeScript, Vite |
+| Backend / DB | Supabase (auth, real-time sync, relational storage) |
+| Styling | Dark-mode, high-contrast CSS — information density without clutter |
+| Logic | Custom hooks in `src/hooks` for momentum calculations and trend analysis |
+
+---
+
+## Project Structure
+
+```
+src/
+├── components/         # Reusable UI: charts, milestone cards, log entries
+├── hooks/              # Business logic: quarterly aggregation, trend analysis
+├── integrations/
+│   └── supabase/       # Client config and schema definitions
+├── lib/                # Shared utilities
+└── pages/
+    ├── Dashboard.tsx   # Q1 overview, momentum metrics, weekly habits
+    ├── Activities.tsx  # Full activity log with sport and date filters
+    ├── Targets.tsx     # Quarterly goal setting and milestone tracking
+    ├── Scorecard.tsx   # Season review and consistency score
+    ├── Benchmarks.tsx  # Personal bests and comparative data
+    └── Onboarding.tsx  # First-run setup
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Getting Started
 
-**Use GitHub Codespaces**
+```bash
+# Clone and install
+git clone https://github.com/your-username/ps-fittrackr.git
+cd ps-fittrackr
+bun install          # or npm install
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Configure environment
+cp .env.example .env
+# Add your Supabase URL and anon key to .env
 
-## What technologies are used for this project?
+# Run locally
+bun run dev
+```
 
-This project is built with:
+Requires a [Supabase](https://supabase.com) project. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to your `.env`.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## Status
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Active development. Currently tracking Q1 2026 — Week 13.
