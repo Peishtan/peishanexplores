@@ -190,7 +190,27 @@ export default function Activities() {
     })
     .sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
 
-  // Summary stats
+  const downloadCsv = () => {
+    if (!filtered?.length) return;
+    const headers = ["Date", "Sport", "Route", "Miles", "Elevation (ft)", "Notes"];
+    const rows = filtered.map((a) => [
+      format(new Date(a.start_time), "yyyy-MM-dd"),
+      getSportInfo(a.type).label,
+      (a as any).route || "",
+      a.distance ?? "",
+      a.elevation_gain ?? "",
+      (a.notes || "").replace(/"/g, '""'),
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `activities-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const hikeCount = filtered?.filter(a => a.type === "hiking").length ?? 0;
   const kayakCount = filtered?.filter(a => a.type === "kayaking").length ?? 0;
   const skiCount = filtered?.filter(a => a.type === "xc_skiing").length ?? 0;
