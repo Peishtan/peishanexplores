@@ -3,7 +3,7 @@ import { useActivities, useDeleteActivity, Activity } from "@/hooks/useActivitie
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { format } from "date-fns";
-import { Trash2, Edit2, Plus, Loader2, Waves, Footprints, Snowflake, Dumbbell } from "lucide-react";
+import { Trash2, Edit2, Plus, Loader2, Waves, Footprints, Snowflake, Dumbbell, Download } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -190,7 +190,27 @@ export default function Activities() {
     })
     .sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
 
-  // Summary stats
+  const downloadCsv = () => {
+    if (!filtered?.length) return;
+    const headers = ["Date", "Sport", "Route", "Miles", "Elevation (ft)", "Notes"];
+    const rows = filtered.map((a) => [
+      format(new Date(a.start_time), "yyyy-MM-dd"),
+      getSportInfo(a.type).label,
+      (a as any).route || "",
+      a.distance ?? "",
+      a.elevation_gain ?? "",
+      (a.notes || "").replace(/"/g, '""'),
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `activities-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const hikeCount = filtered?.filter(a => a.type === "hiking").length ?? 0;
   const kayakCount = filtered?.filter(a => a.type === "kayaking").length ?? 0;
   const skiCount = filtered?.filter(a => a.type === "xc_skiing").length ?? 0;
@@ -255,8 +275,16 @@ export default function Activities() {
           {/* Right: Log List */}
           <div>
             {/* Section Label */}
-            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 md:px-0 mt-6 md:mt-5 mb-3">
-              {DATE_RANGES.find(r => r.id === dateRange)?.label ?? "Activities"}
+            <div className="flex items-center justify-between px-6 md:px-0 mt-6 md:mt-5 mb-3">
+              <span className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog">
+                {DATE_RANGES.find(r => r.id === dateRange)?.label ?? "Activities"}
+              </span>
+              {filtered && filtered.length > 0 && (
+                <button onClick={downloadCsv} className="flex items-center gap-1.5 font-mono-dm text-[10px] uppercase tracking-[0.1em] text-fog hover:text-moss-light transition-colors">
+                  <Download className="h-3 w-3" />
+                  CSV
+                </button>
+              )}
             </div>
 
             {/* Log List */}
