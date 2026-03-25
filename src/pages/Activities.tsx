@@ -63,17 +63,6 @@ export default function Activities() {
   const [form, setForm] = useState<LogForm>({
     route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking",
   });
-  const { data: activities, isLoading } = useActivities();
-  const deleteActivity = useDeleteActivity();
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [sportFilter, setSportFilter] = useState("all");
-  const [dateRange, setDateRange] = useState("30");
-  const [form, setForm] = useState<LogForm>({
-    route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking",
-  });
 
   const resetForm = () => {
     setForm({ route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking" });
