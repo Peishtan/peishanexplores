@@ -275,8 +275,16 @@ export default function Activities() {
           {/* Right: Log List */}
           <div>
             {/* Section Label */}
-            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 md:px-0 mt-6 md:mt-5 mb-3">
-              {DATE_RANGES.find(r => r.id === dateRange)?.label ?? "Activities"}
+            <div className="flex items-center justify-between px-6 md:px-0 mt-6 md:mt-5 mb-3">
+              <span className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog">
+                {DATE_RANGES.find(r => r.id === dateRange)?.label ?? "Activities"}
+              </span>
+              {filtered && filtered.length > 0 && (
+                <button onClick={downloadCsv} className="flex items-center gap-1.5 font-mono-dm text-[10px] uppercase tracking-[0.1em] text-fog hover:text-moss-light transition-colors">
+                  <Download className="h-3 w-3" />
+                  CSV
+                </button>
+              )}
             </div>
 
             {/* Log List */}
