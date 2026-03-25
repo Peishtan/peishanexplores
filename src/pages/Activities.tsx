@@ -51,28 +51,18 @@ function getSportInfo(type: string) {
   return SPORTS.find((s) => s.id === type) ?? SPORTS[0];
 }
 
-  const downloadCsv = () => {
-    if (!filtered?.length) return;
-    const headers = ["Date", "Sport", "Route", "Miles", "Elevation (ft)", "Notes"];
-    const rows = filtered.map((a) => [
-      format(new Date(a.start_time), "yyyy-MM-dd"),
-      getSportInfo(a.type).label,
-      (a as any).route || "",
-      a.distance ?? "",
-      a.elevation_gain ?? "",
-      (a.notes || "").replace(/"/g, '""'),
-    ]);
-    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `activities-${format(new Date(), "yyyy-MM-dd")}.csv`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
 export default function Activities() {
+  const { data: activities, isLoading } = useActivities();
+  const deleteActivity = useDeleteActivity();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [sportFilter, setSportFilter] = useState("all");
+  const [dateRange, setDateRange] = useState("30");
+  const [form, setForm] = useState<LogForm>({
+    route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking",
+  });
   const { data: activities, isLoading } = useActivities();
   const deleteActivity = useDeleteActivity();
   const { user } = useAuth();
