@@ -3,7 +3,7 @@ import { useActivities, useDeleteActivity, Activity } from "@/hooks/useActivitie
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { format } from "date-fns";
-import { Trash2, Edit2, Plus, Loader2, Waves, Footprints, Snowflake, Dumbbell } from "lucide-react";
+import { Trash2, Edit2, Plus, Loader2, Waves, Footprints, Snowflake, Dumbbell, Download } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
