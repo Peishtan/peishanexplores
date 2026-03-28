@@ -1,13 +1,14 @@
 import { useProfile, type Profile } from "@/hooks/useProfile";
 import { format, startOfWeek } from "date-fns";
 import { useActivities, type Activity } from "@/hooks/useActivities";
-import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type MomentumData, type ElevSparkPoint, type WeekResult } from "@/hooks/useDashboardInsights";
+import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type MomentumData, type ElevSparkPoint, type WeekResult, type WeekActivitySummary } from "@/hooks/useDashboardInsights";
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
-import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell } from "lucide-react";
+import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 export default function Dashboard() {
   const { data: profile } = useProfile();
@@ -281,6 +282,38 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
   );
 }
 
+/* ── Activity type label helper ── */
+const TYPE_LABELS: Record<string, string> = {
+  kayaking: "Paddle", hiking: "Hike", xc_skiing: "XC Ski",
+  peloton: "Peloton", orange_theory: "OTF",
+};
+
+/* ── Week Hover Content ── */
+function WeekHoverContent({ wr, weekIdx }: { wr: WeekResult; weekIdx: number }) {
+  return (
+    <div className="min-w-[160px]">
+      <p className="font-mono-dm text-[10px] text-fog/70 tracking-[0.1em] uppercase mb-1.5">
+        W{weekIdx + 1} · {wr.weekLabel}
+      </p>
+      {wr.activities.length === 0 ? (
+        <p className="text-[11px] text-fog/50 italic">No sessions</p>
+      ) : (
+        <div className="space-y-1">
+          {wr.activities.map((a, j) => (
+            <div key={j} className="flex items-center justify-between gap-3 text-[11px]">
+              <span className="text-foreground">{TYPE_LABELS[a.type] ?? a.type}</span>
+              <span className="font-mono-dm text-fog/60 text-[10px]">
+                {a.distance ? `${a.distance} mi` : `${a.duration}m`}
+                {a.elevation ? ` · ${a.elevation} ft` : ""}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Weekly Dot Card ── */
 function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor, missedColor, missedBorder }: {
   icon: React.ReactNode; name: string; rule: string; weekResults: WeekResult[]; total: number; streak: number;
@@ -309,25 +342,32 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           const isPast = i < total - 1;
           const isCurrent = i === total - 1;
           const wasHit = wr?.hit ?? false;
-          const tooltip = wr
-            ? `W${i + 1}: ${wr.weekLabel}\n${wr.count} session${wr.count !== 1 ? 's' : ''} ${wasHit ? '✓' : '✗'}`
-            : `W${i + 1}`;
-          return (
-            <div key={i}
+          const boxStyle = isPast
+            ? wasHit
+              ? { backgroundColor: accentColor }
+              : { backgroundColor: missedColor, border: `1px solid ${missedBorder}` }
+            : isCurrent
+              ? wasHit
+                ? { backgroundColor: accentColor }
+                : { border: `1.5px solid ${accentColor}`, background: 'transparent' }
+              : { backgroundColor: 'rgba(255,255,255,0.05)' };
+
+          const box = (
+            <div
               className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
-              title={tooltip}
-              style={
-                isPast
-                  ? wasHit
-                    ? { backgroundColor: accentColor }
-                    : { backgroundColor: missedColor, border: `1px solid ${missedBorder}` }
-                  : isCurrent
-                    ? wasHit
-                      ? { backgroundColor: accentColor }
-                      : { border: `1.5px solid ${accentColor}`, background: 'transparent' }
-                    : { backgroundColor: 'rgba(255,255,255,0.05)' }
-              }
+              style={boxStyle}
             />
+          );
+
+          if (!wr || (!isPast && !isCurrent)) return <div key={i}>{box}</div>;
+
+          return (
+            <HoverCard key={i} openDelay={200} closeDelay={100}>
+              <HoverCardTrigger asChild>{box}</HoverCardTrigger>
+              <HoverCardContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
+                <WeekHoverContent wr={wr} weekIdx={i} />
+              </HoverCardContent>
+            </HoverCard>
           );
         })}
       </div>
@@ -371,11 +411,9 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
           const isPast = weekIdx < total - 1;
           const isCurrent = weekIdx === total - 1;
           const isFuture = weekIdx >= total;
-          const tooltip = wr
-            ? `W${weekIdx + 1}: ${wr.weekLabel}\n${wr.count} session${wr.count !== 1 ? 's' : ''} ${wr.hit ? '✓' : '✗'}`
-            : `W${weekIdx + 1}`;
-          return (
-            <div key={weekIdx} className="flex flex-col-reverse gap-0.5 cursor-default" title={tooltip}>
+
+          const pips = (
+            <div className="flex flex-col-reverse gap-0.5 cursor-default">
               {Array.from({ length: maxPerWeek }, (_, pip) => {
                 const style: React.CSSProperties = {};
                 let cls = "aspect-square rounded-[2px] ";
@@ -400,6 +438,17 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
                 return <div key={pip} className={cls} style={style} />;
               })}
             </div>
+          );
+
+          if (!wr || isFuture) return <div key={weekIdx}>{pips}</div>;
+
+          return (
+            <HoverCard key={weekIdx} openDelay={200} closeDelay={100}>
+              <HoverCardTrigger asChild>{pips}</HoverCardTrigger>
+              <HoverCardContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
+                <WeekHoverContent wr={wr} weekIdx={weekIdx} />
+              </HoverCardContent>
+            </HoverCard>
           );
         })}
       </div>

@@ -9,10 +9,19 @@ export interface WeekData {
   water: number;
 }
 
+export interface WeekActivitySummary {
+  type: string;
+  date: string; // formatted e.g. "Jan 6"
+  distance: number | null;
+  elevation: number | null;
+  duration: number;
+}
+
 export interface WeekResult {
   hit: boolean;
   count: number;
   weekLabel: string; // e.g. "Jan 6 – 12"
+  activities: WeekActivitySummary[];
 }
 
 export interface QuarterChallenge {
@@ -185,7 +194,7 @@ export function useDashboardInsights(
     const currentMonday = startOfWeek(now, { weekStartsOn: 1 });
     // Use calendar days to avoid DST-related off-by-one errors
     const weeksInQuarter = Math.floor(differenceInCalendarDays(currentMonday, firstMonday) / 7) + 1;
-    const getWeekResults = (check: (w: WeekData) => boolean, countFn: (w: WeekData) => number): WeekResult[] => {
+    const getWeekResults = (check: (w: WeekData) => boolean, countFn: (w: WeekData) => number, filterTypes: string[]): WeekResult[] => {
       const results: WeekResult[] = [];
       for (let i = 0; i < weeksInQuarter; i++) {
         const ws = addWeeks(firstMonday, i);
@@ -193,10 +202,24 @@ export function useDashboardInsights(
         const effectiveStart = Math.max(ws.getTime(), qStartMs);
         const weekData = getWeekData(activities, effectiveStart, we.getTime());
         const endDisplay = new Date(we.getTime() - 86400000); // Sunday
+        const weekActivities = activities
+          .filter(a => {
+            const t = new Date(a.start_time).getTime();
+            return t >= effectiveStart && t < we.getTime() && filterTypes.includes(a.type);
+          })
+          .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+          .map(a => ({
+            type: a.type,
+            date: format(new Date(a.start_time), "MMM d"),
+            distance: a.distance,
+            elevation: a.elevation_gain,
+            duration: a.duration,
+          }));
         results.push({
           hit: check(weekData),
           count: countFn(weekData),
           weekLabel: `${format(new Date(effectiveStart), "MMM d")} – ${format(endDisplay, "MMM d")}`,
+          activities: weekActivities,
         });
       }
       return results;
@@ -280,9 +303,9 @@ export function useDashboardInsights(
       lastWeek, weekDelta: wtd.miles - lastWeek.miles, threeWeekAvg: threeWeekMiles / 3, streaks,
       elevationSpark,
       quarterWeeklyGoals: {
-        kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak, (w) => w.water), total: weeksInQuarter },
-        outdoor: { weekResults: getWeekResults((w) => w.outdoor >= goals.outdoor, (w) => w.outdoor), total: weeksInQuarter },
-        classes: { weekResults: getWeekResults((w) => w.classes >= goals.exercises, (w) => w.classes), total: weeksInQuarter },
+        kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak, (w) => w.water, ["kayaking"]), total: weeksInQuarter },
+        outdoor: { weekResults: getWeekResults((w) => w.outdoor >= goals.outdoor, (w) => w.outdoor, ["hiking", "xc_skiing"]), total: weeksInQuarter },
+        classes: { weekResults: getWeekResults((w) => w.classes >= goals.exercises, (w) => w.classes, ["peloton", "orange_theory"]), total: weeksInQuarter },
       },
       kayakChallenge, hikingChallenge,
       hikingTotal: { miles: hikingMiles, count: hikingLogs.length, avgElevation: Math.round(avgElevation), maxElevation },
