@@ -15,6 +15,7 @@ export interface Activity {
   intensity: "low" | "moderate" | "high" | "extreme";
   notes: string | null;
   elevation_gain: number | null;
+  route: string | null;
   created_at: string;
 }
 

@@ -14,11 +14,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
 
 const SPORTS = [
-  { id: "kayaking" as const, label: "Kayak", icon: Waves, pillClass: "bg-[rgba(100,160,210,0.15)] text-[#7ab4d4] border-[rgba(100,160,210,0.25)]" },
-  { id: "hiking" as const, label: "Hike", icon: Footprints, pillClass: "bg-[rgba(122,184,124,0.15)] text-moss-light border-[rgba(122,184,124,0.25)]" },
-  { id: "xc_skiing" as const, label: "XC Ski", icon: Snowflake, pillClass: "bg-[rgba(180,180,220,0.15)] text-[#b0b4e0] border-[rgba(180,180,220,0.25)]" },
-  { id: "orange_theory" as const, label: "Gym", icon: Dumbbell, pillClass: "bg-[rgba(212,150,58,0.15)] text-amber border-[rgba(212,150,58,0.25)]" },
-  { id: "peloton" as const, label: "Gym", icon: Dumbbell, pillClass: "bg-[rgba(212,150,58,0.15)] text-amber border-[rgba(212,150,58,0.25)]" },
+  { id: "kayaking" as const, label: "Kayak", icon: Waves, pillClass: "bg-[rgba(100,160,210,0.15)] text-[#7ab4d4] border-[rgba(100,160,210,0.25)]", accentHex: "#7ab4d4" },
+  { id: "hiking" as const, label: "Hike", icon: Footprints, pillClass: "bg-[rgba(122,184,124,0.15)] text-moss-light border-[rgba(122,184,124,0.25)]", accentHex: "#7ab87c" },
+  { id: "xc_skiing" as const, label: "XC Ski", icon: Snowflake, pillClass: "bg-[rgba(180,180,220,0.15)] text-[#b0b4e0] border-[rgba(180,180,220,0.25)]", accentHex: "#b0b4e0" },
+  { id: "orange_theory" as const, label: "Gym", icon: Dumbbell, pillClass: "bg-[rgba(212,150,58,0.15)] text-amber border-[rgba(212,150,58,0.25)]", accentHex: "#d4963a" },
+  { id: "peloton" as const, label: "Gym", icon: Dumbbell, pillClass: "bg-[rgba(212,150,58,0.15)] text-amber border-[rgba(212,150,58,0.25)]", accentHex: "#d4963a" },
 ];
 
 const FILTERS = [
@@ -58,6 +58,7 @@ export default function Activities() {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [sportFilter, setSportFilter] = useState("all");
   const [dateRange, setDateRange] = useState("30");
   const [form, setForm] = useState<LogForm>({
@@ -294,42 +295,76 @@ export default function Activities() {
                   <Loader2 className="h-8 w-8 animate-spin text-moss-light" />
                 </div>
               ) : filtered?.length === 0 ? (
-                <p className="font-mono-dm text-xs text-[rgba(255,255,255,0.12)] italic text-center py-8">
-                  No activities found.
-                </p>
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Footprints className="h-10 w-10 text-fog/20 mb-3" />
+                  <p className="text-sm text-fog mb-1.5">No activities yet</p>
+                  <button onClick={openAdd} className="text-sm font-semibold text-moss-light hover:underline">
+                    Log your first activity →
+                  </button>
+                </div>
               ) : (
-                filtered?.map((a) => {
+              filtered?.map((a) => {
                   const sport = getSportInfo(a.type);
+                  const isExpanded = expandedId === a.id;
                   return (
-                    <div key={a.id} className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[14px] p-3.5 flex items-center gap-3.5 hover:border-[rgba(255,255,255,0.14)] transition-colors group">
-                      <span className={`font-mono-dm text-[9px] tracking-[0.15em] uppercase px-2 py-1 rounded-md border flex-shrink-0 w-[52px] text-center ${sport.pillClass}`}>
-                        {sport.label}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-display text-[15px] font-bold leading-tight truncate">
-                          {(a as any).route || sport.label}
-                        </p>
-                        <p className="font-mono-dm text-[10px] text-fog mt-0.5 tracking-[0.06em]">
-                          {format(new Date(a.start_time), "EEE, MMM d")}
-                        </p>
+                    <div
+                      key={a.id}
+                      className={`bg-card border rounded-[14px] overflow-hidden transition-colors group ${
+                        isExpanded ? "border-[rgba(255,255,255,0.14)]" : "border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.14)]"
+                      }`}
+                      style={{ borderLeft: `3px solid ${sport.accentHex}` }}
+                    >
+                      <div
+                        className="p-3.5 flex items-center gap-3.5 cursor-pointer"
+                        onClick={() => setExpandedId(isExpanded ? null : a.id)}
+                      >
+                        <span className={`font-mono-dm text-[9px] tracking-[0.15em] uppercase px-2 py-1 rounded-md border flex-shrink-0 w-[52px] text-center ${sport.pillClass}`}>
+                          {sport.label}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-display text-[15px] font-bold leading-tight truncate">
+                            {a.route || sport.label}
+                          </p>
+                          <p className="font-mono-dm text-[10px] text-fog mt-0.5 tracking-[0.06em]">
+                            {format(new Date(a.start_time), "EEE, MMM d")}
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
+                          {a.distance ? (
+                            <span className="font-display text-[22px] font-black leading-none tracking-tight">{a.distance}</span>
+                          ) : null}
+                          {a.distance ? (
+                            <span className="font-mono-dm text-[9px] text-fog tracking-[0.08em]">mi</span>
+                          ) : null}
+                          {a.elevation_gain ? (
+                            <span className="font-mono-dm text-[10px] text-fog">{a.elevation_gain.toLocaleString()} ft</span>
+                          ) : null}
+                        </div>
+                        {/* Desktop hover actions */}
+                        <div className="hidden md:flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                          <button onClick={(e) => { e.stopPropagation(); openEdit(a); }} className="text-fog hover:text-moss-light transition-colors">
+                            <Edit2 className="h-3.5 w-3.5" />
+                          </button>
+                          <button onClick={(e) => { e.stopPropagation(); handleDelete(a.id); }} className="text-fog hover:text-amber transition-colors">
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
-                        {a.distance ? (
-                          <span className="font-display text-[17px] font-bold leading-none">{a.distance}</span>
-                        ) : null}
-                        {a.elevation_gain ? (
-                          <span className="font-mono-dm text-[10px] text-fog">{a.elevation_gain.toLocaleString()} ft</span>
-                        ) : null}
-                      </div>
-                      {/* Edit/Delete on hover */}
-                      <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                        <button onClick={() => openEdit(a)} className="text-fog hover:text-moss-light transition-colors">
-                          <Edit2 className="h-3.5 w-3.5" />
-                        </button>
-                        <button onClick={() => handleDelete(a.id)} className="text-fog hover:text-amber transition-colors">
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
+                      {/* Mobile expanded actions */}
+                      {isExpanded && (
+                        <div className="md:hidden flex items-center gap-2 px-3.5 pb-3 pt-0 border-t border-[rgba(255,255,255,0.04)] mt-0 animate-fade-slide-up" style={{ animationDuration: '0.2s' }}>
+                          {a.notes && (
+                            <p className="text-[11px] text-fog font-light flex-1 truncate">{a.notes}</p>
+                          )}
+                          {!a.notes && <span className="flex-1" />}
+                          <button onClick={() => openEdit(a)} className="flex items-center gap-1.5 text-[10px] font-mono-dm uppercase tracking-[0.1em] text-fog hover:text-moss-light transition-colors px-2.5 py-1.5 rounded-lg bg-[rgba(255,255,255,0.04)]">
+                            <Edit2 className="h-3 w-3" /> Edit
+                          </button>
+                          <button onClick={() => handleDelete(a.id)} className="flex items-center gap-1.5 text-[10px] font-mono-dm uppercase tracking-[0.1em] text-fog hover:text-amber transition-colors px-2.5 py-1.5 rounded-lg bg-[rgba(255,255,255,0.04)]">
+                            <Trash2 className="h-3 w-3" /> Delete
+                          </button>
+                        </div>
+                      )}
                     </div>
                   );
                 })
@@ -344,7 +379,7 @@ export default function Activities() {
       {/* FAB */}
       <button
         onClick={openAdd}
-        className="fixed bottom-[84px] right-6 md:right-[calc(50%-420px)] w-[52px] h-[52px] rounded-full bg-moss-light text-ink text-[28px] font-light flex items-center justify-center z-[90] hover:scale-105 transition-transform"
+        className="fixed bottom-[96px] right-6 md:right-[calc(50%-420px)] w-[52px] h-[52px] rounded-full bg-moss-light text-ink text-[28px] font-light flex items-center justify-center z-[90] hover:scale-105 transition-transform"
         style={{ boxShadow: '0 4px 20px rgba(122,184,124,0.35)' }}
       >
         +

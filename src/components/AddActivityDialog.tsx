@@ -45,6 +45,7 @@ export default function AddActivityDialog() {
         intensity: "moderate",
         notes: notes.trim() || null,
         elevation_gain: null,
+        route: null,
       });
       toast.success("Activity logged! 🎉");
       setOpen(false);
