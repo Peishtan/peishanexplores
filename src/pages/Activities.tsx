@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useActivities, useDeleteActivity, Activity } from "@/hooks/useActivities";
 import BottomNav from "@/components/BottomNav";
+import ActivityHeatmap from "@/components/ActivityHeatmap";
 import HeroBanner from "@/components/HeroBanner";
 import { format } from "date-fns";
 import { Trash2, Edit2, Plus, Loader2, Waves, Footprints, Snowflake, Dumbbell, Download } from "lucide-react";
