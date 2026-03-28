@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useActivities } from "@/hooks/useActivities";
 import { useProfile } from "@/hooks/useProfile";
 import { useSkillMilestoneProgress, useSkillMilestones } from "@/hooks/useSkillMilestones";
-import { getAvailableQuarters, computeScorecard, type QuarterInfo, type ScorecardData } from "@/hooks/useScorecardData";
+import { getAvailableQuarters, computeScorecard, type QuarterInfo, type ScorecardData, type SportBreakdown } from "@/hooks/useScorecardData";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
