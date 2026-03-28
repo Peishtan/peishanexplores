@@ -84,7 +84,7 @@ export default function Dashboard() {
               <div className="px-4 space-y-2.5 animate-fade-slide-up" style={{ animationDelay: '0.2s' }}>
                 <WeeklyCard
                   icon={<Waves className="h-5 w-5 text-fog" strokeWidth={1.5} />}
-                  name="Kayak"
+                  name="Paddle"
                   rule={`${kayakGoal} paddle / week`}
                   weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
                   total={insights?.quarterWeeklyGoals.kayak.total ?? 0}

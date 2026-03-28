@@ -10,7 +10,7 @@ import { Plus } from "lucide-react";
 
 const ACTIVITY_OPTIONS = [
   { value: "hiking", emoji: "🥾", label: "Hiking" },
-  { value: "kayaking", emoji: "🛶", label: "Kayaking" },
+  { value: "kayaking", emoji: "🛶", label: "Paddling" },
   { value: "xc_skiing", emoji: "⛷️", label: "XC Skiing" },
   { value: "peloton", emoji: "🚴", label: "Peloton" },
   { value: "orange_theory", emoji: "🏋️", label: "OrangeTheory" },

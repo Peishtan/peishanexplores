@@ -25,7 +25,7 @@ const SPORTS = [
 
 const FILTERS = [
   { id: "all", label: "All" },
-  { id: "kayaking", label: "Kayak" },
+  { id: "kayaking", label: "Paddle" },
   { id: "hiking", label: "Hike" },
   { id: "xc_skiing", label: "XC Ski" },
   { id: "gym", label: "Gym" },

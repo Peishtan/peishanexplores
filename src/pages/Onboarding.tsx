@@ -77,11 +77,11 @@ export default function Onboarding() {
     },
     {
       icon: <Ship className="h-8 w-8" />,
-      title: "Kayaking",
-      description: "Kayak sessions per week?",
+      title: "Paddling",
+      description: "Paddle sessions per week?",
       content: (
         <div className="space-y-2">
-          <Label htmlFor="kayak">Kayaking per week</Label>
+          <Label htmlFor="kayak">Paddling per week</Label>
           <Input
             id="kayak"
             type="number"

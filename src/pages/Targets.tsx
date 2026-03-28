@@ -142,7 +142,7 @@ export default function Targets() {
             <div className="px-4 space-y-2.5">
               {/* Kayak Target */}
               <TargetCard
-                name="Kayak"
+                name="Paddle"
                 current={pacing.kayak.current}
                 target={pacing.kayak.target}
                 unit="mi"

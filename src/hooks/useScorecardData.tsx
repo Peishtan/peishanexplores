@@ -177,7 +177,7 @@ export function computeScorecard(
   const consistency: ConsistencyResult[] = [
     { label: "Gym Sessions", weeksHit: gymHit, totalWeeks: weeksInQuarter, pct: Math.round((gymHit / weeksInQuarter) * 100) },
     { label: "Outdoor Sessions", weeksHit: outdoorHit, totalWeeks: weeksInQuarter, pct: Math.round((outdoorHit / weeksInQuarter) * 100) },
-    { label: "Kayak Sessions", weeksHit: kayakHit, totalWeeks: weeksInQuarter, pct: Math.round((kayakHit / weeksInQuarter) * 100) },
+    { label: "Paddle Sessions", weeksHit: kayakHit, totalWeeks: weeksInQuarter, pct: Math.round((kayakHit / weeksInQuarter) * 100) },
   ];
 
   const overallConsistency = Math.round(consistency.reduce((s, c) => s + c.pct, 0) / consistency.length);
