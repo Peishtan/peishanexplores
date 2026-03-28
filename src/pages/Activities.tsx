@@ -218,20 +218,6 @@ export default function Activities() {
     URL.revokeObjectURL(url);
   };
 
-  const hikeCount = filtered?.filter(a => a.type === "hiking").length ?? 0;
-  const kayakCount = filtered?.filter(a => a.type === "kayaking").length ?? 0;
-  const skiCount = filtered?.filter(a => a.type === "xc_skiing").length ?? 0;
-  const gymCount = filtered?.filter(a => ["peloton", "orange_theory"].includes(a.type)).length ?? 0;
-  const totalMiles = filtered?.reduce((s, a) => s + (a.distance ?? 0), 0) ?? 0;
-  const totalElev = filtered?.reduce((s, a) => s + (a.elevation_gain ?? 0), 0) ?? 0;
-
-  const chips: string[] = [];
-  if (hikeCount > 0) chips.push(`${hikeCount} hike${hikeCount > 1 ? "s" : ""}`);
-  if (kayakCount > 0) chips.push(`${kayakCount} paddle${kayakCount > 1 ? "s" : ""}`);
-  if (skiCount > 0) chips.push(`${skiCount} ski${skiCount > 1 ? "s" : ""}`);
-  if (gymCount > 0) chips.push(`${gymCount} gym`);
-  if (totalMiles > 0) chips.push(`${totalMiles % 1 === 0 ? totalMiles : totalMiles.toFixed(1)} mi`);
-  if (totalElev > 0) chips.push(`${totalElev.toLocaleString()} ft`);
 
   return (
     <div className="min-h-screen bg-background pb-24">
