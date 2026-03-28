@@ -9,9 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, XCircle, TrendingUp, FileSearch, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info, ArrowRight, Download, Share2 } from "lucide-react";
+import { CheckCircle2, XCircle, TrendingUp, FileSearch, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info, ArrowRight, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { generateScorecardPdf } from "@/lib/scorecardPdf";
 import { generateShareImage } from "@/lib/scorecardShareImage";
 
 function useQuarterGoalSnapshots() {
@@ -116,13 +115,6 @@ export default function Scorecard() {
                   title="Share image"
                 >
                   <Share2 className="h-3.5 w-3.5" strokeWidth={1.5} />
-                </button>
-                <button
-                  onClick={() => generateScorecardPdf(scorecard)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary border border-border font-mono-dm text-[10px] uppercase tracking-[0.1em] text-fog hover:text-moss-light transition-colors flex-shrink-0"
-                  title="Download PDF"
-                >
-                  <Download className="h-3.5 w-3.5" strokeWidth={1.5} />
                 </button>
               </>
             )}
