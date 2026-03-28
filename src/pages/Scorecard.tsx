@@ -265,7 +265,7 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
   if (!top) {
     return (
       <p className="text-sm text-foreground/70 leading-relaxed">
-        🔥 Exceptional quarter — all areas are firing. Keep this momentum going!
+        Exceptional quarter — all areas are firing. Keep this momentum going!
       </p>
     );
   }

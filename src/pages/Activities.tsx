@@ -378,7 +378,7 @@ export default function Activities() {
       <button
         onClick={openAdd}
         className="fixed bottom-[96px] right-6 md:right-[calc(50%-420px)] w-[52px] h-[52px] rounded-full bg-moss-light text-ink text-[28px] font-light flex items-center justify-center z-[90] hover:scale-105 transition-transform"
-        style={{ boxShadow: '0 4px 20px rgba(122,184,124,0.35)' }}
+        style={{ boxShadow: '0 4px 20px hsla(var(--moss-light), 0.35)' }}
       >
         +
       </button>
