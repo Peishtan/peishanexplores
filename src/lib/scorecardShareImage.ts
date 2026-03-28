@@ -215,13 +215,6 @@ export async function generateShareImage(scorecard: ScorecardData): Promise<void
 
   const shareCard = container.querySelector("#share-card") as HTMLElement;
 
-  // Resolve the score color class
-  const { score } = computeScore(scorecard);
-  const scoreEl = shareCard.querySelector(`.${score >= 80 ? "text-done" : "text-amber"}`) as HTMLElement;
-  if (scoreEl) {
-    scoreEl.style.color = score >= 80 ? "hsl(145, 50%, 52%)" : "hsl(32, 72%, 58%)";
-  }
-
   // Wait for fonts to load
   await document.fonts.ready;
 
