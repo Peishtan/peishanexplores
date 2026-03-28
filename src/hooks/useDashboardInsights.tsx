@@ -9,6 +9,12 @@ export interface WeekData {
   water: number;
 }
 
+export interface WeekResult {
+  hit: boolean;
+  count: number;
+  weekLabel: string; // e.g. "Jan 6 – 12"
+}
+
 export interface QuarterChallenge {
   label: string;
   current: number;
