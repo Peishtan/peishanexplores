@@ -738,11 +738,15 @@ function MilestoneSpotlight() {
                   <CheckCircle2 className="h-3 w-3 text-done" strokeWidth={2.5} />
                 </div>
                 <span className="text-[13px] font-normal text-mist flex-1">{ms?.title}</span>
-                {p.achieved_at && (
-                  <span className="font-mono-dm text-[10px] text-fog tracking-[0.08em] flex-shrink-0">
-                    {format(new Date(p.achieved_at), "MMM d")}
-                  </span>
-                )}
+                {(() => {
+                  const latest = evidenceList?.[0];
+                  const displayDate = latest?.start_time ? new Date(latest.start_time) : p.achieved_at ? new Date(p.achieved_at) : null;
+                  return displayDate ? (
+                    <span className="font-mono-dm text-[10px] text-fog tracking-[0.08em] flex-shrink-0">
+                      {format(displayDate, "MMM d")}
+                    </span>
+                  ) : null;
+                })()}
                 {/* Hover tooltip — latest evidence */}
                 {(() => {
                   const latest = evidenceList?.[0];

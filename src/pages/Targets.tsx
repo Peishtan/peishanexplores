@@ -176,7 +176,7 @@ export default function Targets() {
                   <div className="flex-1">
                     <p className="font-display text-[17px] font-bold mb-1">Elevation avg</p>
                     <p className="text-xs text-fog font-light">
-                      Avg <span className="text-moss-light font-medium">{pacing.elev.current.toLocaleString()} ft</span> · target {pacing.elev.target.toLocaleString()} ft
+                      Avg <span className="text-done font-medium">{pacing.elev.current.toLocaleString()} ft</span> · target {pacing.elev.target.toLocaleString()} ft
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
