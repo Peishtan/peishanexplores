@@ -166,12 +166,15 @@ export default function Activities() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const confirmDelete = async () => {
+    if (!deleteConfirmId) return;
     try {
-      await deleteActivity.mutateAsync(id);
+      await deleteActivity.mutateAsync(deleteConfirmId);
       toast.success("Activity deleted");
     } catch {
       toast.error("Failed to delete");
+    } finally {
+      setDeleteConfirmId(null);
     }
   };
 
