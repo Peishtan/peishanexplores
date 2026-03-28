@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { startOfWeek, addWeeks, startOfDay, eachDayOfInterval, format } from "date-fns";
+import { startOfWeek, addWeeks, startOfDay, eachDayOfInterval, format, getISOWeek } from "date-fns";
 import { Activity } from "@/hooks/useActivities";
 
 export interface HeatmapDay {
