@@ -158,7 +158,7 @@ export default function Activities() {
           });
         if (error) throw error;
         queryClient.invalidateQueries({ queryKey: ["activities"] });
-        toast.success("Activity logged! 🎉");
+        toast.success("Activity logged");
       }
       setDialogOpen(false);
       resetForm();
