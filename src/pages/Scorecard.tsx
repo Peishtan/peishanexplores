@@ -147,7 +147,7 @@ export default function Scorecard() {
             )}
 
             {/* ── Highlights ── */}
-            <ScorecardSection title="Highlights" icon={<Trophy className="h-4 w-4 text-muted-foreground" />}>
+            <ScorecardSection title="Highlights" icon={<Trophy className="h-4 w-4 text-fog" />}>
               <div className="flex gap-4 mb-3">
                 {/* Sport Mix Donut */}
                 {scorecard.sportBreakdown.length > 0 && (
