@@ -46,9 +46,7 @@ export default function SkillMilestonesCard() {
   const [evidenceLogs, setEvidenceLogs] = useState<EvidenceLog[]>([]);
   const [loadingEvidence, setLoadingEvidence] = useState(false);
 
-  useEffect(() => {
-    recompute.mutate();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Recompute is now triggered only when activities are added/edited, not on every mount
 
   const isLoading = loadingDefs || loadingProgress;
 
