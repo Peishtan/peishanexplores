@@ -156,8 +156,8 @@ Deno.serve(async (req) => {
           progressTarget = 1;
           progressCurrent = qualifying.length > 0 ? 1 : 0;
           if (qualifying.length > 0) {
-            // Pick earliest qualifying activity (activities sorted desc, so last is earliest)
-            evidenceLogIds = [qualifying[qualifying.length - 1].id];
+            // Store up to 3 most recent qualifying activities (already sorted desc by start_time)
+            evidenceLogIds = qualifying.slice(0, 3).map((a: any) => a.id);
           }
           break;
         }
@@ -169,8 +169,8 @@ Deno.serve(async (req) => {
           progressTarget = 1;
           progressCurrent = qualifying.length > 0 ? 1 : 0;
           if (qualifying.length > 0) {
-            // Pick earliest qualifying activity (activities sorted desc, so last is earliest)
-            evidenceLogIds = [qualifying[qualifying.length - 1].id];
+            // Store up to 3 most recent qualifying activities (already sorted desc by start_time)
+            evidenceLogIds = qualifying.slice(0, 3).map((a: any) => a.id);
           }
           break;
         }
@@ -261,11 +261,12 @@ Deno.serve(async (req) => {
         .maybeSingle();
 
       if (status === "achieved") {
-        // Use the date of the qualifying activity rather than recompute time
         if (existing?.achieved_at) {
           achievedAt = existing.achieved_at;
         } else if (evidenceLogIds.length > 0) {
-          const evidenceActivity = activities!.find((a: any) => a.id === evidenceLogIds[0]);
+          // Use the earliest qualifying activity for achieved_at (last in evidence since sorted desc)
+          const earliestId = evidenceLogIds[evidenceLogIds.length - 1];
+          const evidenceActivity = activities!.find((a: any) => a.id === earliestId);
           achievedAt = evidenceActivity?.start_time || new Date().toISOString();
         } else {
           achievedAt = new Date().toISOString();
