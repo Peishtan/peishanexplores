@@ -119,6 +119,7 @@ export default function Dashboard() {
                 momentum={insights?.momentum ?? null}
                 wtdMiles={insights?.wtd.miles ?? 0}
                 elevationGoal={profile?.goal_elevation_avg ?? 1200}
+                elevationSpark={insights?.elevationSpark ?? []}
               />
             </div>
 
