@@ -157,7 +157,7 @@ export default function Activities() {
           .insert({
             type: form.sport,
             start_time: localDate.toISOString(),
-            duration: 0,
+            duration,
             distance: miles,
             elevation_gain: elevation,
             calories: null,
