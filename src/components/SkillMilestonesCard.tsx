@@ -17,9 +17,9 @@ interface EvidenceLog {
 type Tier = "foundation" | "intermediate" | "advanced";
 
 const TIER_CONFIG: Record<Tier, { label: string; color: string }> = {
-  foundation: { label: "Beginner", color: "text-moss-light" },
-  intermediate: { label: "Intermediate", color: "text-amber" },
-  advanced: { label: "Advanced", color: "text-[#b0b4e0]" },
+  foundation: { label: "Beginner", color: "text-fog" },
+  intermediate: { label: "Intermediate", color: "text-fog" },
+  advanced: { label: "Advanced", color: "text-fog" },
 };
 
 function getMilestoneTier(ms: { milestone_type: string; threshold_elevation_ft?: number | null; threshold_distance_mi?: number | null }): Tier {
