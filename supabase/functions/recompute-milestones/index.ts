@@ -156,9 +156,8 @@ Deno.serve(async (req) => {
           progressTarget = 1;
           progressCurrent = qualifying.length > 0 ? 1 : 0;
           if (qualifying.length > 0) {
-            // Pick best (highest elevation)
-            qualifying.sort((a: any, b: any) => (b.elevation_gain ?? 0) - (a.elevation_gain ?? 0));
-            evidenceLogIds = [qualifying[0].id];
+            // Pick earliest qualifying activity (activities sorted desc, so last is earliest)
+            evidenceLogIds = [qualifying[qualifying.length - 1].id];
           }
           break;
         }
@@ -170,8 +169,8 @@ Deno.serve(async (req) => {
           progressTarget = 1;
           progressCurrent = qualifying.length > 0 ? 1 : 0;
           if (qualifying.length > 0) {
-            qualifying.sort((a: any, b: any) => (b.distance ?? 0) - (a.distance ?? 0));
-            evidenceLogIds = [qualifying[0].id];
+            // Pick earliest qualifying activity (activities sorted desc, so last is earliest)
+            evidenceLogIds = [qualifying[qualifying.length - 1].id];
           }
           break;
         }
