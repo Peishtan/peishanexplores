@@ -199,8 +199,8 @@ export function useDashboardInsights(
       for (let i = 0; i < weeksInQuarter; i++) {
         const ws = addWeeks(firstMonday, i);
         const we = addWeeks(firstMonday, i + 1);
-        const effectiveStart = Math.max(ws.getTime(), qStartMs);
-        const weekData = getWeekData(activities, effectiveStart, we.getTime());
+        // Use full Monday-start week even if it straddles quarters
+        const weekData = getWeekData(activities, ws.getTime(), we.getTime());
         const endDisplay = new Date(we.getTime() - 86400000); // Sunday
         const weekActivities = activities
           .filter(a => {
