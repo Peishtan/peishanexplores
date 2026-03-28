@@ -70,7 +70,7 @@ export default function Activities() {
   });
 
   const resetForm = () => {
-    setForm({ route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking" });
+    setForm({ route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", duration: "", notes: "", sport: "hiking" });
     setEditingId(null);
   };
 
