@@ -453,18 +453,19 @@ function MomentumCard({ label, value, valueClass, alert, children }: {
 }
 
 /* ── Insights List ── */
-function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevationGoal, fourWeekAvgElev }: {
+function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevationGoal, fourWeekAvgElev, activities, profile }: {
   kayakChallenge: QuarterChallenge | null;
   hikingChallenge: QuarterChallenge | null;
   elevTrendPct: number; elevationGoal: number; fourWeekAvgElev: number;
+  activities?: Activity[]; profile?: Profile | null;
 }) {
   const insights: { type: string; text: string; color: string }[] = [];
 
   if (kayakChallenge) {
     if (kayakChallenge.pct >= 100) {
-      insights.push({ type: "Achievement", text: `Kayak goal done. ${(kayakChallenge.current - kayakChallenge.target).toFixed(0)} miles over target.`, color: "text-done" });
+      insights.push({ type: "Achievement", text: `Paddle goal done. ${(kayakChallenge.current - kayakChallenge.target).toFixed(0)} miles over target.`, color: "text-done" });
     } else if (kayakChallenge.pace === "ahead") {
-      insights.push({ type: "Forecast", text: "Kayak is on pace to wrap up a week early.", color: "text-moss-light" });
+      insights.push({ type: "Forecast", text: "Paddle is on pace to wrap up a week early.", color: "text-moss-light" });
     }
   }
   if (hikingChallenge) {
@@ -478,7 +479,7 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
   const bothDone = kayakChallenge && hikingChallenge && kayakChallenge.pct >= 100 && hikingChallenge.pct >= 100;
   if (bothDone) {
     const totalMiles = Math.round(kayakChallenge.current + hikingChallenge.current);
-    const nextMilestone = Math.ceil(totalMiles / 25) * 25; // round up to nearest 25
+    const nextMilestone = Math.ceil(totalMiles / 25) * 25;
     if (nextMilestone > totalMiles) {
       insights.push({ type: "Stretch Goal", text: `Both targets crushed! You're at ${totalMiles} combined miles — push for ${nextMilestone}?`, color: "text-amber" });
     } else {
@@ -492,6 +493,68 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
     insights.push({ type: "Watch", text: `Elevation down ${Math.abs(elevTrendPct)}% over 4 weeks. Consider a hillier route this weekend.`, color: "text-amber" });
   } else if (fourWeekAvgElev >= elevationGoal) {
     insights.push({ type: "Strong", text: "Elevation avg exceeding target — strong climbing!", color: "text-moss-light" });
+  }
+
+  // ── Prior quarter carryover when no insights generated yet ──
+  if (insights.length === 0 && activities && profile) {
+    const now = new Date();
+    const currentQStart = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1);
+    const prevQEnd = currentQStart;
+    const prevQStart = new Date(currentQStart.getFullYear(), currentQStart.getMonth() - 3, 1);
+    const prevQLabel = `Q${Math.floor(prevQStart.getMonth() / 3) + 1}`;
+
+    const prevLogs = activities.filter(a => {
+      const t = new Date(a.start_time).getTime();
+      return t >= prevQStart.getTime() && t < prevQEnd.getTime();
+    });
+
+    if (prevLogs.length > 0) {
+      const hikingMiles = prevLogs.filter(a => a.type === "hiking" || a.type === "xc_skiing").reduce((s, a) => s + (a.distance || 0), 0);
+      const kayakMiles = prevLogs.filter(a => a.type === "kayaking").reduce((s, a) => s + (a.distance || 0), 0);
+      const hikingTarget = profile.goal_hiking_quarterly_miles ?? 60;
+      const kayakTarget = profile.goal_kayak_quarterly_miles ?? 90;
+
+      // Find the weakest area from last quarter
+      const gaps: { area: string; pct: number; tip: string }[] = [];
+      if (hikingMiles < hikingTarget) {
+        gaps.push({ area: "Hiking", pct: Math.round((hikingMiles / hikingTarget) * 100), tip: "getting more trail miles in early" });
+      }
+      if (kayakMiles < kayakTarget) {
+        gaps.push({ area: "Paddling", pct: Math.round((kayakMiles / kayakTarget) * 100), tip: "building paddle volume earlier in the quarter" });
+      }
+
+      // Check gym/outdoor consistency
+      const weeks = 13;
+      const firstMonday = startOfWeek(prevQStart, { weekStartsOn: 1 });
+      let gymHit = 0, outdoorHit = 0, kayakHit = 0;
+      for (let i = 0; i < weeks; i++) {
+        const ws = new Date(firstMonday.getTime() + i * 7 * 86400000);
+        const we = new Date(ws.getTime() + 7 * 86400000);
+        const effectiveStart = Math.max(ws.getTime(), prevQStart.getTime());
+        const wLogs = prevLogs.filter(a => { const t = new Date(a.start_time).getTime(); return t >= effectiveStart && t < we.getTime(); });
+        if (wLogs.filter(a => ["peloton", "orange_theory"].includes(a.type)).length >= (profile.goal_exercises_per_week ?? 3)) gymHit++;
+        if (wLogs.filter(a => ["hiking", "xc_skiing"].includes(a.type)).length >= (profile.goal_outdoor_per_week ?? 1)) outdoorHit++;
+        if (wLogs.filter(a => a.type === "kayaking").length >= (profile.goal_kayak_per_week ?? 1)) kayakHit++;
+      }
+      const gymPct = Math.round((gymHit / weeks) * 100);
+      const outdoorPct = Math.round((outdoorHit / weeks) * 100);
+      const kayakPct = Math.round((kayakHit / weeks) * 100);
+
+      if (gymPct < 60) gaps.push({ area: "Gym consistency", pct: gymPct, tip: "locking in gym sessions early each week" });
+      if (outdoorPct < 60) gaps.push({ area: "Outdoor rhythm", pct: outdoorPct, tip: "scheduling a weekly outdoor outing" });
+      if (kayakPct < 60) gaps.push({ area: "Paddle rhythm", pct: kayakPct, tip: "getting on the water more regularly" });
+
+      // Pick the biggest gap
+      gaps.sort((a, b) => a.pct - b.pct);
+      if (gaps.length > 0) {
+        const top = gaps[0];
+        insights.push({ type: `${prevQLabel} Learning`, text: `${top.area} was at ${top.pct}% last quarter. Focus: ${top.tip}.`, color: "text-amber" });
+      }
+      if (gaps.length > 1) {
+        const second = gaps[1];
+        insights.push({ type: `${prevQLabel} Learning`, text: `${second.area} hit ${second.pct}%. Try ${second.tip}.`, color: "text-fog" });
+      }
+    }
   }
 
   if (insights.length === 0) {
