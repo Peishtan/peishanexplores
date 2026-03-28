@@ -23,7 +23,7 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
           {/* Day labels */}
           <div className="flex flex-col gap-[3px] mr-1 flex-shrink-0">
             {DAY_LABELS.map((label, i) => (
-              <span key={i} className="font-mono-dm text-[7px] text-fog/40 w-3 h-[18px] flex items-center justify-end">
+              <span key={i} className="font-mono-dm text-[7px] text-fog/70 w-3 h-[18px] flex items-center justify-end">
                 {i % 2 === 0 ? label : ""}
               </span>
             ))}
@@ -66,12 +66,12 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
         {/* Week numbers */}
         <div className="flex gap-[3px] mt-1.5 ml-4">
           {weeks.map((week) => (
-            <span key={week.weekNum} className="font-mono-dm text-[7px] text-fog/30 flex-1 text-center">
+            <span key={week.weekNum} className="font-mono-dm text-[7px] text-fog/60 flex-1 text-center">
               {week.weekNum % 2 === 1 ? `W${week.weekNum}` : ""}
             </span>
           ))}
         {isCapped && (
-          <p className="font-mono-dm text-[9px] text-fog/40 text-center mt-2">Showing last 90 days</p>
+          <p className="font-mono-dm text-[9px] text-fog/60 text-center mt-2">Showing last 90 days</p>
         )}
       </div>
       </div>
