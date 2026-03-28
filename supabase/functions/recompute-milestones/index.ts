@@ -261,11 +261,12 @@ Deno.serve(async (req) => {
         .maybeSingle();
 
       if (status === "achieved") {
-        // Use the date of the qualifying activity rather than recompute time
         if (existing?.achieved_at) {
           achievedAt = existing.achieved_at;
         } else if (evidenceLogIds.length > 0) {
-          const evidenceActivity = activities!.find((a: any) => a.id === evidenceLogIds[0]);
+          // Use the earliest qualifying activity for achieved_at (last in evidence since sorted desc)
+          const earliestId = evidenceLogIds[evidenceLogIds.length - 1];
+          const evidenceActivity = activities!.find((a: any) => a.id === earliestId);
           achievedAt = evidenceActivity?.start_time || new Date().toISOString();
         } else {
           achievedAt = new Date().toISOString();
