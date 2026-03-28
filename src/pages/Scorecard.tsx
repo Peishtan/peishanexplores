@@ -245,7 +245,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
 
   return (
     <div className="rounded-2xl border border-border bg-card p-6 text-center">
-      <p className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+      <p className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog mb-2">
         {scorecard.quarter.isCurrent ? "Current Quarter" : "Final Score"}
       </p>
       <div className="relative group/score inline-block cursor-default">
