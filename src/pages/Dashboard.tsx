@@ -434,11 +434,11 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
                     cls += "animate-pulse-dot";
                   }
                 } else {
-                  const wasHit = wr?.hit ?? false;
-                  if (wasHit) {
+                  const count = wr?.count ?? 0;
+                  if (pip < count) {
                     style.backgroundColor = accentColor;
                   } else {
-                    style.backgroundColor = pip < 1 ? accentColor : "rgba(255,255,255,0.05)";
+                    style.backgroundColor = missedColor;
                   }
                 }
                 return <div key={pip} className={cls} style={style} />;
