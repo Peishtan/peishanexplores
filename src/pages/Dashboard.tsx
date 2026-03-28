@@ -1,7 +1,7 @@
 import { useProfile } from "@/hooks/useProfile";
 import { format } from "date-fns";
 import { useActivities } from "@/hooks/useActivities";
-import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type MomentumData } from "@/hooks/useDashboardInsights";
+import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type MomentumData, type ElevSparkPoint } from "@/hooks/useDashboardInsights";
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
