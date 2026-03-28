@@ -104,6 +104,7 @@ export default function Dashboard() {
                   total={insights?.quarterWeeklyGoals.classes.total ?? 0}
                   maxPerWeek={exerciseGoal}
                   wtdClasses={insights?.wtd.classes ?? 0}
+                  streak={insights?.streaks.classes ?? 0}
                 />
               </div>
             </div>
@@ -284,7 +285,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak }: {
             <p className="text-[11px] text-fog font-light">{rule}</p>
           </div>
         </div>
-        {streak > 1 && (
+        {streak >= 3 && (
           <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em]">
             <Flame className="h-3 w-3" strokeWidth={1.5} /> {streak}-wk streak
           </span>
@@ -316,12 +317,10 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak }: {
 }
 
 /* ── Gym Pip Chart Card ── */
-function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses }: {
-  rule: string; weekResults: boolean[]; total: number; maxPerWeek: number; wtdClasses: number;
+function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak }: {
+  rule: string; weekResults: boolean[]; total: number; maxPerWeek: number; wtdClasses: number; streak: number;
 }) {
   const totalWeeks = 13;
-  // For gym, we need session counts per week — weekResults is boolean (met or not)
-  // We'll show pips based on met/not-met pattern, with current week partial
   return (
     <div className="rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
       <div className="flex justify-between items-center mb-3.5">
@@ -332,6 +331,11 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses }: {
             <p className="text-[11px] text-fog font-light">{rule}</p>
           </div>
         </div>
+        {streak >= 3 && (
+          <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em]">
+            <Flame className="h-3 w-3" strokeWidth={1.5} /> {streak}-wk streak
+          </span>
+        )}
       </div>
       <div className="grid grid-cols-13 gap-1 mb-1">
         {Array.from({ length: totalWeeks }, (_, weekIdx) => {
