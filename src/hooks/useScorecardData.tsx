@@ -189,20 +189,20 @@ export function computeScorecard(
   );
 
   const highlights: Highlight[] = [];
-  if (qMilestones.length > 0) {
-    highlights.push({ icon: "medal", label: "Milestones Unlocked", value: qMilestones.length.toString() });
-  }
   if (longestHike > 0) {
     highlights.push({ icon: "footprints", label: "Longest Hike", value: `${Math.round(longestHike * 10) / 10} mi` });
   }
   if (longestKayak > 0) {
     highlights.push({ icon: "waves", label: "Longest Paddle", value: `${Math.round(longestKayak * 10) / 10} mi` });
   }
+  if (longestXcSki > 0) {
+    highlights.push({ icon: "snowflake", label: "Longest XC Ski", value: `${Math.round(longestXcSki * 10) / 10} mi` });
+  }
   if (highestElevation > 0) {
     highlights.push({ icon: "mountain", label: "Peak Elevation Gain", value: `${highestElevation.toLocaleString()} ft` });
   }
-  if (longestXcSki > 0) {
-    highlights.push({ icon: "snowflake", label: "Longest XC Ski", value: `${Math.round(longestXcSki * 10) / 10} mi` });
+  if (qMilestones.length > 0) {
+    highlights.push({ icon: "medal", label: "Milestones Unlocked", value: qMilestones.length.toString() });
   }
 
   // ── Strengths & Gaps ──

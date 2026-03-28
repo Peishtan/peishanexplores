@@ -83,7 +83,7 @@ export default function Scorecard() {
                 <HighlightCard icon="elevation" label="ft Elevation" value={scorecard.totalElevation.toLocaleString()} />
               </div>
               {scorecard.highlights.length > 0 && (
-                <div className="grid grid-cols-2 gap-3">
+                <div className={`grid gap-3 ${scorecard.highlights.length % 2 === 1 ? "grid-cols-3" : "grid-cols-2"}`}>
                   {scorecard.highlights.map((h, i) => (
                     <HighlightCard key={i} {...h} />
                   ))}
