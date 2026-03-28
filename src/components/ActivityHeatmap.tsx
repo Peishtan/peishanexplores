@@ -70,10 +70,10 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
               {week.weekNum % 2 === 1 ? `W${week.weekNum}` : ""}
             </span>
           ))}
+        </div>
         {isCapped && (
           <p className="font-mono-dm text-[9px] text-fog/60 text-center mt-2">Showing last 90 days</p>
         )}
-      </div>
       </div>
     </div>
   );
