@@ -100,9 +100,9 @@ export default function Dashboard() {
                   weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
                   total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
                   streak={insights?.streaks.outdoor ?? 0}
-                  accentColor="rgba(122,184,124,0.9)"
-                  missedColor="rgba(122,184,124,0.25)"
-                  missedBorder="rgba(122,184,124,0.35)"
+                  accentColor="rgba(77,179,140,0.9)"
+                  missedColor="rgba(77,179,140,0.25)"
+                  missedBorder="rgba(77,179,140,0.35)"
                 />
                 <GymCard
                   rule={`${exerciseGoal} sessions / week`}
