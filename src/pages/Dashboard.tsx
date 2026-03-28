@@ -309,7 +309,8 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           const isCurrent = i === total - 1;
           const wasHit = i < weekResults.length ? weekResults[i] : false;
           return (
-            <div key={i} className="aspect-square rounded-[3px]"
+            <div key={i}
+              className={`aspect-square rounded-[3px] ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
               style={
                 isPast
                   ? wasHit
@@ -321,7 +322,6 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
                       : { border: `1.5px solid ${accentColor}`, background: 'transparent' }
                     : { backgroundColor: 'rgba(255,255,255,0.05)' }
               }
-              className={`aspect-square rounded-[3px] ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
             />
           );
         })}
