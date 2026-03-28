@@ -395,7 +395,7 @@ const highlightIcons: Record<string, React.ReactNode> = {
 
 function HighlightCard({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-secondary/60 border border-border p-3 text-center">
+    <div className="rounded-xl bg-secondary/60 border border-[rgba(255,255,255,0.06)] p-3 text-center">
       <div className="flex justify-center">{highlightIcons[icon] ?? null}</div>
       <p className="text-lg font-bold text-foreground mt-1">{value}</p>
       <p className="text-[10px] font-mono-dm uppercase tracking-wider text-fog">{label}</p>
