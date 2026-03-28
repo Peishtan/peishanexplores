@@ -55,7 +55,6 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
                     className={`h-[18px] rounded-[3px] transition-all ${isToday ? "ring-1 ring-moss-light/50" : ""}`}
                     style={{
                       backgroundColor: color ?? "rgba(255,255,255,0.06)",
-                      opacity: count > 0 ? opacity : 1,
                     }}
                     title={`${format(day.date, "MMM d")}${count > 0 ? ` · ${count} activit${count > 1 ? "ies" : "y"}` : ""}`}
                   />
