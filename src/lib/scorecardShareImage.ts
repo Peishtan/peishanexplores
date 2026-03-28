@@ -59,20 +59,32 @@ function buildShareHTML(sc: ScorecardData): string {
   };
 
   return `
-<div id="share-card" style="width:1080px;min-height:1920px;background:hsl(150,8%,5%);color:hsl(35,30%,93%);font-family:'DM Sans',system-ui,sans-serif;padding:80px;display:flex;flex-direction:column;gap:40px;box-sizing:border-box;">
+<div id="share-card" style="width:1080px;min-height:1920px;background:hsl(150,8%,5%);color:hsl(35,30%,93%);font-family:'DM Sans',system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box;">
 
-  <!-- Brand -->
-  <div style="font-family:'DM Mono',monospace;font-size:22px;letter-spacing:6px;color:rgba(134,142,136,0.4);">PS FITTRACKR</div>
+  <!-- Mountain Header -->
+  <div style="position:relative;height:180px;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a2e1c 0%,#0d1a10 40%,#0a1215 100%);"></div>
+    <svg style="position:absolute;bottom:0;left:0;width:100%;height:120px;" viewBox="0 0 1080 120" preserveAspectRatio="none">
+      <path d="M0 120 L0 70 L100 40 L200 60 L300 15 L400 45 L540 5 L650 35 L750 20 L850 50 L950 30 L1080 45 L1080 120 Z" fill="#1a2e1c" opacity="0.8"/>
+      <path d="M0 120 L0 85 L150 60 L250 75 L350 40 L450 60 L580 30 L700 55 L800 40 L900 60 L1000 45 L1080 55 L1080 120 Z" fill="#0d1a10" opacity="0.9"/>
+    </svg>
+    <div style="position:relative;z-index:2;padding:48px 80px 0 80px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-family:'Playfair Display',serif;font-size:22px;letter-spacing:4px;text-transform:uppercase;color:hsl(156,8%,79%);opacity:0.85;">PS FitTrackr</span>
+      <span style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:2px;color:hsl(160,5%,56%);">${sc.quarter.label.toUpperCase()}</span>
+    </div>
+  </div>
+
+  <div style="padding:40px 80px 80px 80px;display:flex;flex-direction:column;gap:40px;flex:1;">
 
   <!-- Score Card -->
   <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:48px;text-align:center;">
-    <p style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:3px;text-transform:uppercase;color:hsl(160,5%,56%);margin:0 0 12px 0;">
-      ${sc.quarter.label} ${sc.quarter.isCurrent ? "· Current" : ""}
+    <p style="font-family:'DM Mono',monospace;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:hsl(160,5%,56%);margin:0 0 16px 0;">
+      ${sc.quarter.isCurrent ? "Current Quarter" : "Final Score"}
     </p>
-    <p class="${scoreColor}" style="font-family:'Playfair Display',serif;font-size:120px;font-weight:900;line-height:1;margin:0;">
+    <p style="font-family:'Playfair Display',serif;font-size:120px;font-weight:900;line-height:1;margin:0;color:${score >= 80 ? 'hsl(145,50%,52%)' : 'hsl(32,72%,58%)'};">
       ${score}%
     </p>
-    <p style="font-family:'DM Mono',monospace;font-size:22px;color:hsl(160,5%,56%);margin:8px 0 0 0;">${scoreLabel}</p>
+    <p style="font-family:'DM Mono',monospace;font-size:22px;color:hsl(160,5%,56%);margin:12px 0 0 0;">${scoreLabel}</p>
     <div style="margin-top:24px;">
       <p style="font-size:28px;font-weight:700;margin:0;">${targetsHit}/${sc.targets.length}</p>
       <p style="font-family:'DM Mono',monospace;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:4px 0 0 0;">Targets</p>
