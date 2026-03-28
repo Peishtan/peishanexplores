@@ -115,21 +115,26 @@ export default function SkillMilestonesCard() {
                           {current} / {target}{ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}
                         </span>
                       )}
-                      {/* Hover tooltip — evidence detail */}
+                      {/* Hover tooltip — evidence list */}
                       {unlocked && p && (() => {
-                        const evidence = evidenceMap?.get(p.id);
-                        const detail = evidence
-                          ? [evidence.route, evidence.elevation_gain != null ? `${evidence.elevation_gain.toLocaleString()} ft` : null, evidence.distance != null ? `${evidence.distance} mi` : null].filter(Boolean).join(", ")
-                          : null;
-                        return detail ? (
+                        const evidenceList = evidenceMap?.get(p.id);
+                        return evidenceList && evidenceList.length > 0 ? (
                           <div className="hidden group-hover/tip:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50
-                            bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg max-w-[220px]">
-                            <p className="text-[12px] text-mist leading-snug">{detail}</p>
-                            {evidence?.start_time && (
-                              <p className="font-mono-dm text-[10px] text-done mt-0.5">
-                                {format(new Date(evidence.start_time), "MMM d, yyyy")}
-                              </p>
-                            )}
+                            bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg max-w-[240px]">
+                            <div className="space-y-1.5">
+                              {evidenceList.map((ev) => (
+                                <div key={ev.id} className="flex items-baseline justify-between gap-2">
+                                  <p className="text-[12px] text-mist leading-snug truncate">
+                                    {[ev.route, ev.elevation_gain != null ? `${ev.elevation_gain.toLocaleString()} ft` : null, ev.distance != null ? `${ev.distance} mi` : null].filter(Boolean).join(", ")}
+                                  </p>
+                                  {ev.start_time && (
+                                    <span className="font-mono-dm text-[10px] text-fog flex-shrink-0">
+                                      {format(new Date(ev.start_time), "MMM d")}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         ) : null;
                       })()}
