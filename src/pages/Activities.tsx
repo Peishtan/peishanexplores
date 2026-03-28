@@ -325,10 +325,15 @@ export default function Activities() {
                         </div>
                         <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
                           {a.distance ? (
-                            <span className="font-display text-[22px] font-black leading-none tracking-tight">{a.distance}</span>
-                          ) : null}
-                          {a.distance ? (
-                            <span className="font-mono-dm text-[9px] text-fog tracking-[0.08em]">mi</span>
+                            <>
+                              <span className="font-display text-[22px] font-black leading-none tracking-tight">{a.distance}</span>
+                              <span className="font-mono-dm text-[9px] text-fog tracking-[0.08em]">mi</span>
+                            </>
+                          ) : a.duration > 0 ? (
+                            <>
+                              <span className="font-display text-[22px] font-black leading-none tracking-tight">{a.duration}</span>
+                              <span className="font-mono-dm text-[9px] text-fog tracking-[0.08em]">min</span>
+                            </>
                           ) : null}
                           {a.elevation_gain ? (
                             <span className="font-mono-dm text-[10px] text-fog">{a.elevation_gain.toLocaleString()} ft</span>
