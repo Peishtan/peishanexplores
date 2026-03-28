@@ -66,7 +66,7 @@ export default function Activities() {
   const [sportFilter, setSportFilter] = useState("all");
   const [dateRange, setDateRange] = useState("30");
   const [form, setForm] = useState<LogForm>({
-    route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking",
+    route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", duration: "", notes: "", sport: "hiking",
   });
 
   const resetForm = () => {
