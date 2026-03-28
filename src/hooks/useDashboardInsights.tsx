@@ -185,13 +185,19 @@ export function useDashboardInsights(
     const currentMonday = startOfWeek(now, { weekStartsOn: 1 });
     // Use calendar days to avoid DST-related off-by-one errors
     const weeksInQuarter = Math.floor(differenceInCalendarDays(currentMonday, firstMonday) / 7) + 1;
-    const getWeekResults = (check: (w: WeekData) => boolean): boolean[] => {
-      const results: boolean[] = [];
+    const getWeekResults = (check: (w: WeekData) => boolean, countFn: (w: WeekData) => number): WeekResult[] => {
+      const results: WeekResult[] = [];
       for (let i = 0; i < weeksInQuarter; i++) {
         const ws = addWeeks(firstMonday, i);
         const we = addWeeks(firstMonday, i + 1);
         const effectiveStart = Math.max(ws.getTime(), qStartMs);
-        results.push(check(getWeekData(activities, effectiveStart, we.getTime())));
+        const weekData = getWeekData(activities, effectiveStart, we.getTime());
+        const endDisplay = new Date(we.getTime() - 86400000); // Sunday
+        results.push({
+          hit: check(weekData),
+          count: countFn(weekData),
+          weekLabel: `${format(new Date(effectiveStart), "MMM d")} – ${format(endDisplay, "MMM d")}`,
+        });
       }
       return results;
     };
