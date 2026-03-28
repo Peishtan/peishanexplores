@@ -350,7 +350,7 @@ export default function Activities() {
                           <button onClick={(e) => { e.stopPropagation(); openEdit(a); }} className="text-fog hover:text-moss-light transition-colors">
                             <Edit2 className="h-3.5 w-3.5" />
                           </button>
-                          <button onClick={(e) => { e.stopPropagation(); handleDelete(a.id); }} className="text-fog hover:text-amber transition-colors">
+                          <button onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(a.id); }} className="text-fog hover:text-amber transition-colors">
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>
