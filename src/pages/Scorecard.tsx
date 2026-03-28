@@ -272,7 +272,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
           </p>
         </div>
       </div>
-      <p className="font-mono-dm text-sm text-muted-foreground mt-1">{label}</p>
+      <p className="font-mono-dm text-sm text-fog mt-1">{label}</p>
       <div className="flex justify-center gap-6 mt-4">
         <div>
           <p className="text-lg font-bold text-foreground">{targetsHit}/{totalTargets}</p>
