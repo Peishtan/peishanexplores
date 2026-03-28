@@ -55,7 +55,7 @@ export default function Dashboard() {
             {insights?.kayakChallenge && insights.kayakChallenge.pct >= 100 ? (
               <div className="pt-[40px]">
                 <AchievementBanner
-                  title="Kayak Challenge"
+                  title="Paddle Challenge"
                   label={`${qLabel} Target Achieved`}
                   current={insights.kayakChallenge.current}
                   target={insights.kayakChallenge.target}
