@@ -1,4 +1,5 @@
 import { useSkillMilestones, useSkillMilestoneProgress, useRecomputeMilestones, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
+import { useMilestoneEvidence } from "@/hooks/useMilestoneEvidence";
 import { CheckCircle2, Lock, Loader2, Compass } from "lucide-react";
 import { format } from "date-fns";
 
