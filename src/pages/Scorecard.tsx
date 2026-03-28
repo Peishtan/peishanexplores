@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, XCircle, TrendingUp, Sparkles, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info, ArrowRight } from "lucide-react";
+import { CheckCircle2, XCircle, TrendingUp, ClipboardList, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function useQuarterGoalSnapshots() {
@@ -120,7 +120,7 @@ export default function Scorecard() {
 
             {/* ── Strengths & Gaps ── */}
             {scorecard.insights.length > 0 && (
-              <ScorecardSection title="Review" icon={<Sparkles className="h-4 w-4 text-muted-foreground" />}>
+              <ScorecardSection title="Review" icon={<ClipboardList className="h-4 w-4 text-muted-foreground" />}>
                 <div className="space-y-3">
                   <ReviewTopline scorecard={scorecard} />
                   <div className="border-t border-border pt-3 space-y-2">
@@ -272,7 +272,7 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
 
   return (
     <p className="text-sm text-foreground/70 leading-relaxed">
-      💡 <span className="font-medium text-foreground">Biggest lever to raise your score:</span> Focus on {top.tip}. Your {top.label} is at {top.pct}% — improving this could add the most points.
+      <span className="font-medium text-foreground">Biggest lever to raise your score:</span> Focus on {top.tip}. Your {top.label} is at {top.pct}% — improving this could add the most points.
     </p>
   );
 }
