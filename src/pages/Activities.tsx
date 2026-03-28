@@ -45,6 +45,7 @@ interface LogForm {
   date: string;
   miles: string;
   elevation: string;
+  duration: string;
   notes: string;
   sport: ActivityType;
 }
