@@ -257,7 +257,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
 
 function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
   const gymCons = scorecard.consistency.find((c) => c.label === "Gym Sessions");
-  const outdoorCons = scorecard.consistency.find((c) => c.label === "Outdoor Sessions");
+  const outdoorCons = scorecard.consistency.find((c) => c.label === "Hike / XC Ski Sessions");
   const kayakCons = scorecard.consistency.find((c) => c.label === "Paddle Sessions");
 
   // Find weakest area by weighted impact
