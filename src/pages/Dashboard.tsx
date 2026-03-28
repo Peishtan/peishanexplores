@@ -304,7 +304,7 @@ function WeekHoverContent({ wr, weekIdx }: { wr: WeekResult; weekIdx: number }) 
             <div key={j} className="flex items-center justify-between gap-3 text-[11px]">
               <span className="text-foreground">{TYPE_LABELS[a.type] ?? a.type}</span>
               <span className="font-mono-dm text-fog/60 text-[10px]">
-                {a.distance ? `${a.distance} mi` : `${a.duration}m`}
+                {a.distance ? `${a.distance} mi` : a.duration > 0 ? `${a.duration}m` : ""}
                 {a.elevation ? ` · ${a.elevation} ft` : ""}
               </span>
             </div>

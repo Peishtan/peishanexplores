@@ -407,6 +407,10 @@ export default function Activities() {
               </div>
             )}
             <div className="space-y-1.5">
+              <Label className="text-fog">Duration (minutes)</Label>
+              <Input type="number" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} placeholder="e.g. 45" className="bg-[rgba(255,255,255,0.06)] border-[rgba(255,255,255,0.12)]" />
+            </div>
+            <div className="space-y-1.5">
               <Label className="text-fog">Sport Type</Label>
               <select
                 value={form.sport}
