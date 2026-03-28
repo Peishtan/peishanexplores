@@ -44,6 +44,7 @@ export interface DashboardInsights {
   weekDelta: number;
   threeWeekAvg: number;
   streaks: { outdoor: number; classes: number; water: number; miles: number };
+  elevationSpark: ElevSparkPoint[];
   quarterWeeklyGoals: {
     kayak: { weekResults: boolean[]; total: number };
     outdoor: { weekResults: boolean[]; total: number };
