@@ -98,6 +98,9 @@ export default function Scorecard() {
                 {scorecard.targets.map((t, i) => (
                   <TargetRow key={i} {...t} />
                 ))}
+                <Link to="/targets" className="flex items-center justify-center gap-1.5 pt-2 font-mono-dm text-[11px] tracking-[0.1em] text-moss-light hover:text-moss transition-colors">
+                  Adjust targets <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
             </ScorecardSection>
 
