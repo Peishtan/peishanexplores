@@ -23,7 +23,7 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
           {/* Day labels */}
           <div className="flex flex-col gap-[3px] mr-1 flex-shrink-0">
             {DAY_LABELS.map((label, i) => (
-              <span key={i} className="font-mono-dm text-[7px] text-fog/70 w-3 h-[18px] flex items-center justify-end">
+              <span key={i} className="font-mono-dm text-[9px] text-fog/70 w-4 h-[18px] flex items-center justify-end">
                 {i % 2 === 0 ? label : ""}
               </span>
             ))}
