@@ -276,7 +276,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
       <div className="flex justify-center gap-6 mt-4">
         <div>
           <p className="text-lg font-bold text-foreground">{targetsHit}/{totalTargets}</p>
-          <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Targets</p>
+          <p className="text-[10px] font-mono-dm uppercase tracking-wider text-fog">Targets</p>
         </div>
       </div>
     </div>
