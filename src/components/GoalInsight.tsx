@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, CheckCircle2, Target } from "lucide-react";
+import { TrendingUp, TrendingDown, CheckCircle2, Target, Flame } from "lucide-react";
 
 interface GoalInsightProps {
   label: string;
