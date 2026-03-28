@@ -1,6 +1,6 @@
-import { useProfile } from "@/hooks/useProfile";
-import { format } from "date-fns";
-import { useActivities } from "@/hooks/useActivities";
+import { useProfile, type Profile } from "@/hooks/useProfile";
+import { format, startOfWeek } from "date-fns";
+import { useActivities, type Activity } from "@/hooks/useActivities";
 import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type MomentumData, type ElevSparkPoint } from "@/hooks/useDashboardInsights";
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
