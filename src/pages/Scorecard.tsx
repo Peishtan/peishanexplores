@@ -94,18 +94,30 @@ export default function Scorecard() {
       <div className="mx-auto max-w-[420px] px-5 pt-6 space-y-6">
         {/* Quarter Selector */}
         {quarters.length > 0 && (
-          <Select value={selectedIdx.toString()} onValueChange={(v) => setSelectedIdx(parseInt(v))}>
-            <SelectTrigger className="w-full bg-secondary border-border font-mono-dm text-sm tracking-wide">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {quarters.map((q, i) => (
-                <SelectItem key={q.label} value={i.toString()}>
-                  {q.label} {q.isCurrent ? "(Current)" : ""}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex gap-2">
+            <Select value={selectedIdx.toString()} onValueChange={(v) => setSelectedIdx(parseInt(v))}>
+              <SelectTrigger className="flex-1 bg-secondary border-border font-mono-dm text-sm tracking-wide">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {quarters.map((q, i) => (
+                  <SelectItem key={q.label} value={i.toString()}>
+                    {q.label} {q.isCurrent ? "(Current)" : ""}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {scorecard && (
+              <button
+                onClick={() => generateScorecardPdf(scorecard)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary border border-border font-mono-dm text-[10px] uppercase tracking-[0.1em] text-fog hover:text-moss-light transition-colors flex-shrink-0"
+                title="Download PDF"
+              >
+                <Download className="h-3.5 w-3.5" strokeWidth={1.5} />
+                PDF
+              </button>
+            )}
+          </div>
         )}
 
         {isLoading && (
