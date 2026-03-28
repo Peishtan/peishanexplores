@@ -144,6 +144,7 @@ export default function Activities() {
             start_time: localDate.toISOString(),
             distance: miles,
             elevation_gain: elevation,
+            duration,
             notes,
           })
           .eq("id", editingId);
