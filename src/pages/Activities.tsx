@@ -442,6 +442,24 @@ export default function Activities() {
         </DialogContent>
       </Dialog>
 
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
+        <AlertDialogContent className="bg-card border-[rgba(255,255,255,0.1)]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-display">Delete Activity?</AlertDialogTitle>
+            <AlertDialogDescription className="text-fog">
+              This can't be undone. The activity will be permanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="font-mono-dm text-xs tracking-[0.1em] uppercase">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="font-mono-dm text-xs tracking-[0.1em] uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <BottomNav />
     </div>
   );
