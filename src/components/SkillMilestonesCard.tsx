@@ -115,19 +115,24 @@ export default function SkillMilestonesCard() {
                           {current} / {target}{ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}
                         </span>
                       )}
-                      {/* Hover tooltip */}
-                      {unlocked && p && (
-                        <div className="hidden group-hover/tip:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50
-                          bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg w-48">
-                          <p className="font-mono-dm text-[10px] text-fog uppercase tracking-[0.1em] mb-1">Milestone</p>
-                          <p className="text-[12px] text-mist leading-snug">{ms.title}</p>
-                          {p.achieved_at && (
-                            <p className="font-mono-dm text-[10px] text-done mt-0.5">
-                              Unlocked {format(new Date(p.achieved_at), "MMM d, yyyy")}
-                            </p>
-                          )}
-                        </div>
-                      )}
+                      {/* Hover tooltip — evidence detail */}
+                      {unlocked && p && (() => {
+                        const evidence = evidenceMap?.get(p.id);
+                        const detail = evidence
+                          ? [evidence.route, evidence.elevation_gain != null ? `${evidence.elevation_gain.toLocaleString()} ft` : null, evidence.distance != null ? `${evidence.distance} mi` : null].filter(Boolean).join(", ")
+                          : null;
+                        return detail ? (
+                          <div className="hidden group-hover/tip:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50
+                            bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg max-w-[220px]">
+                            <p className="text-[12px] text-mist leading-snug">{detail}</p>
+                            {p.achieved_at && (
+                              <p className="font-mono-dm text-[10px] text-done mt-0.5">
+                                {format(new Date(p.achieved_at), "MMM d, yyyy")}
+                              </p>
+                            )}
+                          </div>
+                        ) : null;
+                      })()}
                     </div>
                   );
                 })}
