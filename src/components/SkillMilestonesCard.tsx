@@ -1,18 +1,7 @@
-import { useState, useEffect } from "react";
 import { useSkillMilestones, useSkillMilestoneProgress, useRecomputeMilestones, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
-import { supabase } from "@/integrations/supabase/client";
-import { CheckCircle2, Lock, Loader2, X, Compass, TrendingUp, Crown } from "lucide-react";
+import { CheckCircle2, Lock, Loader2, Compass } from "lucide-react";
 import { format } from "date-fns";
 
-interface EvidenceLog {
-  id: string;
-  type: string;
-  start_time: string;
-  distance: number | null;
-  elevation_gain: number | null;
-  duration: number;
-  route: string | null;
-}
 
 type Tier = "foundation" | "intermediate" | "advanced";
 
@@ -42,11 +31,6 @@ export default function SkillMilestonesCard() {
   const { data: milestones, isLoading: loadingDefs } = useSkillMilestones();
   const { data: progress, isLoading: loadingProgress } = useSkillMilestoneProgress();
   const recompute = useRecomputeMilestones();
-  const [selectedProgress, setSelectedProgress] = useState<SkillMilestoneProgress | null>(null);
-  const [evidenceLogs, setEvidenceLogs] = useState<EvidenceLog[]>([]);
-  const [loadingEvidence, setLoadingEvidence] = useState(false);
-
-  // Recompute is now triggered only when activities are added/edited, not on every mount
 
   const isLoading = loadingDefs || loadingProgress;
 
@@ -59,21 +43,6 @@ export default function SkillMilestonesCard() {
     acc[tier].push(ms);
     return acc;
   }, { foundation: [], intermediate: [], advanced: [] });
-
-  const handleViewEvidence = async (p: SkillMilestoneProgress) => {
-    setSelectedProgress(p);
-    if (p.evidence_log_ids && p.evidence_log_ids.length > 0) {
-      setLoadingEvidence(true);
-      const { data } = await supabase
-        .from("activities")
-        .select("id, type, start_time, distance, elevation_gain, duration, route")
-        .in("id", p.evidence_log_ids);
-      setEvidenceLogs((data as EvidenceLog[]) ?? []);
-      setLoadingEvidence(false);
-    } else {
-      setEvidenceLogs([]);
-    }
-  };
 
   const tierOrder: Tier[] = ["foundation", "intermediate", "advanced"];
 
@@ -111,10 +80,9 @@ export default function SkillMilestonesCard() {
                   const unlocked = status === "achieved";
 
                   return (
-                    <button
+                    <div
                       key={ms.id}
-                      onClick={() => p && handleViewEvidence(p)}
-                      className={`flex items-center gap-3 p-3 rounded-xl bg-card border transition-colors text-left ${
+                      className={`relative group/tip flex items-center gap-3 p-3 rounded-xl bg-card border transition-colors text-left cursor-default ${
                         unlocked ? "border-[rgba(122,184,124,0.15)]" : "border-[rgba(255,255,255,0.05)] opacity-75"
                       }`}
                     >
@@ -145,7 +113,20 @@ export default function SkillMilestonesCard() {
                           {current} / {target}{ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}
                         </span>
                       )}
-                    </button>
+                      {/* Hover tooltip */}
+                      {unlocked && p && (
+                        <div className="hidden group-hover/tip:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50
+                          bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg w-48">
+                          <p className="font-mono-dm text-[10px] text-fog uppercase tracking-[0.1em] mb-1">Milestone</p>
+                          <p className="text-[12px] text-mist leading-snug">{ms.title}</p>
+                          {p.achieved_at && (
+                            <p className="font-mono-dm text-[10px] text-done mt-0.5">
+                              Unlocked {format(new Date(p.achieved_at), "MMM d, yyyy")}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
@@ -157,56 +138,6 @@ export default function SkillMilestonesCard() {
         )}
       </div>
 
-      {/* Evidence Modal */}
-      {selectedProgress && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setSelectedProgress(null)}>
-          <div className="bg-card rounded-2xl border border-[rgba(255,255,255,0.1)] max-w-md w-full mx-4 p-5" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-display text-sm font-bold">
-                {selectedProgress.skill_milestones?.title ?? "Milestone"}
-              </h3>
-              <button onClick={() => setSelectedProgress(null)} className="p-1 rounded hover:bg-secondary text-fog">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="mb-3">
-              <span className={`font-mono-dm text-[10px] tracking-[0.1em] uppercase px-2 py-1 rounded-full ${
-                selectedProgress.status === "achieved"
-                  ? "bg-[rgba(106,191,122,0.15)] text-done border border-[rgba(106,191,122,0.3)]"
-                  : "bg-secondary text-fog"
-              }`}>
-                {selectedProgress.status === "achieved"
-                  ? `Unlocked${selectedProgress.achieved_at ? ` ${format(new Date(selectedProgress.achieved_at), "MMM d, yyyy")}` : ""}`
-                  : `${selectedProgress.progress_current} / ${selectedProgress.progress_target}`}
-              </span>
-            </div>
-
-            <h4 className="font-mono-dm text-[9px] uppercase tracking-[0.15em] text-fog mb-2">Evidence Logs</h4>
-            {loadingEvidence ? (
-              <Loader2 className="h-4 w-4 animate-spin text-fog mx-auto" />
-            ) : evidenceLogs.length === 0 ? (
-              <p className="text-xs text-fog">No qualifying logs yet.</p>
-            ) : (
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {evidenceLogs.map((log) => (
-                  <div key={log.id} className="text-xs bg-secondary rounded-xl p-2.5 border border-[rgba(255,255,255,0.06)]">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium capitalize">{log.type.replace("_", " ")}</span>
-                      <span className="text-fog font-mono-dm text-[10px]">{format(new Date(log.start_time), "MMM d, yyyy")}</span>
-                    </div>
-                    <div className="flex gap-3 text-fog">
-                      {log.distance != null && <span>{log.distance} mi</span>}
-                      {log.elevation_gain != null && <span>{log.elevation_gain.toLocaleString()} ft</span>}
-                      {log.route && <span>{log.route}</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </>
   );
 }
