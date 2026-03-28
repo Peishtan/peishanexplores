@@ -3,15 +3,6 @@ import { CheckCircle2, Lock, Loader2, Compass } from "lucide-react";
 import { format } from "date-fns";
 import { format } from "date-fns";
 
-interface EvidenceLog {
-  id: string;
-  type: string;
-  start_time: string;
-  distance: number | null;
-  elevation_gain: number | null;
-  duration: number;
-  route: string | null;
-}
 
 type Tier = "foundation" | "intermediate" | "advanced";
 
