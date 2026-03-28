@@ -30,7 +30,7 @@ export function useMilestoneEvidence(progressItems: SkillMilestoneProgress[] | u
 
       const { data, error } = await supabase
         .from("activities")
-        .select("id, route, distance, elevation_gain, type")
+        .select("id, route, distance, elevation_gain, type, start_time")
         .in("id", uniqueLogIds);
       if (error) throw error;
 
