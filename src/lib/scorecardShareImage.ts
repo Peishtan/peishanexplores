@@ -47,7 +47,7 @@ function computeScore(sc: ScorecardData): { score: number; label: string } {
 /** Build the share card HTML — mirrors the Scorecard page components exactly */
 function buildShareHTML(sc: ScorecardData): string {
   const { score, label: scoreLabel } = computeScore(sc);
-  const scoreColor = score >= 80 ? "text-done" : "text-amber";
+  
   const targetsHit = sc.targets.filter(t => t.hit).length;
   const elevNote = getElevationNote(sc.totalElevation);
 
