@@ -1,3 +1,7 @@
+import { LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+
 interface HeroBannerProps {
   title: string;
   subtitle?: string;
@@ -6,10 +10,32 @@ interface HeroBannerProps {
 }
 
 export default function HeroBanner({ title, subtitle, children, compact }: HeroBannerProps) {
+  const { signOut } = useAuth();
   const now = new Date();
   const qNum = Math.floor(now.getMonth() / 3) + 1;
   const weekOfYear = Math.ceil(
     (now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) / (7 * 86400000)
+  );
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Signed out");
+  };
+
+  const headerContent = (
+    <div className="relative z-[2] flex items-start justify-between px-6 pt-7">
+      <span className="font-display text-[13px] font-normal uppercase tracking-[0.25em] text-mist opacity-70">
+        PS FitTrackr
+      </span>
+      <div className="flex items-center gap-3">
+        <span className="font-mono-dm text-[11px] tracking-[0.1em] text-fog">
+          Q{qNum} · WK {weekOfYear} · {now.getFullYear()}
+        </span>
+        <button onClick={handleSignOut} className="text-fog/40 hover:text-fog transition-colors" title="Sign out">
+          <LogOut className="h-3.5 w-3.5" strokeWidth={1.5} />
+        </button>
+      </div>
+    </div>
   );
 
   if (compact) {
@@ -18,14 +44,7 @@ export default function HeroBanner({ title, subtitle, children, compact }: HeroB
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(13,15,14,0.7)] to-background" 
              style={{ background: 'linear-gradient(180deg, transparent 20%, rgba(13,15,14,0.7) 70%, hsl(150 8% 5%) 100%), linear-gradient(135deg, #1a2e1c 0%, #0d1a10 40%, #0a1215 100%)' }} />
         <MountainSilhouette />
-        <div className="relative z-[2] flex items-start justify-between px-6 pt-7">
-          <span className="font-display text-[13px] font-normal uppercase tracking-[0.25em] text-mist opacity-70">
-            PS FitTrackr
-          </span>
-          <span className="font-mono-dm text-[11px] tracking-[0.1em] text-fog">
-            Q{qNum} · WK {weekOfYear} · {now.getFullYear()}
-          </span>
-        </div>
+        {headerContent}
         <div className="absolute bottom-7 left-6 z-[2]">
           {children || (
             <>
@@ -47,14 +66,7 @@ export default function HeroBanner({ title, subtitle, children, compact }: HeroB
       <div className="absolute inset-0"
            style={{ background: 'linear-gradient(180deg, transparent 20%, rgba(13,15,14,0.7) 70%, hsl(150 8% 5%) 100%), linear-gradient(135deg, #1a2e1c 0%, #0d1a10 40%, #0a1215 100%)' }} />
       <MountainSilhouette />
-      <div className="relative z-[2] flex items-start justify-between px-6 pt-7">
-        <span className="font-display text-[13px] font-normal uppercase tracking-[0.25em] text-mist opacity-70">
-          PS FitTrackr
-        </span>
-        <span className="font-mono-dm text-[11px] tracking-[0.1em] text-fog">
-          Q{qNum} · WK {weekOfYear} · {now.getFullYear()}
-        </span>
-      </div>
+      {headerContent}
       <div className="absolute bottom-7 left-6 z-[2]">
         {children || (
           <>
