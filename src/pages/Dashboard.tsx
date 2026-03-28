@@ -726,20 +726,42 @@ function MilestoneSpotlight() {
         </div>
       ) : (
         <div>
-          {achieved.map((p) => (
-            <div key={p.id} className="flex items-center gap-3.5 py-3.5 border-b border-[rgba(255,255,255,0.05)] last:border-0">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done"
-                   style={{ background: 'rgba(74,155,92,0.15)' }}>
-                <CheckCircle2 className="h-3 w-3 text-done" strokeWidth={2.5} />
+          {achieved.map((p) => {
+            const ms = p.skill_milestones;
+            const threshold = ms?.threshold_distance_mi
+              ? `${ms.threshold_distance_mi} mi`
+              : ms?.threshold_elevation_ft
+              ? `${ms.threshold_elevation_ft.toLocaleString()} ft`
+              : null;
+            return (
+              <div key={p.id} className="relative group/tip flex items-center gap-3.5 py-3.5 border-b border-[rgba(255,255,255,0.05)] last:border-0 cursor-default">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done"
+                     style={{ background: 'rgba(74,155,92,0.15)' }}>
+                  <CheckCircle2 className="h-3 w-3 text-done" strokeWidth={2.5} />
+                </div>
+                <span className="text-[13px] font-normal text-mist flex-1">{ms?.title}</span>
+                {p.achieved_at && (
+                  <span className="font-mono-dm text-[10px] text-fog tracking-[0.08em] flex-shrink-0">
+                    {format(new Date(p.achieved_at), "MMM d")}
+                  </span>
+                )}
+                {/* Hover tooltip */}
+                <div className="hidden group-hover/tip:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50
+                  bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg w-48">
+                  <p className="font-mono-dm text-[10px] text-fog uppercase tracking-[0.1em] mb-1">Milestone</p>
+                  <p className="text-[12px] text-mist leading-snug">{ms?.title}</p>
+                  {threshold && (
+                    <p className="font-mono-dm text-[10px] text-fog mt-1">Threshold: {threshold}</p>
+                  )}
+                  {p.achieved_at && (
+                    <p className="font-mono-dm text-[10px] text-done mt-0.5">
+                      Unlocked {format(new Date(p.achieved_at), "MMM d, yyyy")}
+                    </p>
+                  )}
+                </div>
               </div>
-              <span className="text-[13px] font-normal text-mist flex-1">{p.skill_milestones?.title}</span>
-              {p.achieved_at && (
-                <span className="font-mono-dm text-[10px] text-fog tracking-[0.08em] flex-shrink-0">
-                  {format(new Date(p.achieved_at), "MMM d")}
-                </span>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
