@@ -65,7 +65,7 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
     const weeks: HeatmapWeek[] = [];
     let weekStart = firstMonday;
     let weekNum = 1;
-    while (weekStart <= (qEnd > now ? now : qEnd)) {
+    while (weekStart <= now) {
       const weekEnd = addWeeks(weekStart, 1);
       const days: HeatmapDay[] = [];
       for (let i = 0; i < 7; i++) {
