@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { startOfWeek, addWeeks } from "date-fns";
 import { Activity, MILE_ACTIVITIES } from "./useActivities";
 import { SkillMilestoneProgress } from "./useSkillMilestones";
-import { Profile } from "./useProfile";
 
 export interface QuarterInfo {
   label: string;
@@ -127,10 +126,19 @@ function getWeekData(activities: Activity[], weekStart: number, weekEnd: number)
   };
 }
 
+export interface GoalSet {
+  goal_hiking_quarterly_miles: number;
+  goal_kayak_quarterly_miles: number;
+  goal_elevation_avg: number;
+  goal_exercises_per_week: number;
+  goal_outdoor_per_week: number;
+  goal_kayak_per_week: number;
+}
+
 export function computeScorecard(
   quarter: QuarterInfo,
   activities: Activity[],
-  profile: Profile,
+  goals: GoalSet,
   milestones: SkillMilestoneProgress[],
   totalMilestoneCount: number
 ): ScorecardData {
@@ -150,8 +158,8 @@ export function computeScorecard(
   const kayakMiles = kayakLogs.reduce((s, a) => s + (a.distance || 0), 0);
 
   const targets: TargetResult[] = [
-    { label: "Hiking / XC Ski Miles", current: Math.round(hikingMiles * 10) / 10, target: profile.goal_hiking_quarterly_miles, unit: "mi", hit: hikingMiles >= profile.goal_hiking_quarterly_miles },
-    { label: "Paddle Miles", current: Math.round(kayakMiles * 10) / 10, target: profile.goal_kayak_quarterly_miles, unit: "mi", hit: kayakMiles >= profile.goal_kayak_quarterly_miles },
+    { label: "Hiking / XC Ski Miles", current: Math.round(hikingMiles * 10) / 10, target: goals.goal_hiking_quarterly_miles, unit: "mi", hit: hikingMiles >= goals.goal_hiking_quarterly_miles },
+    { label: "Paddle Miles", current: Math.round(kayakMiles * 10) / 10, target: goals.goal_kayak_quarterly_miles, unit: "mi", hit: kayakMiles >= goals.goal_kayak_quarterly_miles },
   ];
 
   // ── Consistency (weekly goals) ──
@@ -170,9 +178,9 @@ export function computeScorecard(
     return hit;
   };
 
-  const gymHit = checkWeeks((w) => w.classes >= (profile.goal_exercises_per_week ?? 3));
-  const outdoorHit = checkWeeks((w) => w.outdoor >= (profile.goal_outdoor_per_week ?? 1));
-  const kayakHit = checkWeeks((w) => w.water >= (profile.goal_kayak_per_week ?? 1));
+  const gymHit = checkWeeks((w) => w.classes >= (goals.goal_exercises_per_week ?? 3));
+  const outdoorHit = checkWeeks((w) => w.outdoor >= (goals.goal_outdoor_per_week ?? 1));
+  const kayakHit = checkWeeks((w) => w.water >= (goals.goal_kayak_per_week ?? 1));
 
   const consistency: ConsistencyResult[] = [
     { label: "Gym Sessions", weeksHit: gymHit, totalWeeks: weeksInQuarter, pct: Math.round((gymHit / weeksInQuarter) * 100) },
