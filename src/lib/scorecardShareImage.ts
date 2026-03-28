@@ -193,8 +193,10 @@ function buildShareHTML(sc: ScorecardData): string {
   </div>` : ""}
 
   <!-- Footer -->
-  <div style="margin-top:auto;text-align:center;padding-top:20px;">
-    <span style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:4px;color:rgba(134,142,136,0.3);">PS FITTRACKR</span>
+  <div style="margin-top:auto;text-align:center;padding-top:24px;">
+    <span style="font-family:'Playfair Display',serif;font-size:18px;letter-spacing:4px;text-transform:uppercase;color:hsl(156,8%,79%);opacity:0.5;">PS FitTrackr</span>
+  </div>
+
   </div>
 </div>`;
 }
