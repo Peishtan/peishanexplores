@@ -116,11 +116,16 @@ export default function SkillMilestonesCard() {
                           </p>
                         ) : null}
                       </div>
-                      {!unlocked && (
-                        <span className="font-mono-dm text-[10px] text-fog text-right flex-shrink-0 whitespace-nowrap">
-                          {current} / {target}{ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}
-                        </span>
-                      )}
+                      {!unlocked && (() => {
+                        const unit = ms.milestone_type.includes("ELEVATION") ? " ft"
+                          : ms.milestone_type.includes("DISTANCE") ? " mi"
+                          : "";
+                        return (
+                          <span className="font-mono-dm text-[10px] text-fog text-right flex-shrink-0 whitespace-nowrap">
+                            {current} / {target}{unit}
+                          </span>
+                        );
+                      })()}
                       {/* Hover tooltip — latest evidence */}
                       {unlocked && p && (() => {
                         const evidenceList = evidenceMap?.get(p.id);
