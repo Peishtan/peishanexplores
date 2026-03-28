@@ -8,6 +8,7 @@ export interface EvidenceActivity {
   distance: number | null;
   elevation_gain: number | null;
   type: string;
+  start_time: string;
 }
 
 /**
