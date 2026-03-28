@@ -193,7 +193,7 @@ function AchievementBanner({ title, label, current, target, stats, extraStats }:
   return (
     <>
       <SectionLabel>Completed</SectionLabel>
-      <div className="mx-4 rounded-2xl border border-moss p-5 relative overflow-hidden animate-fade-slide-up"
+      <div className="mx-4 rounded-[14px] border border-moss p-5 relative overflow-hidden animate-fade-slide-up"
            style={{ background: 'linear-gradient(135deg, hsl(123 20% 20%) 0%, #1a3020 100%)' }}>
         <div className="absolute -top-[30px] -right-[30px] w-[120px] h-[120px] rounded-full"
              style={{ background: 'radial-gradient(circle, rgba(90,125,91,0.3) 0%, transparent 70%)' }} />
@@ -243,7 +243,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
   return (
     <>
       <SectionLabel>In Progress</SectionLabel>
-      <div className="mx-4 rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-5 animate-fade-slide-up" style={{ animationDelay: '0.1s' }}>
+      <div className="mx-4 rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-5 animate-fade-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="flex justify-between items-start mb-4">
           <h3 className="font-display text-lg font-bold leading-tight">
             {challenge.label.replace("Challenge", "").trim()}<br />Challenge
@@ -322,7 +322,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
 }) {
   const totalWeeks = 13;
   return (
-    <div className="rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
+    <div className="rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
       <div className="flex justify-between items-center mb-3.5">
         <div className="flex items-center gap-2">
           <span className="flex-shrink-0">{icon}</span>
@@ -396,7 +396,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
 }) {
   const totalWeeks = 13;
   return (
-    <div className="rounded-2xl bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
+    <div className="rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
       <div className="flex justify-between items-center mb-3.5">
         <div className="flex items-center gap-2">
           <Dumbbell className="h-5 w-5 text-fog" strokeWidth={1.5} />
@@ -655,7 +655,7 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
   }
 
   return (
-    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.35s' }}>
+    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-[14px] overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.35s' }}>
       {insights.slice(0, 4).map((insight, i) => (
         <div key={i} className={`flex items-start gap-3 px-[18px] py-3.5 ${i < insights.length - 1 ? "border-b border-[rgba(255,255,255,0.04)]" : ""}`}>
           <span className={`text-sm mt-0.5 flex-shrink-0 ${insight.color}`}>●</span>
@@ -675,7 +675,7 @@ function TotalsBar({ wtd, qtd, ytd, sparkWeekly, sparkQuarterly, sparkYtd }: {
   sparkWeekly?: SparkPoint[]; sparkQuarterly?: SparkPoint[]; sparkYtd?: SparkPoint[];
 }) {
   return (
-    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-2xl grid grid-cols-3 overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.45s' }}>
+    <div className="mx-4 bg-card border border-[rgba(255,255,255,0.06)] rounded-[14px] grid grid-cols-3 overflow-hidden animate-fade-slide-up" style={{ animationDelay: '0.45s' }}>
       <TotalItem label="Week" value={wtd.toFixed(1)} spark={sparkWeekly} />
       <TotalItem label="Quarter" value={qtd.toFixed(0)} spark={sparkQuarterly} border />
       <TotalItem label="Year" value={ytd.toFixed(0)} spark={sparkYtd} />
