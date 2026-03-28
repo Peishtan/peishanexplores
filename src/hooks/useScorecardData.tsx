@@ -245,6 +245,40 @@ export function computeScorecard(
     insights.push({ type: "strength", text: `Logged a ${Math.round(longestHike * 10) / 10}-mile hike — endurance building` });
   }
 
+  // Elevation landmark comparison
+  if (totalElevation > 0) {
+    const landmarks = [
+      { name: "Mt. Rainier", ft: 14411 },
+      { name: "Mt. Hood", ft: 11249 },
+      { name: "Mt. Adams", ft: 12281 },
+      { name: "Mt. Baker", ft: 10781 },
+      { name: "Mt. St. Helens", ft: 8363 },
+      { name: "Mt. Olympus", ft: 7980 },
+      { name: "Everest Base Camp", ft: 17598 },
+      { name: "Mt. Kilimanjaro", ft: 19341 },
+      { name: "Denali", ft: 20310 },
+      { name: "Everest", ft: 29032 },
+    ];
+    // Find highest landmark climbed past
+    const passed = landmarks.filter(l => totalElevation >= l.ft).sort((a, b) => b.ft - a.ft);
+    const next = landmarks.filter(l => totalElevation < l.ft).sort((a, b) => a.ft - b.ft);
+
+    if (passed.length > 0) {
+      const top = passed[0];
+      const timesOver = (totalElevation / top.ft).toFixed(1);
+      const overBy = totalElevation - top.ft;
+      if (next.length > 0) {
+        const gap = next[0].ft - totalElevation;
+        insights.push({ type: "strength", text: `${totalElevation.toLocaleString()} ft climbed — you've summited ${top.name} (${top.ft.toLocaleString()} ft)! Only ${gap.toLocaleString()} ft to reach ${next[0].name}.` });
+      } else {
+        insights.push({ type: "strength", text: `${totalElevation.toLocaleString()} ft climbed — that's ${timesOver}× ${top.name}. Legendary.` });
+      }
+    } else if (next.length > 0) {
+      const gap = next[0].ft - totalElevation;
+      insights.push({ type: "strength", text: `${totalElevation.toLocaleString()} ft climbed so far — ${gap.toLocaleString()} ft to reach the height of ${next[0].name} (${next[0].ft.toLocaleString()} ft).` });
+    }
+  }
+
   // Gaps
   targets.filter((t) => !t.hit).forEach((t) => {
     const pct = Math.round((t.current / t.target) * 100);
