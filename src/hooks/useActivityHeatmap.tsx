@@ -31,14 +31,15 @@ export function getSportColor(types: string[]): string {
   return SPORT_COLORS.mixed;
 }
 
-export function useActivityHeatmap(activities: Activity[] | undefined) {
+export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays?: number) {
   return useMemo(() => {
     if (!activities) return { weeks: [], dayCounts: new Map<string, HeatmapDay>() };
 
     const now = new Date();
-    const qStart = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1);
-    const qEnd = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3 + 3, 0);
-    const firstMonday = startOfWeek(qStart, { weekStartsOn: 1 });
+    // Cap at 90 days max for readable cell sizes
+    const effectiveDays = Math.min(rangeDays ?? 90, 90);
+    const rangeStart = new Date(now.getTime() - effectiveDays * 86400000);
+    const firstMonday = startOfWeek(rangeStart, { weekStartsOn: 1 });
 
     const dayCounts = new Map<string, HeatmapDay>();
 
