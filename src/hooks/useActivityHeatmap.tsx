@@ -31,19 +31,20 @@ export function getSportColor(types: string[]): string {
   return SPORT_COLORS.mixed;
 }
 
-export function useActivityHeatmap(activities: Activity[] | undefined) {
+export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays?: number) {
   return useMemo(() => {
     if (!activities) return { weeks: [], dayCounts: new Map<string, HeatmapDay>() };
 
     const now = new Date();
-    const qStart = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3, 1);
-    const qEnd = new Date(now.getFullYear(), Math.floor(now.getMonth() / 3) * 3 + 3, 0);
-    const firstMonday = startOfWeek(qStart, { weekStartsOn: 1 });
+    // Cap at 90 days max for readable cell sizes
+    const effectiveDays = Math.min(rangeDays ?? 90, 90);
+    const rangeStart = new Date(now.getTime() - effectiveDays * 86400000);
+    const firstMonday = startOfWeek(rangeStart, { weekStartsOn: 1 });
 
     const dayCounts = new Map<string, HeatmapDay>();
 
     // Initialize all days in range
-    const allDays = eachDayOfInterval({ start: firstMonday, end: qEnd > now ? now : qEnd });
+    const allDays = eachDayOfInterval({ start: firstMonday, end: now });
     allDays.forEach((d) => {
       const key = format(d, "yyyy-MM-dd");
       dayCounts.set(key, { date: d, count: 0, types: [] });
@@ -64,7 +65,7 @@ export function useActivityHeatmap(activities: Activity[] | undefined) {
     const weeks: HeatmapWeek[] = [];
     let weekStart = firstMonday;
     let weekNum = 1;
-    while (weekStart <= (qEnd > now ? now : qEnd)) {
+    while (weekStart <= now) {
       const weekEnd = addWeeks(weekStart, 1);
       const days: HeatmapDay[] = [];
       for (let i = 0; i < 7; i++) {
@@ -82,5 +83,5 @@ export function useActivityHeatmap(activities: Activity[] | undefined) {
     }
 
     return { weeks, dayCounts };
-  }, [activities]);
+  }, [activities, rangeDays]);
 }

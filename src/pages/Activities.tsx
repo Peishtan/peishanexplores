@@ -242,7 +242,7 @@ export default function Activities() {
           {/* Left: Summary + Filters (sidebar on desktop) */}
           <div className="md:sticky md:top-4 md:self-start">
             {/* Activity Heatmap */}
-            <ActivityHeatmap activities={activities} sportFilter={sportFilter} />
+            <ActivityHeatmap activities={activities} sportFilter={sportFilter} rangeDays={dateRange === "all" ? 90 : parseInt(dateRange)} />
 
             {/* Filter Pills */}
             <div className="flex md:flex-wrap gap-2 px-4 pt-4 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>

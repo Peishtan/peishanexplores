@@ -7,10 +7,11 @@ const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
 interface ActivityHeatmapProps {
   activities: Activity[] | undefined;
   sportFilter: string;
+  rangeDays?: number;
 }
 
-export default function ActivityHeatmap({ activities, sportFilter }: ActivityHeatmapProps) {
-  const { weeks } = useActivityHeatmap(activities);
+export default function ActivityHeatmap({ activities, sportFilter, rangeDays }: ActivityHeatmapProps) {
+  const { weeks } = useActivityHeatmap(activities, rangeDays);
 
   if (weeks.length === 0) return null;
 
