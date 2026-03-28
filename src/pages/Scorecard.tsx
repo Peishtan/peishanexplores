@@ -1,19 +1,39 @@
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useActivities } from "@/hooks/useActivities";
 import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
 import { useSkillMilestoneProgress, useSkillMilestones } from "@/hooks/useSkillMilestones";
-import { getAvailableQuarters, computeScorecard, type QuarterInfo, type ScorecardData, type SportBreakdown } from "@/hooks/useScorecardData";
+import { getAvailableQuarters, computeScorecard, type QuarterInfo, type ScorecardData, type SportBreakdown, type GoalSet } from "@/hooks/useScorecardData";
+import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle2, XCircle, TrendingUp, Sparkles, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
+function useQuarterGoalSnapshots() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["quarter_goal_snapshots", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("quarter_goal_snapshots")
+        .select("*")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+}
+
 export default function Scorecard() {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: milestoneProgress, isLoading: milestonesLoading } = useSkillMilestoneProgress();
   const { data: allMilestones } = useSkillMilestones();
+  const { data: snapshots } = useQuarterGoalSnapshots();
 
   const quarters = useMemo(() => {
     if (!activities) return [];
@@ -25,8 +45,44 @@ export default function Scorecard() {
 
   const scorecard = useMemo(() => {
     if (!activities || !profile || !milestoneProgress || !selectedQuarter) return null;
-    return computeScorecard(selectedQuarter, activities, profile, milestoneProgress, allMilestones?.length ?? 9);
-  }, [activities, profile, milestoneProgress, selectedQuarter, allMilestones]);
+
+    // For past quarters, use snapshot if available; for current quarter, use live profile
+    let goals: GoalSet;
+    if (selectedQuarter.isCurrent) {
+      goals = {
+        goal_hiking_quarterly_miles: profile.goal_hiking_quarterly_miles,
+        goal_kayak_quarterly_miles: profile.goal_kayak_quarterly_miles,
+        goal_elevation_avg: profile.goal_elevation_avg,
+        goal_exercises_per_week: profile.goal_exercises_per_week ?? 3,
+        goal_outdoor_per_week: profile.goal_outdoor_per_week ?? 1,
+        goal_kayak_per_week: profile.goal_kayak_per_week ?? 1,
+      };
+    } else {
+      const snap = snapshots?.find(s => s.year === selectedQuarter.year && s.quarter === selectedQuarter.qNum);
+      if (snap) {
+        goals = {
+          goal_hiking_quarterly_miles: snap.goal_hiking_quarterly_miles,
+          goal_kayak_quarterly_miles: snap.goal_kayak_quarterly_miles,
+          goal_elevation_avg: snap.goal_elevation_avg,
+          goal_exercises_per_week: snap.goal_exercises_per_week,
+          goal_outdoor_per_week: snap.goal_outdoor_per_week,
+          goal_kayak_per_week: snap.goal_kayak_per_week,
+        };
+      } else {
+        // Fallback to current profile if no snapshot exists
+        goals = {
+          goal_hiking_quarterly_miles: profile.goal_hiking_quarterly_miles,
+          goal_kayak_quarterly_miles: profile.goal_kayak_quarterly_miles,
+          goal_elevation_avg: profile.goal_elevation_avg,
+          goal_exercises_per_week: profile.goal_exercises_per_week ?? 3,
+          goal_outdoor_per_week: profile.goal_outdoor_per_week ?? 1,
+          goal_kayak_per_week: profile.goal_kayak_per_week ?? 1,
+        };
+      }
+    }
+
+    return computeScorecard(selectedQuarter, activities, goals, milestoneProgress, allMilestones?.length ?? 9);
+  }, [activities, profile, milestoneProgress, selectedQuarter, allMilestones, snapshots]);
 
   const isLoading = activitiesLoading || profileLoading || milestonesLoading;
 
