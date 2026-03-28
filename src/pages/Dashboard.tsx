@@ -378,8 +378,8 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak }: {
 }
 
 /* ── Momentum Section ── */
-function MomentumSection({ momentum, wtdMiles, elevationGoal }: {
-  momentum: MomentumData | null; wtdMiles: number; elevationGoal: number;
+function MomentumSection({ momentum, wtdMiles, elevationGoal, elevationSpark }: {
+  momentum: MomentumData | null; wtdMiles: number; elevationGoal: number; elevationSpark: ElevSparkPoint[];
 }) {
   if (!momentum) return null;
   const { fourWeekAvgMiles, fourWeekDelta, elevTrendPct, fourWeekAvgElev, priorFourWeekAvgElev, longestHikeThisQ } = momentum;
@@ -410,6 +410,30 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal }: {
           <p className="font-mono-dm text-[11px] text-fog mt-1">miles</p>
         </MomentumCard>
       </div>
+      {/* Elevation Sparkline */}
+      {elevationSpark.length > 1 && (
+        <div className="mt-2.5 bg-card border border-[rgba(255,255,255,0.06)] rounded-[14px] p-4">
+          <p className="font-mono-dm text-[9px] uppercase tracking-[0.18em] text-fog mb-3">Elevation per outing</p>
+          <div className="h-12">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={elevationSpark}>
+                <defs>
+                  <linearGradient id="elev-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--moss-light))" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="hsl(var(--moss-light))" stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="elev" stroke="hsl(var(--moss-light))" strokeWidth={1.5}
+                      fill="url(#elev-grad)" dot={false} isAnimationActive={false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex justify-between font-mono-dm text-[8px] text-fog/40 mt-1">
+            <span>{elevationSpark[0]?.date}</span>
+            <span>{elevationSpark[elevationSpark.length - 1]?.date}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
