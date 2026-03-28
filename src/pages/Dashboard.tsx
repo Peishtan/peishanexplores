@@ -285,7 +285,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak }: {
             <p className="text-[11px] text-fog font-light">{rule}</p>
           </div>
         </div>
-        {streak > 1 && (
+        {streak >= 3 && (
           <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em]">
             <Flame className="h-3 w-3" strokeWidth={1.5} /> {streak}-wk streak
           </span>
