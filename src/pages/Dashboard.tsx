@@ -5,9 +5,10 @@ import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type Mome
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
-import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell } from "lucide-react";
+import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 export default function Dashboard() {
   const { data: profile } = useProfile();
