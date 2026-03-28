@@ -16,7 +16,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
 
 const SPORTS = [
-  { id: "kayaking" as const, label: "Kayak", icon: Waves, pillClass: "bg-[rgba(100,160,210,0.15)] text-[#7ab4d4] border-[rgba(100,160,210,0.25)]", accentHex: "#7ab4d4" },
+  { id: "kayaking" as const, label: "Paddle", icon: Waves, pillClass: "bg-[rgba(100,160,210,0.15)] text-[#7ab4d4] border-[rgba(100,160,210,0.25)]", accentHex: "#7ab4d4" },
   { id: "hiking" as const, label: "Hike", icon: Footprints, pillClass: "bg-[rgba(122,184,124,0.15)] text-moss-light border-[rgba(122,184,124,0.25)]", accentHex: "#7ab87c" },
   { id: "xc_skiing" as const, label: "XC Ski", icon: Snowflake, pillClass: "bg-[rgba(180,180,220,0.15)] text-[#b0b4e0] border-[rgba(180,180,220,0.25)]", accentHex: "#b0b4e0" },
   { id: "orange_theory" as const, label: "Gym", icon: Dumbbell, pillClass: "bg-[rgba(212,106,90,0.15)] text-[#d46a5a] border-[rgba(212,106,90,0.25)]", accentHex: "#d46a5a" },
