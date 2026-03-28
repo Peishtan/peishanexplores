@@ -249,7 +249,7 @@ export default function Activities() {
                   onClick={() => setSportFilter(f.id)}
                   className={`font-mono-dm text-[11px] tracking-[0.1em] uppercase px-3.5 py-1.5 rounded-full border whitespace-nowrap flex-shrink-0 transition-all ${
                     sportFilter === f.id
-                      ? "bg-moss text-paper border-moss-light"
+                      ? f.activeClass
                       : "bg-card text-fog border-[rgba(255,255,255,0.07)] hover:border-[rgba(255,255,255,0.15)]"
                   }`}
                 >
