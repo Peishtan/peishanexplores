@@ -134,7 +134,7 @@ export default function Scorecard() {
 
             {/* ── Strengths & Gaps ── */}
             {scorecard.insights.length > 0 && (
-              <ScorecardSection title="Review" icon={<FileSearch className="h-4 w-4 text-muted-foreground" />}>
+              <ScorecardSection title="Review" icon={<FileSearch className="h-4 w-4 text-fog" />}>
                 <div className="space-y-3">
                   <ReviewTopline scorecard={scorecard} />
                   <div className="border-t border-border pt-3 space-y-2">
