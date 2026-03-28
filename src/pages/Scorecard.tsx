@@ -192,7 +192,7 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
   const areas: { label: string; pct: number; weight: number; tip: string }[] = [
     { label: "gym consistency", pct: gymCons?.pct ?? 0, weight: 0.25, tip: "hitting your weekly gym sessions" },
     { label: "outdoor rhythm", pct: outdoorCons?.pct ?? 0, weight: 0.10, tip: "getting outside more regularly each week" },
-    { label: "kayak rhythm", pct: kayakCons?.pct ?? 0, weight: 0.10, tip: "paddling more consistently each week" },
+    { label: "paddle rhythm", pct: kayakCons?.pct ?? 0, weight: 0.10, tip: "paddling more consistently each week" },
   ];
 
   const targetsHit = scorecard.targets.filter((t) => t.hit).length;
@@ -341,7 +341,7 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
   const rows = [
     { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: targetScore * 0.45 },
     { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: independentScore * 0.25 },
-    { label: "Outdoor / Kayak Rhythm", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
+    { label: "Outdoor / Paddle Rhythm", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
     { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: milestoneScore * 0.10 },
   ];
 
@@ -375,7 +375,7 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
             <span className="font-mono-dm text-sm font-bold text-foreground">{total}%</span>
           </div>
           <p className="text-[11px] text-muted-foreground leading-relaxed">
-            Outdoor & kayak rhythm scores get a 75% floor when the corresponding distance target is met.
+            Outdoor & paddle rhythm scores get a 75% floor when the corresponding distance target is met.
           </p>
         </div>
       )}
