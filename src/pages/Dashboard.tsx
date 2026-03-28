@@ -728,7 +728,14 @@ function MilestoneSpotlight() {
         </div>
       ) : (
         <div>
-          {achieved.map((p) => {
+          {[...achieved].sort((a, b) => {
+            const latestDate = (p: typeof a) => {
+              const ev = evidenceMap?.get(p.id);
+              const evDate = ev?.[0]?.start_time;
+              return evDate ? new Date(evDate).getTime() : p.achieved_at ? new Date(p.achieved_at).getTime() : 0;
+            };
+            return latestDate(b) - latestDate(a);
+          }).map((p) => {
             const ms = p.skill_milestones;
             const evidenceList = evidenceMap?.get(p.id);
             return (
