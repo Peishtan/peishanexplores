@@ -413,7 +413,7 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
   const rows = [
     { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: targetScore * 0.45 },
     { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: independentScore * 0.25 },
-    { label: "Outdoor / Paddle Rhythm", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
+    { label: "Outdoor Consistency", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
     { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: milestoneScore * 0.10 },
   ];
 
@@ -447,7 +447,7 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
             <span className="font-mono-dm text-sm font-bold text-foreground">{total}%</span>
           </div>
           <p className="text-[11px] text-muted-foreground leading-relaxed">
-            Outdoor & paddle rhythm scores get a 75% floor when the corresponding distance target is met.
+            Outdoor consistency scores get a 75% floor when the corresponding distance target is met.
           </p>
         </div>
       )}
