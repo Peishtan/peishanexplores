@@ -45,6 +45,7 @@ interface LogForm {
   date: string;
   miles: string;
   elevation: string;
+  duration: string;
   notes: string;
   sport: ActivityType;
 }
@@ -65,11 +66,11 @@ export default function Activities() {
   const [sportFilter, setSportFilter] = useState("all");
   const [dateRange, setDateRange] = useState("30");
   const [form, setForm] = useState<LogForm>({
-    route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking",
+    route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", duration: "", notes: "", sport: "hiking",
   });
 
   const resetForm = () => {
-    setForm({ route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", notes: "", sport: "hiking" });
+    setForm({ route: "", date: new Date().toISOString().split("T")[0], miles: "", elevation: "", duration: "", notes: "", sport: "hiking" });
     setEditingId(null);
   };
 
@@ -82,6 +83,7 @@ export default function Activities() {
       date: new Date(a.start_time).toISOString().split("T")[0],
       miles: a.distance?.toString() || "",
       elevation: a.elevation_gain?.toString() || "",
+      duration: a.duration > 0 ? a.duration.toString() : "",
       notes: a.notes || "",
       sport: a.type,
     });
@@ -114,6 +116,13 @@ export default function Activities() {
         toast.error("Elevation must be between 0 and 50,000 ft");
         return;
       }
+      const duration = form.duration ? parseInt(form.duration, 10) : 0;
+      if (duration < 0 || duration > 1440) {
+        toast.error("Duration must be between 0 and 1440 minutes");
+        return;
+        toast.error("Elevation must be between 0 and 50,000 ft");
+        return;
+      }
 
       // Validate text fields
       const route = (form.route || "").trim().slice(0, 500) || null;
@@ -135,6 +144,7 @@ export default function Activities() {
             start_time: localDate.toISOString(),
             distance: miles,
             elevation_gain: elevation,
+            duration,
             notes,
           })
           .eq("id", editingId);
@@ -147,7 +157,7 @@ export default function Activities() {
           .insert({
             type: form.sport,
             start_time: localDate.toISOString(),
-            duration: 0,
+            duration,
             distance: miles,
             elevation_gain: elevation,
             calories: null,
@@ -315,10 +325,15 @@ export default function Activities() {
                         </div>
                         <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
                           {a.distance ? (
-                            <span className="font-display text-[22px] font-black leading-none tracking-tight">{a.distance}</span>
-                          ) : null}
-                          {a.distance ? (
-                            <span className="font-mono-dm text-[9px] text-fog tracking-[0.08em]">mi</span>
+                            <>
+                              <span className="font-display text-[22px] font-black leading-none tracking-tight">{a.distance}</span>
+                              <span className="font-mono-dm text-[9px] text-fog tracking-[0.08em]">mi</span>
+                            </>
+                          ) : a.duration > 0 ? (
+                            <>
+                              <span className="font-display text-[22px] font-black leading-none tracking-tight">{a.duration}</span>
+                              <span className="font-mono-dm text-[9px] text-fog tracking-[0.08em]">min</span>
+                            </>
                           ) : null}
                           {a.elevation_gain ? (
                             <span className="font-mono-dm text-[10px] text-fog">{a.elevation_gain.toLocaleString()} ft</span>
@@ -396,6 +411,10 @@ export default function Activities() {
                 <Input type="number" value={form.elevation} onChange={(e) => setForm({ ...form, elevation: e.target.value })} placeholder="e.g. 1200" className="bg-[rgba(255,255,255,0.06)] border-[rgba(255,255,255,0.12)]" />
               </div>
             )}
+            <div className="space-y-1.5">
+              <Label className="text-fog">Duration (minutes)</Label>
+              <Input type="number" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} placeholder="e.g. 45" className="bg-[rgba(255,255,255,0.06)] border-[rgba(255,255,255,0.12)]" />
+            </div>
             <div className="space-y-1.5">
               <Label className="text-fog">Sport Type</Label>
               <select
