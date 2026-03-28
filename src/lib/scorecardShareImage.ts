@@ -97,25 +97,26 @@ function buildShareHTML(sc: ScorecardData): string {
     </div>
     <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:32px;">
       <!-- Stats row -->
-      <div style="display:flex;gap:16px;margin-bottom:24px;">
-        ${["Activities", "Miles", "Elevation"].map((lbl, i) => {
-          const val = i === 0 ? sc.totalActivities.toString() : i === 1 ? sc.totalMiles.toString() : `${sc.totalElevation.toLocaleString()} ft`;
-          return `<div style="flex:1;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:16px;">
-            <p style="font-size:24px;font-weight:700;margin:0;line-height:1.2;">${val}</p>
-            <p style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:4px 0 0 0;">${lbl}</p>
-          </div>`;
-        }).join("")}
+      <div style="display:flex;gap:16px;margin-bottom:${sc.highlights.filter(h => !['medal','elevation'].includes(h.icon)).length > 0 ? '24px' : '0'};">
+        <div style="flex:1;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:16px;">
+          <p style="font-size:24px;font-weight:700;margin:0;line-height:1.2;">${sc.totalMiles}</p>
+          <p style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:4px 0 0 0;">Miles</p>
+        </div>
       </div>
       <!-- Highlight cards -->
-      ${sc.highlights.length > 0 ? `
-      <div style="display:grid;grid-template-columns:repeat(${sc.highlights.length <= 2 ? 2 : 3},1fr);gap:16px;">
-        ${sc.highlights.map(h => `
-          <div style="border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:20px;text-align:center;">
-            <p style="font-size:24px;font-weight:700;margin:8px 0 0 0;">${h.value}</p>
-            <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:4px 0 0 0;">${h.label}</p>
-          </div>
-        `).join("")}
-      </div>` : ""}
+      ${(() => {
+        const filtered = sc.highlights.filter(h => !['medal', 'elevation'].includes(h.icon));
+        if (filtered.length === 0) return "";
+        const cols = filtered.length <= 2 ? filtered.length : 3;
+        return `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:16px;justify-items:center;">
+          ${filtered.map(h => `
+            <div style="border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:20px;text-align:center;width:100%;">
+              <p style="font-size:24px;font-weight:700;margin:8px 0 0 0;">${h.value}</p>
+              <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:4px 0 0 0;">${h.label}</p>
+            </div>
+          `).join("")}
+        </div>`;
+      })()}
     </div>
   </div>
 
