@@ -17,8 +17,8 @@ const SPORT_COLORS: Record<string, string> = {
   kayaking: "rgba(100,160,210,0.8)",
   hiking: "rgba(122,184,124,0.8)",
   xc_skiing: "rgba(180,180,220,0.8)",
-  orange_theory: "rgba(212,150,58,0.8)",
-  peloton: "rgba(212,150,58,0.8)",
+  orange_theory: "rgba(212,106,90,0.8)",
+  peloton: "rgba(212,106,90,0.8)",
   mixed: "rgba(200,200,200,0.7)",
 };
 

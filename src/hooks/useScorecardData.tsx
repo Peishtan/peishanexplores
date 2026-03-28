@@ -256,8 +256,8 @@ export function computeScorecard(
     hiking: { label: "Hike", count: 0, color: "hsl(122, 35%, 60%)" },
     kayaking: { label: "Kayak", count: 0, color: "hsl(200, 60%, 60%)" },
     xc_skiing: { label: "XC Ski", count: 0, color: "hsl(240, 30%, 72%)" },
-    orange_theory: { label: "Gym", count: 0, color: "hsl(32, 72%, 58%)" },
-    peloton: { label: "Gym", count: 0, color: "hsl(32, 72%, 58%)" },
+    orange_theory: { label: "Gym", count: 0, color: "hsl(10, 65%, 58%)" },
+    peloton: { label: "Gym", count: 0, color: "hsl(10, 65%, 58%)" },
   };
   qActivities.forEach((a) => {
     if (sportMap[a.type]) sportMap[a.type].count++;
@@ -268,7 +268,7 @@ export function computeScorecard(
     { type: "hiking", ...sportMap.hiking },
     { type: "kayaking", ...sportMap.kayaking },
     { type: "xc_skiing", ...sportMap.xc_skiing },
-    { type: "gym", label: "Gym", count: gymCount, color: "hsl(32, 72%, 58%)" },
+    { type: "gym", label: "Gym", count: gymCount, color: "hsl(10, 65%, 58%)" },
   ].filter((s) => s.count > 0);
 
   return {
