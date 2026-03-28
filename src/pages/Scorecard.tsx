@@ -341,7 +341,7 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
   const rows = [
     { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: targetScore * 0.45 },
     { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: independentScore * 0.25 },
-    { label: "Outdoor / Kayak Rhythm", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
+    { label: "Outdoor / Paddle Rhythm", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
     { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: milestoneScore * 0.10 },
   ];
 
