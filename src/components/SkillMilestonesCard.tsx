@@ -32,11 +32,6 @@ export default function SkillMilestonesCard() {
   const { data: milestones, isLoading: loadingDefs } = useSkillMilestones();
   const { data: progress, isLoading: loadingProgress } = useSkillMilestoneProgress();
   const recompute = useRecomputeMilestones();
-  const [selectedProgress, setSelectedProgress] = useState<SkillMilestoneProgress | null>(null);
-  const [evidenceLogs, setEvidenceLogs] = useState<EvidenceLog[]>([]);
-  const [loadingEvidence, setLoadingEvidence] = useState(false);
-
-  // Recompute is now triggered only when activities are added/edited, not on every mount
 
   const isLoading = loadingDefs || loadingProgress;
 
@@ -49,21 +44,6 @@ export default function SkillMilestonesCard() {
     acc[tier].push(ms);
     return acc;
   }, { foundation: [], intermediate: [], advanced: [] });
-
-  const handleViewEvidence = async (p: SkillMilestoneProgress) => {
-    setSelectedProgress(p);
-    if (p.evidence_log_ids && p.evidence_log_ids.length > 0) {
-      setLoadingEvidence(true);
-      const { data } = await supabase
-        .from("activities")
-        .select("id, type, start_time, distance, elevation_gain, duration, route")
-        .in("id", p.evidence_log_ids);
-      setEvidenceLogs((data as EvidenceLog[]) ?? []);
-      setLoadingEvidence(false);
-    } else {
-      setEvidenceLogs([]);
-    }
-  };
 
   const tierOrder: Tier[] = ["foundation", "intermediate", "advanced"];
 
