@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
 import { useSkillMilestones, useSkillMilestoneProgress, useRecomputeMilestones, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
-import { supabase } from "@/integrations/supabase/client";
-import { CheckCircle2, Lock, Loader2, X, Compass, TrendingUp, Crown } from "lucide-react";
+import { CheckCircle2, Lock, Loader2, Compass } from "lucide-react";
+import { format } from "date-fns";
 import { format } from "date-fns";
 
 interface EvidenceLog {
