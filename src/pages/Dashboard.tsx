@@ -568,7 +568,7 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
       const kayakPct = Math.round((kayakHit / weeks) * 100);
 
       if (gymPct < 60) gaps.push({ area: "Gym consistency", pct: gymPct, tip: "locking in gym sessions early each week" });
-      if (outdoorPct < 60) gaps.push({ area: "Outdoor rhythm", pct: outdoorPct, tip: "scheduling a weekly outdoor outing" });
+      if (outdoorPct < 60) gaps.push({ area: "Hike / XC Ski rhythm", pct: outdoorPct, tip: "scheduling a weekly hike or XC ski outing" });
       if (kayakPct < 60) gaps.push({ area: "Paddle rhythm", pct: kayakPct, tip: "getting on the water more regularly" });
 
       // Pick the biggest gap
