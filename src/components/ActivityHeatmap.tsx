@@ -8,9 +8,10 @@ interface ActivityHeatmapProps {
   activities: Activity[] | undefined;
   sportFilter: string;
   rangeDays?: number;
+  isCapped?: boolean;
 }
 
-export default function ActivityHeatmap({ activities, sportFilter, rangeDays }: ActivityHeatmapProps) {
+export default function ActivityHeatmap({ activities, sportFilter, rangeDays, isCapped }: ActivityHeatmapProps) {
   const { weeks } = useActivityHeatmap(activities, rangeDays);
 
   if (weeks.length === 0) return null;
@@ -45,7 +46,7 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays }: 
 
                 const count = filteredTypes.length;
                 const color = count > 0 ? getSportColor(filteredTypes) : undefined;
-                const opacity = count === 0 ? 0.06 : count === 1 ? 0.6 : count >= 2 ? 1 : 0.8;
+                const opacity = count > 0 ? 1 : 0.06;
                 const isToday = format(day.date, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
 
                 return (
@@ -54,7 +55,6 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays }: 
                     className={`h-[18px] rounded-[3px] transition-all ${isToday ? "ring-1 ring-moss-light/50" : ""}`}
                     style={{
                       backgroundColor: color ?? "rgba(255,255,255,0.06)",
-                      opacity: count > 0 ? opacity : 1,
                     }}
                     title={`${format(day.date, "MMM d")}${count > 0 ? ` · ${count} activit${count > 1 ? "ies" : "y"}` : ""}`}
                   />
@@ -70,7 +70,10 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays }: 
               {week.weekNum % 2 === 1 ? `W${week.weekNum}` : ""}
             </span>
           ))}
-        </div>
+        {isCapped && (
+          <p className="font-mono-dm text-[9px] text-fog/40 text-center mt-2">Showing last 90 days</p>
+        )}
+      </div>
       </div>
     </div>
   );
