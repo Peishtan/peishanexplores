@@ -111,10 +111,9 @@ export default function SkillMilestonesCard() {
                   const unlocked = status === "achieved";
 
                   return (
-                    <button
+                    <div
                       key={ms.id}
-                      onClick={() => p && handleViewEvidence(p)}
-                      className={`flex items-center gap-3 p-3 rounded-xl bg-card border transition-colors text-left ${
+                      className={`relative group/tip flex items-center gap-3 p-3 rounded-xl bg-card border transition-colors text-left cursor-default ${
                         unlocked ? "border-[rgba(122,184,124,0.15)]" : "border-[rgba(255,255,255,0.05)] opacity-75"
                       }`}
                     >
@@ -145,7 +144,20 @@ export default function SkillMilestonesCard() {
                           {current} / {target}{ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}
                         </span>
                       )}
-                    </button>
+                      {/* Hover tooltip */}
+                      {unlocked && p && (
+                        <div className="hidden group-hover/tip:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50
+                          bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg w-48">
+                          <p className="font-mono-dm text-[10px] text-fog uppercase tracking-[0.1em] mb-1">Milestone</p>
+                          <p className="text-[12px] text-mist leading-snug">{ms.title}</p>
+                          {p.achieved_at && (
+                            <p className="font-mono-dm text-[10px] text-done mt-0.5">
+                              Unlocked {format(new Date(p.achieved_at), "MMM d, yyyy")}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
