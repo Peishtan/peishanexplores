@@ -326,7 +326,7 @@ function ScorecardSection({ title, icon, children }: { title: string; icon: Reac
     <div className="space-y-2">
       <div className="flex items-center gap-2 mb-4">
         {icon}
-        <h2 className="font-mono-dm text-[11px] uppercase tracking-[0.15em] text-muted-foreground">{title}</h2>
+        <h2 className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog">{title}</h2>
       </div>
       <div className="rounded-2xl border border-border bg-card p-4">
         {children}
