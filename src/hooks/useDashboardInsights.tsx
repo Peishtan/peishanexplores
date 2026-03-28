@@ -256,10 +256,17 @@ export function useDashboardInsights(
     const sparkQuarterly = buildSparkline(qStart, new Date(qEnd.getTime() - 86400000));
     const sparkYtd = buildSparkline(new Date(now.getFullYear(), 0, 1), new Date(now.getFullYear(), 11, 31));
 
+    // Elevation sparkline: per-outing elevation for activities with elevation this quarter
+    const elevationSpark: ElevSparkPoint[] = activities
+      .filter(a => new Date(a.start_time).getTime() >= qStartMs && (a.elevation_gain ?? 0) > 0)
+      .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+      .map((a, i) => ({ idx: i, elev: a.elevation_gain!, date: format(new Date(a.start_time), "MMM d") }));
+
     return {
       wtd, mtd: { miles: getMiles(monthStart) }, ytd: { miles: getMiles(yearStart) }, qtd: { miles: qtdMiles },
       sparkWeekly, sparkQuarterly, sparkYtd,
       lastWeek, weekDelta: wtd.miles - lastWeek.miles, threeWeekAvg: threeWeekMiles / 3, streaks,
+      elevationSpark,
       quarterWeeklyGoals: {
         kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak), total: weeksInQuarter },
         outdoor: { weekResults: getWeekResults((w) => w.outdoor >= goals.outdoor), total: weeksInQuarter },
