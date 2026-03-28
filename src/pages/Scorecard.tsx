@@ -6,7 +6,8 @@ import { getAvailableQuarters, computeScorecard, type QuarterInfo, type Scorecar
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, XCircle, TrendingUp, Sparkles, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info } from "lucide-react";
+import { CheckCircle2, XCircle, TrendingUp, Sparkles, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Scorecard() {
   const { data: activities, isLoading: activitiesLoading } = useActivities();
@@ -97,6 +98,9 @@ export default function Scorecard() {
                 {scorecard.targets.map((t, i) => (
                   <TargetRow key={i} {...t} />
                 ))}
+                <Link to="/targets" className="flex items-center justify-center gap-1.5 pt-2 font-mono-dm text-[11px] tracking-[0.1em] text-moss-light hover:text-moss transition-colors">
+                  Adjust targets <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
             </ScorecardSection>
 

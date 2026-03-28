@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -59,6 +60,7 @@ export default function Activities() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [sportFilter, setSportFilter] = useState("all");
   const [dateRange, setDateRange] = useState("30");
   const [form, setForm] = useState<LogForm>({
@@ -164,12 +166,15 @@ export default function Activities() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const confirmDelete = async () => {
+    if (!deleteConfirmId) return;
     try {
-      await deleteActivity.mutateAsync(id);
+      await deleteActivity.mutateAsync(deleteConfirmId);
       toast.success("Activity deleted");
     } catch {
       toast.error("Failed to delete");
+    } finally {
+      setDeleteConfirmId(null);
     }
   };
 
@@ -345,7 +350,7 @@ export default function Activities() {
                           <button onClick={(e) => { e.stopPropagation(); openEdit(a); }} className="text-fog hover:text-moss-light transition-colors">
                             <Edit2 className="h-3.5 w-3.5" />
                           </button>
-                          <button onClick={(e) => { e.stopPropagation(); handleDelete(a.id); }} className="text-fog hover:text-amber transition-colors">
+                          <button onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(a.id); }} className="text-fog hover:text-amber transition-colors">
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>
@@ -360,7 +365,7 @@ export default function Activities() {
                           <button onClick={() => openEdit(a)} className="flex items-center gap-1.5 text-[10px] font-mono-dm uppercase tracking-[0.1em] text-fog hover:text-moss-light transition-colors px-2.5 py-1.5 rounded-lg bg-[rgba(255,255,255,0.04)]">
                             <Edit2 className="h-3 w-3" /> Edit
                           </button>
-                          <button onClick={() => handleDelete(a.id)} className="flex items-center gap-1.5 text-[10px] font-mono-dm uppercase tracking-[0.1em] text-fog hover:text-amber transition-colors px-2.5 py-1.5 rounded-lg bg-[rgba(255,255,255,0.04)]">
+                          <button onClick={() => setDeleteConfirmId(a.id)} className="flex items-center gap-1.5 text-[10px] font-mono-dm uppercase tracking-[0.1em] text-fog hover:text-amber transition-colors px-2.5 py-1.5 rounded-lg bg-[rgba(255,255,255,0.04)]">
                             <Trash2 className="h-3 w-3" /> Delete
                           </button>
                         </div>
@@ -436,6 +441,24 @@ export default function Activities() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
+        <AlertDialogContent className="bg-card border-[rgba(255,255,255,0.1)]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-display">Delete Activity?</AlertDialogTitle>
+            <AlertDialogDescription className="text-fog">
+              This can't be undone. The activity will be permanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="font-mono-dm text-xs tracking-[0.1em] uppercase">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="font-mono-dm text-xs tracking-[0.1em] uppercase bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <BottomNav />
     </div>
