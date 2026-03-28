@@ -240,16 +240,8 @@ export default function Activities() {
         <div className="md:grid md:grid-cols-[280px_1fr] md:gap-x-6">
           {/* Left: Summary + Filters (sidebar on desktop) */}
           <div className="md:sticky md:top-4 md:self-start">
-            {/* Summary Chips */}
-            {chips.length > 0 && (
-              <div className="flex flex-wrap gap-2 px-4 pt-5">
-                {chips.map((chip, i) => (
-                  <span key={i} className="font-mono-dm text-[11px] tracking-[0.08em] text-mist bg-card border border-[rgba(255,255,255,0.07)] px-2.5 py-1 rounded-full">
-                    {chip}
-                  </span>
-                ))}
-              </div>
-            )}
+            {/* Activity Heatmap */}
+            <ActivityHeatmap activities={activities} sportFilter={sportFilter} />
 
             {/* Filter Pills */}
             <div className="flex md:flex-wrap gap-2 px-4 pt-4 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>

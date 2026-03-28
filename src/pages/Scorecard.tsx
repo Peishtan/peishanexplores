@@ -78,10 +78,16 @@ export default function Scorecard() {
 
             {/* ── Highlights ── */}
             <ScorecardSection title="Highlights" icon={<Trophy className="h-4 w-4 text-muted-foreground" />}>
-              <div className="grid grid-cols-3 gap-3 mb-3">
-                <HighlightCard icon="activity" label="Activities" value={scorecard.totalActivities.toString()} />
-                <HighlightCard icon="miles" label="Miles" value={scorecard.totalMiles.toString()} />
-                <HighlightCard icon="elevation" label="ft Elevation" value={scorecard.totalElevation.toLocaleString()} />
+              <div className="flex gap-4 mb-3">
+                {/* Sport Mix Donut */}
+                {scorecard.sportBreakdown.length > 0 && (
+                  <SportDonut breakdown={scorecard.sportBreakdown} total={scorecard.totalActivities} />
+                )}
+                <div className="grid grid-cols-1 gap-2 flex-1">
+                  <MiniStat label="Activities" value={scorecard.totalActivities.toString()} />
+                  <MiniStat label="Miles" value={scorecard.totalMiles.toString()} />
+                  <MiniStat label="Elevation" value={`${scorecard.totalElevation.toLocaleString()} ft`} />
+                </div>
               </div>
               {scorecard.highlights.length > 0 && (
                 <div className={`grid gap-3 ${scorecard.highlights.length % 2 === 1 ? "grid-cols-3" : "grid-cols-2"}`}>
