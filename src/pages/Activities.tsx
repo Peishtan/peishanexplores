@@ -223,7 +223,7 @@ export default function Activities() {
     <div className="min-h-screen bg-background pb-24">
       <HeroBanner title="Logs" subtitle="Activity history" compact />
 
-      <div className="mx-auto max-w-[420px] md:max-w-[880px]">
+      <div className="mx-auto max-w-[420px] md:max-w-[880px] md:px-4">
         <div className="md:grid md:grid-cols-[280px_1fr] md:gap-x-6">
           {/* Left: Summary + Filters (sidebar on desktop) */}
           <div className="md:sticky md:top-4 md:self-start">
