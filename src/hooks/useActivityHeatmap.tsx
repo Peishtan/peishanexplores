@@ -83,5 +83,5 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
     }
 
     return { weeks, dayCounts };
-  }, [activities]);
+  }, [activities, rangeDays]);
 }
