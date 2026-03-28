@@ -8,7 +8,7 @@ import HeroBanner from "@/components/HeroBanner";
 import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Dashboard() {
   const { data: profile } = useProfile();
