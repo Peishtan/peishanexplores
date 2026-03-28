@@ -8,7 +8,7 @@ import HeroBanner from "@/components/HeroBanner";
 import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Dashboard() {
   const { data: profile } = useProfile();
@@ -362,12 +362,12 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           if (!wr || (!isPast && !isCurrent)) return <div key={i}>{box}</div>;
 
           return (
-            <HoverCard key={i} openDelay={200} closeDelay={100}>
-              <HoverCardTrigger asChild>{box}</HoverCardTrigger>
-              <HoverCardContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
+            <Tooltip key={i} delayDuration={150}>
+              <TooltipTrigger asChild>{box}</TooltipTrigger>
+              <TooltipContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
                 <WeekHoverContent wr={wr} weekIdx={i} />
-              </HoverCardContent>
-            </HoverCard>
+              </TooltipContent>
+            </Tooltip>
           );
         })}
       </div>
@@ -443,12 +443,12 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
           if (!wr || isFuture) return <div key={weekIdx}>{pips}</div>;
 
           return (
-            <HoverCard key={weekIdx} openDelay={200} closeDelay={100}>
-              <HoverCardTrigger asChild>{pips}</HoverCardTrigger>
-              <HoverCardContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
+            <Tooltip key={weekIdx} delayDuration={150}>
+              <TooltipTrigger asChild>{pips}</TooltipTrigger>
+              <TooltipContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
                 <WeekHoverContent wr={wr} weekIdx={weekIdx} />
-              </HoverCardContent>
-            </HoverCard>
+              </TooltipContent>
+            </Tooltip>
           );
         })}
       </div>
