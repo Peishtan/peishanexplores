@@ -86,7 +86,7 @@ export function useAchievedMilestones(limit = 5) {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ["skill_milestone_progress", "achieved", user?.id],
+    queryKey: ["skill_milestone_progress", "achieved", user?.id, limit],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("skill_milestone_progress")
@@ -94,10 +94,19 @@ export function useAchievedMilestones(limit = 5) {
         .eq("user_id", user!.id)
         .eq("status", "achieved")
         .eq("skill_milestones.is_active", true)
-        .order("achieved_at", { ascending: false })
-        .limit(limit);
+        .order("achieved_at", { ascending: false });
       if (error) throw error;
-      return data as unknown as SkillMilestoneProgress[];
+      const typed = data as unknown as SkillMilestoneProgress[];
+      // When milestones share the same achieved_at, prefer higher-tier (larger threshold)
+      typed.sort((a, b) => {
+        const dateA = a.achieved_at ?? "";
+        const dateB = b.achieved_at ?? "";
+        if (dateA !== dateB) return dateB.localeCompare(dateA);
+        const threshA = a.skill_milestones?.threshold_distance_mi ?? a.skill_milestones?.threshold_elevation_ft ?? 0;
+        const threshB = b.skill_milestones?.threshold_distance_mi ?? b.skill_milestones?.threshold_elevation_ft ?? 0;
+        return threshB - threshA;
+      });
+      return typed.slice(0, limit);
     },
     enabled: !!user,
   });
