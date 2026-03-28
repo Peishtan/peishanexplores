@@ -3,6 +3,7 @@ import { format, startOfWeek } from "date-fns";
 import { useActivities, type Activity } from "@/hooks/useActivities";
 import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type MomentumData, type ElevSparkPoint, type WeekResult, type WeekActivitySummary } from "@/hooks/useDashboardInsights";
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
+import { useMilestoneEvidence } from "@/hooks/useMilestoneEvidence";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell, MapPin } from "lucide-react";
