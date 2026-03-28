@@ -60,6 +60,7 @@ export default function Activities() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [sportFilter, setSportFilter] = useState("all");
   const [dateRange, setDateRange] = useState("30");
   const [form, setForm] = useState<LogForm>({
