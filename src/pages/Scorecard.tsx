@@ -327,9 +327,9 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
   const independentScore = gymCons?.pct ?? 0;
 
   const outdoorCons = scorecard.consistency.find((c) => c.label === "Outdoor Sessions");
-  const kayakCons = scorecard.consistency.find((c) => c.label === "Kayak Sessions");
+  const kayakCons = scorecard.consistency.find((c) => c.label === "Paddle Sessions");
   const hikingTargetHit = scorecard.targets.find((t) => t.label.includes("Hiking"))?.hit ?? false;
-  const kayakTargetHit = scorecard.targets.find((t) => t.label.includes("Kayak"))?.hit ?? false;
+  const kayakTargetHit = scorecard.targets.find((t) => t.label.includes("Paddle"))?.hit ?? false;
   const outdoorPct = hikingTargetHit ? Math.max(outdoorCons?.pct ?? 0, 75) : (outdoorCons?.pct ?? 0);
   const kayakPct = kayakTargetHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
   const dependentScore = (outdoorPct + kayakPct) / 2;
