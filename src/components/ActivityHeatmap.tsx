@@ -46,7 +46,7 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
 
                 const count = filteredTypes.length;
                 const color = count > 0 ? getSportColor(filteredTypes) : undefined;
-                const opacity = count === 0 ? 0.06 : count === 1 ? 0.6 : count >= 2 ? 1 : 0.8;
+                const opacity = count > 0 ? 1 : 0.06;
                 const isToday = format(day.date, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
 
                 return (
