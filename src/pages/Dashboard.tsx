@@ -442,7 +442,7 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal, elevationSpark }: 
       {/* Elevation Sparkline */}
       {elevationSpark.length > 1 && (
         <div className="mt-2.5 bg-card border border-[rgba(255,255,255,0.06)] rounded-[14px] p-4">
-          <p className="font-mono-dm text-[9px] uppercase tracking-[0.18em] text-fog mb-3">Elevation per outing</p>
+          <p className="font-mono-dm text-[9px] uppercase tracking-[0.18em] text-fog mb-3">Elevation per hike / xc ski</p>
           <div className="h-12">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={elevationSpark}>
