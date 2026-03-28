@@ -9,10 +9,19 @@ export interface WeekData {
   water: number;
 }
 
+export interface WeekActivitySummary {
+  type: string;
+  date: string; // formatted e.g. "Jan 6"
+  distance: number | null;
+  elevation: number | null;
+  duration: number;
+}
+
 export interface WeekResult {
   hit: boolean;
   count: number;
   weekLabel: string; // e.g. "Jan 6 – 12"
+  activities: WeekActivitySummary[];
 }
 
 export interface QuarterChallenge {
