@@ -89,6 +89,9 @@ export default function Dashboard() {
                   weekResults={insights?.quarterWeeklyGoals.kayak.weekResults ?? []}
                   total={insights?.quarterWeeklyGoals.kayak.total ?? 0}
                   streak={insights?.streaks.water ?? 0}
+                  accentColor="rgba(100,160,210,0.9)"
+                  missedColor="rgba(100,160,210,0.25)"
+                  missedBorder="rgba(100,160,210,0.35)"
                 />
                 <WeeklyCard
                   icon={<Mountain className="h-5 w-5 text-fog" strokeWidth={1.5} />}
@@ -97,6 +100,9 @@ export default function Dashboard() {
                   weekResults={insights?.quarterWeeklyGoals.outdoor.weekResults ?? []}
                   total={insights?.quarterWeeklyGoals.outdoor.total ?? 0}
                   streak={insights?.streaks.outdoor ?? 0}
+                  accentColor="rgba(122,184,124,0.9)"
+                  missedColor="rgba(122,184,124,0.25)"
+                  missedBorder="rgba(122,184,124,0.35)"
                 />
                 <GymCard
                   rule={`${exerciseGoal} sessions / week`}
@@ -105,6 +111,8 @@ export default function Dashboard() {
                   maxPerWeek={exerciseGoal}
                   wtdClasses={insights?.wtd.classes ?? 0}
                   streak={insights?.streaks.classes ?? 0}
+                  accentColor="rgba(212,106,90,0.9)"
+                  missedColor="rgba(212,106,90,0.25)"
                 />
               </div>
             </div>
