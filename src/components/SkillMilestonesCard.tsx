@@ -32,6 +32,7 @@ export default function SkillMilestonesCard() {
   const { data: milestones, isLoading: loadingDefs } = useSkillMilestones();
   const { data: progress, isLoading: loadingProgress } = useSkillMilestoneProgress();
   const recompute = useRecomputeMilestones();
+  const { data: evidenceMap } = useMilestoneEvidence(progress);
 
   const isLoading = loadingDefs || loadingProgress;
 
