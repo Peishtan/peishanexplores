@@ -58,7 +58,7 @@ function buildShareHTML(sc: ScorecardData): string {
   };
 
   return `
-<div id="share-card" style="width:1080px;min-height:1920px;background:hsl(150,8%,5%);color:hsl(35,30%,93%);font-family:'DM Sans',system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box;">
+<div id="share-card" style="width:1080px;height:1920px;background:hsl(150,8%,5%);color:hsl(35,30%,93%);font-family:'DM Sans',system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box;">
 
   <!-- Mountain Header -->
   <div style="position:relative;height:180px;overflow:hidden;">
@@ -73,83 +73,50 @@ function buildShareHTML(sc: ScorecardData): string {
     </div>
   </div>
 
-  <div style="padding:40px 80px 80px 80px;display:flex;flex-direction:column;gap:40px;flex:1;">
+  <div style="padding:48px 80px 80px 80px;display:flex;flex-direction:column;gap:48px;flex:1;">
 
-  <!-- Score Card -->
-  <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:48px;text-align:center;">
-    <p style="font-family:'DM Mono',monospace;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:hsl(160,5%,56%);margin:0 0 16px 0;">
+  <!-- Score Hero -->
+  <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:56px 48px;text-align:center;">
+    <p style="font-family:'DM Mono',monospace;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:hsl(160,5%,56%);margin:0 0 20px 0;">
       ${sc.quarter.isCurrent ? "Current Quarter" : "Final Score"}
     </p>
-    <p style="font-family:'Playfair Display',serif;font-size:120px;font-weight:900;line-height:1;margin:0;color:${score >= 80 ? 'hsl(145,50%,52%)' : 'hsl(32,72%,58%)'};">
+    <p style="font-family:'Playfair Display',serif;font-size:140px;font-weight:900;line-height:1;margin:0;color:${score >= 80 ? 'hsl(145,50%,52%)' : 'hsl(32,72%,58%)'};">
       ${score}%
     </p>
-    <p style="font-family:'DM Mono',monospace;font-size:22px;color:hsl(160,5%,56%);margin:12px 0 0 0;">${scoreLabel}</p>
-    <div style="margin-top:24px;">
-      <p style="font-size:28px;font-weight:700;margin:0;">${targetsHit}/${sc.targets.length}</p>
-      <p style="font-family:'DM Mono',monospace;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:4px 0 0 0;">Targets</p>
-    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:24px;color:hsl(160,5%,56%);margin:16px 0 0 0;">${scoreLabel}</p>
   </div>
 
-  <!-- Highlights -->
-  <div style="display:flex;flex-direction:column;gap:12px;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-      <span style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);">Highlights</span>
-    </div>
-    <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:32px;">
-      <!-- Stats row -->
-      <div style="display:flex;gap:16px;margin-bottom:${sc.highlights.filter(h => !['medal','elevation'].includes(h.icon)).length > 0 ? '24px' : '0'};">
-        <div style="flex:1;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:16px;">
-          <p style="font-size:24px;font-weight:700;margin:0;line-height:1.2;">${sc.totalMiles}</p>
-          <p style="font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:4px 0 0 0;">Miles</p>
-        </div>
-      </div>
-      <!-- Highlight cards -->
-      ${(() => {
-        const filtered = sc.highlights.filter(h => !['medal', 'elevation'].includes(h.icon));
-        if (filtered.length === 0) return "";
-        const cols = filtered.length <= 2 ? filtered.length : 3;
-        return `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:16px;justify-items:center;">
-          ${filtered.map(h => `
-            <div style="border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:20px;text-align:center;width:100%;">
-              <p style="font-size:24px;font-weight:700;margin:8px 0 0 0;">${h.value}</p>
-              <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:4px 0 0 0;">${h.label}</p>
-            </div>
-          `).join("")}
-        </div>`;
-      })()}
-    </div>
-  </div>
+  <!-- Targets + Consistency -->
+  <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:36px;">
 
-  <!-- Targets -->
-  <div style="display:flex;flex-direction:column;gap:12px;">
-    <span style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);">Targets</span>
-    <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:32px;display:flex;flex-direction:column;gap:24px;">
+    <!-- Targets -->
+    <div style="display:flex;flex-direction:column;gap:20px;margin-bottom:32px;">
       ${sc.targets.map(t => {
         const pct = Math.min((t.current / t.target) * 100, 100);
         const color = t.hit ? "hsl(145,50%,52%)" : "hsl(32,72%,58%)";
         const icon = t.hit
-          ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
-          : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+          ? `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
+          : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
         return `<div>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div style="display:flex;align-items:center;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
               ${icon}
               <span style="font-size:22px;font-weight:500;">${t.label}</span>
             </div>
             <span style="font-family:'DM Mono',monospace;font-size:18px;color:hsl(160,5%,56%);">${t.current} / ${t.target} ${t.unit}</span>
           </div>
-          <div style="margin-top:8px;height:8px;border-radius:4px;background:rgba(255,255,255,0.06);overflow:hidden;">
-            <div style="height:100%;border-radius:4px;background:${color};width:${pct}%;"></div>
+          <div style="margin-top:8px;height:6px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;">
+            <div style="height:100%;border-radius:3px;background:${color};width:${pct}%;"></div>
           </div>
         </div>`;
       }).join("")}
     </div>
-  </div>
 
-  <!-- Consistency -->
-  <div style="display:flex;flex-direction:column;gap:12px;">
-    <span style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);">Consistency</span>
-    <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:32px;display:flex;flex-direction:column;gap:24px;">
+    <!-- Divider -->
+    <div style="height:1px;background:rgba(255,255,255,0.06);margin-bottom:32px;"></div>
+
+    <!-- Consistency -->
+    <div style="display:flex;flex-direction:column;gap:20px;">
       ${sc.consistency.map(c => {
         const color = c.pct >= 80 ? "hsl(145,50%,52%)" : c.pct >= 50 ? "hsl(32,72%,58%)" : "#c85046";
         return `<div>
@@ -157,43 +124,22 @@ function buildShareHTML(sc: ScorecardData): string {
             <span style="font-size:22px;">${c.label}</span>
             <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:${color};">${c.weeksHit}/${c.totalWeeks} wks · ${c.pct}%</span>
           </div>
-          <div style="margin-top:8px;height:8px;border-radius:4px;background:rgba(255,255,255,0.06);overflow:hidden;">
-            <div style="height:100%;border-radius:4px;background:${color};width:${c.pct}%;"></div>
+          <div style="margin-top:8px;height:6px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;">
+            <div style="height:100%;border-radius:3px;background:${color};width:${c.pct}%;"></div>
           </div>
         </div>`;
       }).join("")}
     </div>
   </div>
 
-  <!-- Elevation -->
+  <!-- Elevation Callout -->
   ${elevNote ? `
-  <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:32px;">
-    <p style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:0 0 12px 0;">Elevation</p>
-    <p style="font-size:22px;color:hsl(122,35%,60%);margin:0;">▲ ${elevNote}</p>
-  </div>` : ""}
-
-  <!-- Sport Mix -->
-  ${sc.sportBreakdown.length > 0 ? `
-  <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:32px;">
-    <p style="font-family:'DM Mono',monospace;font-size:18px;letter-spacing:2px;text-transform:uppercase;color:hsl(160,5%,56%);margin:0 0 16px 0;">Sport Mix</p>
-    <div style="display:flex;gap:3px;height:16px;border-radius:8px;overflow:hidden;">
-      ${sc.sportBreakdown.map(s => {
-        const w = (s.count / sc.totalActivities) * 100;
-        return `<div style="width:${w}%;background:${sportColors[s.type] || '#888'};border-radius:4px;"></div>`;
-      }).join("")}
-    </div>
-    <div style="display:flex;gap:24px;margin-top:12px;">
-      ${sc.sportBreakdown.map(s => `
-        <span style="display:flex;align-items:center;gap:6px;">
-          <span style="width:10px;height:10px;border-radius:2px;background:${sportColors[s.type] || '#888'};flex-shrink:0;"></span>
-          <span style="font-family:'DM Mono',monospace;font-size:14px;color:hsl(160,5%,56%);">${s.label} ${s.count}</span>
-        </span>
-      `).join("")}
-    </div>
+  <div style="border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:hsl(150,14%,12%);padding:36px;text-align:center;">
+    <p style="font-size:28px;color:hsl(122,35%,60%);margin:0;">▲ ${elevNote}</p>
   </div>` : ""}
 
   <!-- Footer -->
-  <div style="margin-top:auto;text-align:center;padding-top:24px;">
+  <div style="margin-top:auto;text-align:center;">
     <span style="font-family:'Playfair Display',serif;font-size:18px;letter-spacing:4px;text-transform:uppercase;color:hsl(156,8%,79%);opacity:0.5;">PS FitTrackr</span>
   </div>
 
