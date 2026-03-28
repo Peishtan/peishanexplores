@@ -339,8 +339,9 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
 }
 
 /* ── Gym Pip Chart Card ── */
-function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak }: {
+function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, accentColor, missedColor }: {
   rule: string; weekResults: boolean[]; total: number; maxPerWeek: number; wtdClasses: number; streak: number;
+  accentColor: string; missedColor: string;
 }) {
   const totalWeeks = 13;
   return (
@@ -367,21 +368,27 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak }: {
           return (
             <div key={weekIdx} className="flex flex-col-reverse gap-0.5">
               {Array.from({ length: maxPerWeek }, (_, pip) => {
+                const style: React.CSSProperties = {};
                 let cls = "aspect-square rounded-[2px] ";
                 if (isFuture) {
-                  cls += "bg-[rgba(255,255,255,0.05)]";
+                  style.backgroundColor = "rgba(255,255,255,0.05)";
                 } else if (isCurrent) {
-                  cls += pip < wtdClasses ? "bg-moss-light" : "border-[1.5px] border-moss-light animate-pulse-dot bg-transparent";
+                  if (pip < wtdClasses) {
+                    style.backgroundColor = accentColor;
+                  } else {
+                    style.border = `1.5px solid ${accentColor}`;
+                    style.background = "transparent";
+                    cls += "animate-pulse-dot";
+                  }
                 } else {
-                  // Past week: show filled if goal was met, partially if not
                   const wasHit = weekIdx < weekResults.length ? weekResults[weekIdx] : false;
                   if (wasHit) {
-                    cls += "bg-moss-light";
+                    style.backgroundColor = accentColor;
                   } else {
-                    cls += pip < 1 ? "bg-moss-light" : "bg-[rgba(255,255,255,0.05)]";
+                    style.backgroundColor = pip < 1 ? accentColor : "rgba(255,255,255,0.05)";
                   }
                 }
-                return <div key={pip} className={cls} />;
+                return <div key={pip} className={cls} style={style} />;
               })}
             </div>
           );
@@ -389,9 +396,10 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak }: {
       </div>
       <div className="grid grid-cols-13 gap-1">
         {Array.from({ length: totalWeeks }, (_, i) => (
-          <span key={i} className={`font-mono-dm text-[7px] text-center ${
-            i === total - 1 ? "text-moss-light" : "text-fog opacity-50"
-          }`}>W{i + 1}</span>
+          <span key={i} className="font-mono-dm text-[7px] text-center"
+            style={{ color: i === total - 1 ? accentColor : undefined, opacity: i === total - 1 ? 1 : 0.5 }}>
+            W{i + 1}
+          </span>
         ))}
       </div>
     </div>
