@@ -268,7 +268,7 @@ export function computeScorecard(
     { type: "hiking", ...sportMap.hiking },
     { type: "kayaking", ...sportMap.kayaking },
     { type: "xc_skiing", ...sportMap.xc_skiing },
-    { type: "gym", label: "Gym", count: gymCount, color: "hsl(32, 72%, 58%)" },
+    { type: "gym", label: "Gym", count: gymCount, color: "hsl(10, 65%, 58%)" },
   ].filter((s) => s.count > 0);
 
   return {
