@@ -104,6 +104,7 @@ export default function Dashboard() {
                   total={insights?.quarterWeeklyGoals.classes.total ?? 0}
                   maxPerWeek={exerciseGoal}
                   wtdClasses={insights?.wtd.classes ?? 0}
+                  streak={insights?.streaks.classes ?? 0}
                 />
               </div>
             </div>
