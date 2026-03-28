@@ -39,6 +39,13 @@ export interface Insight {
   text: string;
 }
 
+export interface SportBreakdown {
+  type: string;
+  label: string;
+  count: number;
+  color: string;
+}
+
 export interface ScorecardData {
   quarter: QuarterInfo;
   targets: TargetResult[];
@@ -52,6 +59,7 @@ export interface ScorecardData {
   milestonesUnlocked: number;
   milestonesAchievedTotal: number;
   totalMilestones: number;
+  sportBreakdown: SportBreakdown[];
 }
 
 function getQuarterStart(year: number, q: number): Date {
