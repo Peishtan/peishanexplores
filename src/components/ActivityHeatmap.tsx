@@ -8,9 +8,10 @@ interface ActivityHeatmapProps {
   activities: Activity[] | undefined;
   sportFilter: string;
   rangeDays?: number;
+  isCapped?: boolean;
 }
 
-export default function ActivityHeatmap({ activities, sportFilter, rangeDays }: ActivityHeatmapProps) {
+export default function ActivityHeatmap({ activities, sportFilter, rangeDays, isCapped }: ActivityHeatmapProps) {
   const { weeks } = useActivityHeatmap(activities, rangeDays);
 
   if (weeks.length === 0) return null;
