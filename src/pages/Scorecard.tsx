@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, XCircle, TrendingUp, FileSearch, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info, ArrowRight, Share2 } from "lucide-react";
+import { CheckCircle2, XCircle, TrendingUp, FileSearch, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, ArrowRight, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { generateShareImage } from "@/lib/scorecardShareImage";
 
