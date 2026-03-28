@@ -398,7 +398,7 @@ function HighlightCard({ icon, label, value }: { icon: string; label: string; va
     <div className="rounded-xl bg-secondary/60 border border-border p-3 text-center">
       <div className="flex justify-center">{highlightIcons[icon] ?? null}</div>
       <p className="text-lg font-bold text-foreground mt-1">{value}</p>
-      <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-[10px] font-mono-dm uppercase tracking-wider text-fog">{label}</p>
     </div>
   );
 }
