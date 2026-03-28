@@ -1,6 +1,5 @@
 import type { ScorecardData } from "@/hooks/useScorecardData";
 
-// Elevation landmarks (same as in useScorecardData)
 const LANDMARKS = [
   { name: "Mt. Olympus", ft: 7980 },
   { name: "Mt. St. Helens", ft: 8363 },
@@ -63,7 +62,7 @@ export async function generateShareImage(scorecard: ScorecardData): Promise<void
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, W, H);
 
-  // Grain overlay (subtle noise) — use a temp canvas so we composite instead of replace
+  // Grain overlay
   const grainCanvas = document.createElement("canvas");
   grainCanvas.width = W;
   grainCanvas.height = H;
@@ -79,56 +78,24 @@ export async function generateShareImage(scorecard: ScorecardData): Promise<void
   grainCtx.putImageData(grainData, 0, 0);
   ctx.drawImage(grainCanvas, 0, 0);
 
-  // Mountain silhouette at bottom
-  ctx.fillStyle = "rgba(26, 46, 28, 0.6)";
-  ctx.beginPath();
-  ctx.moveTo(0, H);
-  ctx.lineTo(0, H - 200);
-  ctx.lineTo(100, H - 280);
-  ctx.lineTo(200, H - 240);
-  ctx.lineTo(350, H - 350);
-  ctx.lineTo(500, H - 280);
-  ctx.lineTo(600, H - 320);
-  ctx.lineTo(750, H - 260);
-  ctx.lineTo(900, H - 310);
-  ctx.lineTo(W, H - 250);
-  ctx.lineTo(W, H);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.fillStyle = "rgba(13, 26, 16, 0.7)";
-  ctx.beginPath();
-  ctx.moveTo(0, H);
-  ctx.lineTo(0, H - 150);
-  ctx.lineTo(150, H - 200);
-  ctx.lineTo(300, H - 170);
-  ctx.lineTo(450, H - 230);
-  ctx.lineTo(600, H - 190);
-  ctx.lineTo(750, H - 220);
-  ctx.lineTo(900, H - 180);
-  ctx.lineTo(W, H - 200);
-  ctx.lineTo(W, H);
-  ctx.closePath();
-  ctx.fill();
-
   const mx = 80;
-  let y = 100;
+  let y = 80;
 
   // ── Brand ──
-  ctx.font = "500 28px 'DM Sans', system-ui, sans-serif";
+  ctx.font = "500 26px 'DM Sans', system-ui, sans-serif";
   ctx.fillStyle = "rgba(156, 163, 156, 0.7)";
   ctx.letterSpacing = "6px";
   ctx.fillText("PS FITTRACKR", mx, y);
   ctx.letterSpacing = "0px";
 
-  y += 80;
+  y += 60;
 
   // ── Quarter label ──
-  ctx.font = "400 26px 'DM Mono', monospace, system-ui";
+  ctx.font = "400 24px 'DM Mono', monospace, system-ui";
   ctx.fillStyle = "#6ca36e";
   ctx.fillText(scorecard.quarter.label.toUpperCase(), mx, y);
 
-  y += 20;
+  y += 14;
 
   // ── Score ──
   const score = computeScore(scorecard);
@@ -136,27 +103,22 @@ export async function generateShareImage(scorecard: ScorecardData): Promise<void
     : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
   const scoreColor = score >= 80 ? "#3caa64" : "#d4823a";
 
-  ctx.font = "900 180px 'DM Sans', system-ui, sans-serif";
+  ctx.font = "900 160px 'DM Sans', system-ui, sans-serif";
   ctx.fillStyle = scoreColor;
-  ctx.fillText(`${score}%`, mx - 6, y + 165);
+  ctx.fillText(`${score}%`, mx - 6, y + 148);
 
-  y += 195;
+  y += 168;
 
-  ctx.font = "400 32px 'DM Mono', monospace, system-ui";
+  ctx.font = "400 28px 'DM Mono', monospace, system-ui";
   ctx.fillStyle = "rgba(156, 163, 156, 0.8)";
   ctx.fillText(scoreLabel, mx, y);
 
-  y += 70;
+  y += 50;
 
   // ── Divider ──
-  ctx.strokeStyle = "rgba(255,255,255,0.08)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(mx, y);
-  ctx.lineTo(W - mx, y);
-  ctx.stroke();
+  drawDivider(ctx, mx, y, W);
 
-  y += 50;
+  y += 36;
 
   // ── Stats row ──
   const stats = [
@@ -168,95 +130,230 @@ export async function generateShareImage(scorecard: ScorecardData): Promise<void
   const colW = (W - mx * 2) / stats.length;
   stats.forEach((s, i) => {
     const cx = mx + colW * i;
-    ctx.font = "900 52px 'DM Sans', system-ui, sans-serif";
+    ctx.font = "900 48px 'DM Sans', system-ui, sans-serif";
     ctx.fillStyle = "#e8e0d4";
     ctx.fillText(s.value, cx, y);
-    ctx.font = "400 22px 'DM Mono', monospace, system-ui";
+    ctx.font = "400 20px 'DM Mono', monospace, system-ui";
     ctx.fillStyle = "rgba(156, 163, 156, 0.6)";
     ctx.letterSpacing = "3px";
-    ctx.fillText(s.label.toUpperCase(), cx, y + 34);
+    ctx.fillText(s.label.toUpperCase(), cx, y + 30);
     ctx.letterSpacing = "0px";
   });
 
-  y += 80;
+  y += 66;
+
+  // ── Divider ──
+  drawDivider(ctx, mx, y, W);
+
+  y += 36;
 
   // ── Targets ──
-  const targetsHit = scorecard.targets.filter(t => t.hit).length;
-  ctx.font = "400 24px 'DM Mono', monospace, system-ui";
+  ctx.font = "400 22px 'DM Mono', monospace, system-ui";
   ctx.fillStyle = "rgba(156, 163, 156, 0.5)";
   ctx.letterSpacing = "4px";
   ctx.fillText("TARGETS", mx, y);
   ctx.letterSpacing = "0px";
 
-  y += 16;
+  y += 10;
 
   scorecard.targets.forEach(t => {
-    y += 50;
+    y += 42;
     const icon = t.hit ? "✓" : "✗";
     const color = t.hit ? "#3caa64" : "#d4823a";
-    ctx.font = "700 30px 'DM Sans', system-ui, sans-serif";
+    ctx.font = "700 28px 'DM Sans', system-ui, sans-serif";
     ctx.fillStyle = color;
     ctx.fillText(icon, mx, y);
-    ctx.font = "400 30px 'DM Sans', system-ui, sans-serif";
+    ctx.font = "400 28px 'DM Sans', system-ui, sans-serif";
     ctx.fillStyle = "#e8e0d4";
-    ctx.fillText(t.label, mx + 44, y);
-    ctx.font = "400 26px 'DM Mono', monospace, system-ui";
+    ctx.fillText(t.label, mx + 40, y);
+    ctx.font = "400 22px 'DM Mono', monospace, system-ui";
     ctx.fillStyle = "rgba(156, 163, 156, 0.6)";
-    ctx.fillText(`${t.current} / ${t.target} ${t.unit}`, mx + 44, y + 34);
+    ctx.fillText(`${t.current} / ${t.target} ${t.unit}`, mx + 40, y + 28);
+    y += 26;
   });
 
-  y += 70;
+  y += 36;
 
   // ── Consistency ──
-  ctx.font = "400 24px 'DM Mono', monospace, system-ui";
+  ctx.font = "400 22px 'DM Mono', monospace, system-ui";
   ctx.fillStyle = "rgba(156, 163, 156, 0.5)";
   ctx.letterSpacing = "4px";
   ctx.fillText("CONSISTENCY", mx, y);
   ctx.letterSpacing = "0px";
 
-  y += 16;
+  y += 10;
 
   scorecard.consistency.forEach(c => {
-    y += 50;
+    y += 40;
     const pctColor = c.pct >= 80 ? "#3caa64" : c.pct >= 50 ? "#d4823a" : "#c85046";
-    ctx.font = "400 28px 'DM Sans', system-ui, sans-serif";
+    ctx.font = "400 26px 'DM Sans', system-ui, sans-serif";
     ctx.fillStyle = "#e8e0d4";
     ctx.fillText(c.label, mx, y);
-    ctx.font = "700 28px 'DM Mono', monospace, system-ui";
+    ctx.font = "700 26px 'DM Mono', monospace, system-ui";
     ctx.fillStyle = pctColor;
     ctx.fillText(`${c.pct}%`, W - mx - ctx.measureText(`${c.pct}%`).width, y);
     // Bar
-    const barY = y + 12;
+    const barY = y + 10;
     const barW = W - mx * 2;
     ctx.fillStyle = "rgba(255,255,255,0.06)";
-    roundedRectCanvas(ctx, mx, barY, barW, 6, 3);
+    roundedRect(ctx, mx, barY, barW, 6, 3);
     ctx.fillStyle = pctColor;
-    roundedRectCanvas(ctx, mx, barY, barW * (c.pct / 100), 6, 3);
-    y += 22;
+    roundedRect(ctx, mx, barY, barW * (c.pct / 100), 6, 3);
+    y += 18;
   });
 
-  y += 50;
+  y += 36;
 
   // ── Elevation landmark ──
   const elevNote = getElevationNote(scorecard.totalElevation);
-  if (elevNote && y + 60 < H - 120) {
-    ctx.font = "400 24px 'DM Mono', monospace, system-ui";
+  if (elevNote) {
+    ctx.font = "400 22px 'DM Mono', monospace, system-ui";
     ctx.fillStyle = "rgba(156, 163, 156, 0.5)";
     ctx.letterSpacing = "4px";
     ctx.fillText("ELEVATION", mx, y);
     ctx.letterSpacing = "0px";
-    y += 40;
-    ctx.font = "400 26px 'DM Sans', system-ui, sans-serif";
+    y += 34;
+    ctx.font = "400 24px 'DM Sans', system-ui, sans-serif";
     ctx.fillStyle = "#6ca36e";
-    wrapText(ctx, `⛰ ${elevNote}`, mx, y, W - mx * 2, 36);
+    wrapText(ctx, `⛰ ${elevNote}`, mx, y, W - mx * 2, 32);
+    y += 40;
   }
+
+  // ── Highlights ──
+  const hlItems = scorecard.highlights.filter(h => h.icon !== "medal");
+  if (hlItems.length > 0) {
+    y += 10;
+    drawDivider(ctx, mx, y, W);
+    y += 36;
+
+    ctx.font = "400 22px 'DM Mono', monospace, system-ui";
+    ctx.fillStyle = "rgba(156, 163, 156, 0.5)";
+    ctx.letterSpacing = "4px";
+    ctx.fillText("HIGHLIGHTS", mx, y);
+    ctx.letterSpacing = "0px";
+
+    y += 10;
+
+    const hlIcons: Record<string, string> = {
+      footprints: "🥾",
+      waves: "🛶",
+      snowflake: "⛷",
+      mountain: "⛰",
+    };
+
+    hlItems.forEach(h => {
+      y += 40;
+      const icon = hlIcons[h.icon] || "•";
+      ctx.font = "400 26px 'DM Sans', system-ui, sans-serif";
+      ctx.fillStyle = "#e8e0d4";
+      ctx.fillText(`${icon}  ${h.label}`, mx, y);
+      ctx.font = "700 26px 'DM Mono', monospace, system-ui";
+      ctx.fillStyle = "#6ca36e";
+      ctx.fillText(h.value, W - mx - ctx.measureText(h.value).width, y);
+    });
+
+    y += 30;
+  }
+
+  // ── Sport breakdown ──
+  if (scorecard.sportBreakdown.length > 0 && y + 120 < H - 300) {
+    y += 10;
+    drawDivider(ctx, mx, y, W);
+    y += 36;
+
+    ctx.font = "400 22px 'DM Mono', monospace, system-ui";
+    ctx.fillStyle = "rgba(156, 163, 156, 0.5)";
+    ctx.letterSpacing = "4px";
+    ctx.fillText("SPORT MIX", mx, y);
+    ctx.letterSpacing = "0px";
+
+    y += 14;
+
+    const total = scorecard.totalActivities;
+    const barStartX = mx;
+    const barTotalW = W - mx * 2;
+    const barH = 20;
+    y += 20;
+
+    // Stacked bar
+    let bx = barStartX;
+    const sportColors: Record<string, string> = {
+      hiking: "#3caa64",
+      kayaking: "#5aa8d0",
+      xc_skiing: "#8b8cc7",
+      gym: "#d46a5a",
+    };
+    scorecard.sportBreakdown.forEach(s => {
+      const w = (s.count / total) * barTotalW;
+      ctx.fillStyle = sportColors[s.type] || "#888";
+      roundedRect(ctx, bx, y, Math.max(w, 4), barH, 3);
+      bx += w + 3;
+    });
+
+    y += barH + 20;
+
+    // Legend
+    const legendX = mx;
+    let lx = legendX;
+    scorecard.sportBreakdown.forEach(s => {
+      const color = sportColors[s.type] || "#888";
+      ctx.fillStyle = color;
+      roundedRect(ctx, lx, y - 8, 12, 12, 2);
+      ctx.font = "400 20px 'DM Sans', system-ui, sans-serif";
+      ctx.fillStyle = "rgba(156, 163, 156, 0.7)";
+      const text = `${s.label} ${s.count}`;
+      ctx.fillText(text, lx + 18, y + 3);
+      lx += ctx.measureText(text).width + 44;
+
+      if (lx > W - mx - 80) {
+        lx = legendX;
+        y += 28;
+      }
+    });
+
+    y += 20;
+  }
+
+  // ── Mountain silhouette — positioned relative to content ──
+  const mountainStartY = Math.max(y + 60, H - 300);
+
+  ctx.fillStyle = "rgba(26, 46, 28, 0.6)";
+  ctx.beginPath();
+  ctx.moveTo(0, H);
+  ctx.lineTo(0, mountainStartY);
+  ctx.lineTo(100, mountainStartY - 80);
+  ctx.lineTo(200, mountainStartY - 40);
+  ctx.lineTo(350, mountainStartY - 150);
+  ctx.lineTo(500, mountainStartY - 80);
+  ctx.lineTo(600, mountainStartY - 120);
+  ctx.lineTo(750, mountainStartY - 60);
+  ctx.lineTo(900, mountainStartY - 110);
+  ctx.lineTo(W, mountainStartY - 50);
+  ctx.lineTo(W, H);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = "rgba(13, 26, 16, 0.7)";
+  ctx.beginPath();
+  ctx.moveTo(0, H);
+  ctx.lineTo(0, mountainStartY + 50);
+  ctx.lineTo(150, mountainStartY);
+  ctx.lineTo(300, mountainStartY + 30);
+  ctx.lineTo(450, mountainStartY - 30);
+  ctx.lineTo(600, mountainStartY + 10);
+  ctx.lineTo(750, mountainStartY - 20);
+  ctx.lineTo(900, mountainStartY + 20);
+  ctx.lineTo(W, mountainStartY);
+  ctx.lineTo(W, H);
+  ctx.closePath();
+  ctx.fill();
 
   // ── Footer ──
   ctx.font = "400 20px 'DM Mono', monospace, system-ui";
   ctx.fillStyle = "rgba(156, 163, 156, 0.3)";
   ctx.letterSpacing = "2px";
   const footerText = "PS FITTRACKR";
-  ctx.fillText(footerText, (W - ctx.measureText(footerText).width) / 2, H - 60);
+  ctx.fillText(footerText, (W - ctx.measureText(footerText).width) / 2, H - 50);
   ctx.letterSpacing = "0px";
 
   // ── Export ──
@@ -264,13 +361,11 @@ export async function generateShareImage(scorecard: ScorecardData): Promise<void
     if (!blob) return;
     const url = URL.createObjectURL(blob);
 
-    // Try native share first
     if (navigator.share && navigator.canShare?.({ files: [new File([blob], "scorecard.png", { type: "image/png" })] })) {
       navigator.share({
         files: [new File([blob], `scorecard-${scorecard.quarter.label.replace(/\s/g, "-").toLowerCase()}.png`, { type: "image/png" })],
         title: "My FitTrackr Scorecard",
       }).catch(() => {
-        // Fallback to download
         downloadBlob(url, scorecard);
       });
     } else {
@@ -287,7 +382,16 @@ function downloadBlob(url: string, scorecard: ScorecardData) {
   URL.revokeObjectURL(url);
 }
 
-function roundedRectCanvas(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+function drawDivider(ctx: CanvasRenderingContext2D, mx: number, y: number, W: number) {
+  ctx.strokeStyle = "rgba(255,255,255,0.08)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(mx, y);
+  ctx.lineTo(W - mx, y);
+  ctx.stroke();
+}
+
+function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   if (w <= 0) return;
   ctx.beginPath();
   ctx.moveTo(x + r, y);
