@@ -169,7 +169,7 @@ export default function Scorecard() {
             </ScorecardSection>
 
             {/* ── Targets ── */}
-            <ScorecardSection title="Targets" icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}>
+            <ScorecardSection title="Targets" icon={<TrendingUp className="h-4 w-4 text-fog" />}>
               <div className="space-y-4">
                 {scorecard.targets.map((t, i) => (
                   <TargetRow key={i} {...t} />
