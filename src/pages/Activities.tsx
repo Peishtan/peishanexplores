@@ -83,6 +83,7 @@ export default function Activities() {
       date: new Date(a.start_time).toISOString().split("T")[0],
       miles: a.distance?.toString() || "",
       elevation: a.elevation_gain?.toString() || "",
+      duration: a.duration > 0 ? a.duration.toString() : "",
       notes: a.notes || "",
       sport: a.type,
     });
