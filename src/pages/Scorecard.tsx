@@ -236,12 +236,42 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
     : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
 
+  const rows = [
+    { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: targetScore * 0.45 },
+    { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: independentScore * 0.25 },
+    { label: "Outdoor Consistency", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
+    { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: milestoneScore * 0.10 },
+  ];
+
   return (
     <div className="rounded-2xl border border-border bg-card p-6 text-center">
       <p className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
         {scorecard.quarter.isCurrent ? "Current Quarter" : "Final Score"}
       </p>
-      <p className={`font-display text-[72px] font-black leading-none ${scoreColor}`}>{Math.round(score)}%</p>
+      <div className="relative group/score inline-block cursor-default">
+        <p className={`font-display text-[72px] font-black leading-none ${scoreColor}`}>{Math.round(score)}%</p>
+        {/* Score breakdown tooltip */}
+        <div className="hidden group-hover/score:block pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50
+          bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 shadow-lg w-[280px] text-left">
+          <div className="space-y-1.5">
+            {rows.map((r) => (
+              <div key={r.label} className="flex items-center justify-between text-[12px]">
+                <span className="text-mist">{r.label}</span>
+                <span className="font-mono-dm text-[11px] text-fog">
+                  {r.value}% × {r.weight}% = <span className="text-foreground font-bold">{Math.round(r.contribution)}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-[rgba(255,255,255,0.08)] pt-1.5 mt-2 flex items-center justify-between">
+            <span className="text-[12px] font-medium text-foreground">Total</span>
+            <span className="font-mono-dm text-[12px] font-bold text-foreground">{Math.round(score)}%</span>
+          </div>
+          <p className="text-[10px] text-fog mt-1.5 leading-relaxed">
+            Outdoor consistency gets a 75% floor when the distance target is met.
+          </p>
+        </div>
+      </div>
       <p className="font-mono-dm text-sm text-muted-foreground mt-1">{label}</p>
       <div className="flex justify-center gap-6 mt-4">
         <div>
