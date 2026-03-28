@@ -1,7 +1,7 @@
 import { useProfile, type Profile } from "@/hooks/useProfile";
 import { format, startOfWeek } from "date-fns";
 import { useActivities, type Activity } from "@/hooks/useActivities";
-import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type MomentumData, type ElevSparkPoint } from "@/hooks/useDashboardInsights";
+import { useDashboardInsights, type SparkPoint, type QuarterChallenge, type MomentumData, type ElevSparkPoint, type WeekResult } from "@/hooks/useDashboardInsights";
 import { useAchievedMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
@@ -283,7 +283,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
 
 /* ── Weekly Dot Card ── */
 function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor, missedColor, missedBorder }: {
-  icon: React.ReactNode; name: string; rule: string; weekResults: boolean[]; total: number; streak: number;
+  icon: React.ReactNode; name: string; rule: string; weekResults: WeekResult[]; total: number; streak: number;
   accentColor: string; missedColor: string; missedBorder: string;
 }) {
   const totalWeeks = 13;
@@ -305,12 +305,17 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
       </div>
       <div className="grid grid-cols-13 gap-1">
         {Array.from({ length: totalWeeks }, (_, i) => {
+          const wr = i < weekResults.length ? weekResults[i] : undefined;
           const isPast = i < total - 1;
           const isCurrent = i === total - 1;
-          const wasHit = i < weekResults.length ? weekResults[i] : false;
+          const wasHit = wr?.hit ?? false;
+          const tooltip = wr
+            ? `W${i + 1}: ${wr.weekLabel}\n${wr.count} session${wr.count !== 1 ? 's' : ''} ${wasHit ? '✓' : '✗'}`
+            : `W${i + 1}`;
           return (
             <div key={i}
-              className={`aspect-square rounded-[3px] ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+              className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+              title={tooltip}
               style={
                 isPast
                   ? wasHit
@@ -340,7 +345,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
 
 /* ── Gym Pip Chart Card ── */
 function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, accentColor, missedColor }: {
-  rule: string; weekResults: boolean[]; total: number; maxPerWeek: number; wtdClasses: number; streak: number;
+  rule: string; weekResults: WeekResult[]; total: number; maxPerWeek: number; wtdClasses: number; streak: number;
   accentColor: string; missedColor: string;
 }) {
   const totalWeeks = 13;
@@ -362,11 +367,15 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
       </div>
       <div className="grid grid-cols-13 gap-1 mb-1">
         {Array.from({ length: totalWeeks }, (_, weekIdx) => {
+          const wr = weekIdx < weekResults.length ? weekResults[weekIdx] : undefined;
           const isPast = weekIdx < total - 1;
           const isCurrent = weekIdx === total - 1;
           const isFuture = weekIdx >= total;
+          const tooltip = wr
+            ? `W${weekIdx + 1}: ${wr.weekLabel}\n${wr.count} session${wr.count !== 1 ? 's' : ''} ${wr.hit ? '✓' : '✗'}`
+            : `W${weekIdx + 1}`;
           return (
-            <div key={weekIdx} className="flex flex-col-reverse gap-0.5">
+            <div key={weekIdx} className="flex flex-col-reverse gap-0.5 cursor-default" title={tooltip}>
               {Array.from({ length: maxPerWeek }, (_, pip) => {
                 const style: React.CSSProperties = {};
                 let cls = "aspect-square rounded-[2px] ";
@@ -381,7 +390,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
                     cls += "animate-pulse-dot";
                   }
                 } else {
-                  const wasHit = weekIdx < weekResults.length ? weekResults[weekIdx] : false;
+                  const wasHit = wr?.hit ?? false;
                   if (wasHit) {
                     style.backgroundColor = accentColor;
                   } else {

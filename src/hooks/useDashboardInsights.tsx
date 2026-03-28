@@ -9,6 +9,12 @@ export interface WeekData {
   water: number;
 }
 
+export interface WeekResult {
+  hit: boolean;
+  count: number;
+  weekLabel: string; // e.g. "Jan 6 – 12"
+}
+
 export interface QuarterChallenge {
   label: string;
   current: number;
@@ -46,9 +52,9 @@ export interface DashboardInsights {
   streaks: { outdoor: number; classes: number; water: number; miles: number };
   elevationSpark: ElevSparkPoint[];
   quarterWeeklyGoals: {
-    kayak: { weekResults: boolean[]; total: number };
-    outdoor: { weekResults: boolean[]; total: number };
-    classes: { weekResults: boolean[]; total: number };
+    kayak: { weekResults: WeekResult[]; total: number };
+    outdoor: { weekResults: WeekResult[]; total: number };
+    classes: { weekResults: WeekResult[]; total: number };
   };
   kayakChallenge: QuarterChallenge;
   hikingChallenge: QuarterChallenge;
@@ -179,13 +185,19 @@ export function useDashboardInsights(
     const currentMonday = startOfWeek(now, { weekStartsOn: 1 });
     // Use calendar days to avoid DST-related off-by-one errors
     const weeksInQuarter = Math.floor(differenceInCalendarDays(currentMonday, firstMonday) / 7) + 1;
-    const getWeekResults = (check: (w: WeekData) => boolean): boolean[] => {
-      const results: boolean[] = [];
+    const getWeekResults = (check: (w: WeekData) => boolean, countFn: (w: WeekData) => number): WeekResult[] => {
+      const results: WeekResult[] = [];
       for (let i = 0; i < weeksInQuarter; i++) {
         const ws = addWeeks(firstMonday, i);
         const we = addWeeks(firstMonday, i + 1);
         const effectiveStart = Math.max(ws.getTime(), qStartMs);
-        results.push(check(getWeekData(activities, effectiveStart, we.getTime())));
+        const weekData = getWeekData(activities, effectiveStart, we.getTime());
+        const endDisplay = new Date(we.getTime() - 86400000); // Sunday
+        results.push({
+          hit: check(weekData),
+          count: countFn(weekData),
+          weekLabel: `${format(new Date(effectiveStart), "MMM d")} – ${format(endDisplay, "MMM d")}`,
+        });
       }
       return results;
     };
@@ -268,9 +280,9 @@ export function useDashboardInsights(
       lastWeek, weekDelta: wtd.miles - lastWeek.miles, threeWeekAvg: threeWeekMiles / 3, streaks,
       elevationSpark,
       quarterWeeklyGoals: {
-        kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak), total: weeksInQuarter },
-        outdoor: { weekResults: getWeekResults((w) => w.outdoor >= goals.outdoor), total: weeksInQuarter },
-        classes: { weekResults: getWeekResults((w) => w.classes >= goals.exercises), total: weeksInQuarter },
+        kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak, (w) => w.water), total: weeksInQuarter },
+        outdoor: { weekResults: getWeekResults((w) => w.outdoor >= goals.outdoor, (w) => w.outdoor), total: weeksInQuarter },
+        classes: { weekResults: getWeekResults((w) => w.classes >= goals.exercises, (w) => w.classes), total: weeksInQuarter },
       },
       kayakChallenge, hikingChallenge,
       hikingTotal: { miles: hikingMiles, count: hikingLogs.length, avgElevation: Math.round(avgElevation), maxElevation },
