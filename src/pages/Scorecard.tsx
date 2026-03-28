@@ -324,7 +324,7 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
 function ScorecardSection({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-3">
         {icon}
         <h2 className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog">{title}</h2>
       </div>
