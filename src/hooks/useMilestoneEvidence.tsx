@@ -12,8 +12,8 @@ export interface EvidenceActivity {
 }
 
 /**
- * Given a list of milestone progress entries, fetches the evidence activities
- * for all achieved milestones in a single query. Returns a map: progressId → activity details.
+ * Given a list of milestone progress entries, fetches evidence activities
+ * for all achieved milestones. Returns a map: progressId → array of activities (desc by date).
  */
 export function useMilestoneEvidence(progressItems: SkillMilestoneProgress[] | undefined) {
   const achievedWithEvidence = (progressItems ?? []).filter(
@@ -26,7 +26,7 @@ export function useMilestoneEvidence(progressItems: SkillMilestoneProgress[] | u
   return useQuery({
     queryKey: ["milestone_evidence", uniqueLogIds.sort().join(",")],
     queryFn: async () => {
-      if (uniqueLogIds.length === 0) return new Map<string, EvidenceActivity>();
+      if (uniqueLogIds.length === 0) return new Map<string, EvidenceActivity[]>();
 
       const { data, error } = await supabase
         .from("activities")
@@ -37,17 +37,16 @@ export function useMilestoneEvidence(progressItems: SkillMilestoneProgress[] | u
       const activityMap = new Map<string, EvidenceActivity>();
       (data as EvidenceActivity[])?.forEach((a) => activityMap.set(a.id, a));
 
-      // Build a map from progress.id → best evidence activity (first one, typically the qualifying one)
-      const resultMap = new Map<string, EvidenceActivity>();
+      const resultMap = new Map<string, EvidenceActivity[]>();
       for (const p of achievedWithEvidence) {
         const logIds = p.evidence_log_ids as string[];
-        // Pick the first evidence log that exists
-        for (const logId of logIds) {
-          const activity = activityMap.get(logId);
-          if (activity) {
-            resultMap.set(p.id, activity);
-            break;
-          }
+        const activities = logIds
+          .map((id) => activityMap.get(id))
+          .filter(Boolean) as EvidenceActivity[];
+        // Sort desc by start_time
+        activities.sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
+        if (activities.length > 0) {
+          resultMap.set(p.id, activities);
         }
       }
       return resultMap;
