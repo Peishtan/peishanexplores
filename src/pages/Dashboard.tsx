@@ -443,12 +443,12 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
           if (!wr || isFuture) return <div key={weekIdx}>{pips}</div>;
 
           return (
-            <HoverCard key={weekIdx} openDelay={200} closeDelay={100}>
-              <HoverCardTrigger asChild>{pips}</HoverCardTrigger>
-              <HoverCardContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
+            <Tooltip key={weekIdx} delayDuration={150}>
+              <TooltipTrigger asChild>{pips}</TooltipTrigger>
+              <TooltipContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
                 <WeekHoverContent wr={wr} weekIdx={weekIdx} />
-              </HoverCardContent>
-            </HoverCard>
+              </TooltipContent>
+            </Tooltip>
           );
         })}
       </div>
