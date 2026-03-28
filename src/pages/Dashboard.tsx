@@ -352,22 +352,27 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
                 : { border: `1.5px solid ${accentColor}`, background: 'transparent' }
               : { backgroundColor: 'rgba(255,255,255,0.05)' };
 
-          const box = (
-            <div
-              className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
-              style={boxStyle}
-            />
-          );
-
-          if (!wr || (!isPast && !isCurrent)) return <div key={i}>{box}</div>;
+          if (!wr || (!isPast && !isCurrent)) {
+            return (
+              <div key={i}
+                className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+                style={boxStyle}
+              />
+            );
+          }
 
           return (
-            <Tooltip key={i} delayDuration={150}>
-              <TooltipTrigger asChild>{box}</TooltipTrigger>
-              <TooltipContent side="top" className="w-auto p-3 bg-card border-[rgba(255,255,255,0.1)]">
-                <WeekHoverContent wr={wr} weekIdx={i} />
-              </TooltipContent>
-            </Tooltip>
+            <div key={i} className="relative group/tip">
+              <div
+                className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+                style={boxStyle}
+              />
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tip:block z-50 pointer-events-none">
+                <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-lg p-3 shadow-lg whitespace-nowrap">
+                  <WeekHoverContent wr={wr} weekIdx={i} />
+                </div>
+              </div>
+            </div>
           );
         })}
       </div>
