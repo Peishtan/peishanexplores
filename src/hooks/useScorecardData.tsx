@@ -261,7 +261,7 @@ export function computeScorecard(
 
   // Sport breakdown
   const sportMap: Record<string, { label: string; count: number; color: string }> = {
-    hiking: { label: "Hike", count: 0, color: "hsl(122, 35%, 60%)" },
+    hiking: { label: "Hike", count: 0, color: "hsl(160, 40%, 50%)" },
     kayaking: { label: "Paddle", count: 0, color: "hsl(200, 60%, 60%)" },
     xc_skiing: { label: "XC Ski", count: 0, color: "hsl(240, 30%, 72%)" },
     orange_theory: { label: "Gym", count: 0, color: "hsl(10, 65%, 58%)" },
