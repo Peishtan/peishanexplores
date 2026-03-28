@@ -466,7 +466,7 @@ function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: 
 /* ── Mini Stat ── */
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg bg-secondary/60 border border-border px-3 py-2">
+    <div className="rounded-lg bg-secondary/60 border border-[rgba(255,255,255,0.06)] px-3 py-2">
       <p className="text-base font-bold text-foreground leading-tight">{value}</p>
       <p className="text-[9px] font-mono-dm uppercase tracking-wider text-fog">{label}</p>
     </div>
