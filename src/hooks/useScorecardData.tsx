@@ -39,6 +39,13 @@ export interface Insight {
   text: string;
 }
 
+export interface SportBreakdown {
+  type: string;
+  label: string;
+  count: number;
+  color: string;
+}
+
 export interface ScorecardData {
   quarter: QuarterInfo;
   targets: TargetResult[];
@@ -52,6 +59,7 @@ export interface ScorecardData {
   milestonesUnlocked: number;
   milestonesAchievedTotal: number;
   totalMilestones: number;
+  sportBreakdown: SportBreakdown[];
 }
 
 function getQuarterStart(year: number, q: number): Date {
@@ -243,6 +251,26 @@ export function computeScorecard(
     insights.push({ type: "gap", text: "No activities logged this quarter yet — time to get moving!" });
   }
 
+  // Sport breakdown
+  const sportMap: Record<string, { label: string; count: number; color: string }> = {
+    hiking: { label: "Hike", count: 0, color: "hsl(122, 35%, 60%)" },
+    kayaking: { label: "Kayak", count: 0, color: "hsl(200, 60%, 60%)" },
+    xc_skiing: { label: "XC Ski", count: 0, color: "hsl(240, 30%, 72%)" },
+    orange_theory: { label: "Gym", count: 0, color: "hsl(32, 72%, 58%)" },
+    peloton: { label: "Gym", count: 0, color: "hsl(32, 72%, 58%)" },
+  };
+  qActivities.forEach((a) => {
+    if (sportMap[a.type]) sportMap[a.type].count++;
+  });
+  // Merge gym types
+  const gymCount = (sportMap.orange_theory?.count ?? 0) + (sportMap.peloton?.count ?? 0);
+  const sportBreakdown: SportBreakdown[] = [
+    { type: "hiking", ...sportMap.hiking },
+    { type: "kayaking", ...sportMap.kayaking },
+    { type: "xc_skiing", ...sportMap.xc_skiing },
+    { type: "gym", label: "Gym", count: gymCount, color: "hsl(32, 72%, 58%)" },
+  ].filter((s) => s.count > 0);
+
   return {
     quarter,
     targets,
@@ -256,5 +284,6 @@ export function computeScorecard(
     milestonesUnlocked: qMilestones.length,
     milestonesAchievedTotal: milestones.filter((m) => m.status === "achieved").length,
     totalMilestones: totalMilestoneCount,
+    sportBreakdown,
   };
 }

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useActivities } from "@/hooks/useActivities";
 import { useProfile } from "@/hooks/useProfile";
 import { useSkillMilestoneProgress, useSkillMilestones } from "@/hooks/useSkillMilestones";
-import { getAvailableQuarters, computeScorecard, type QuarterInfo, type ScorecardData } from "@/hooks/useScorecardData";
+import { getAvailableQuarters, computeScorecard, type QuarterInfo, type ScorecardData, type SportBreakdown } from "@/hooks/useScorecardData";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -78,10 +78,16 @@ export default function Scorecard() {
 
             {/* ── Highlights ── */}
             <ScorecardSection title="Highlights" icon={<Trophy className="h-4 w-4 text-muted-foreground" />}>
-              <div className="grid grid-cols-3 gap-3 mb-3">
-                <HighlightCard icon="activity" label="Activities" value={scorecard.totalActivities.toString()} />
-                <HighlightCard icon="miles" label="Miles" value={scorecard.totalMiles.toString()} />
-                <HighlightCard icon="elevation" label="ft Elevation" value={scorecard.totalElevation.toLocaleString()} />
+              <div className="flex gap-4 mb-3">
+                {/* Sport Mix Donut */}
+                {scorecard.sportBreakdown.length > 0 && (
+                  <SportDonut breakdown={scorecard.sportBreakdown} total={scorecard.totalActivities} />
+                )}
+                <div className="grid grid-cols-1 gap-2 flex-1">
+                  <MiniStat label="Activities" value={scorecard.totalActivities.toString()} />
+                  <MiniStat label="Miles" value={scorecard.totalMiles.toString()} />
+                  <MiniStat label="Elevation" value={`${scorecard.totalElevation.toLocaleString()} ft`} />
+                </div>
               </div>
               {scorecard.highlights.length > 0 && (
                 <div className={`grid gap-3 ${scorecard.highlights.length % 2 === 1 ? "grid-cols-3" : "grid-cols-2"}`}>
@@ -373,6 +379,62 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
           </p>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ── Sport Donut ── */
+function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: number }) {
+  const size = 90;
+  const strokeWidth = 10;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  let accumulated = 0;
+  const segments = breakdown.map((s) => {
+    const pct = s.count / total;
+    const offset = accumulated;
+    accumulated += pct;
+    return { ...s, pct, offset };
+  });
+
+  return (
+    <div className="flex flex-col items-center flex-shrink-0">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
+        {segments.map((seg, i) => (
+          <circle
+            key={i}
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke={seg.color}
+            strokeWidth={strokeWidth}
+            strokeDasharray={`${seg.pct * circumference} ${circumference}`}
+            strokeDashoffset={-seg.offset * circumference}
+            strokeLinecap="round"
+          />
+        ))}
+      </svg>
+      <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-2 justify-center">
+        {segments.map((s, i) => (
+          <span key={i} className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: s.color }} />
+            <span className="font-mono-dm text-[8px] text-fog tracking-[0.05em]">{s.label}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Mini Stat ── */
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg bg-secondary/60 border border-border px-3 py-2">
+      <p className="text-base font-bold text-foreground leading-tight">{value}</p>
+      <p className="text-[9px] font-mono-dm uppercase tracking-wider text-muted-foreground">{label}</p>
     </div>
   );
 }
