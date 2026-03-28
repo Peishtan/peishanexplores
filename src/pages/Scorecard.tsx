@@ -382,3 +382,59 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
     </div>
   );
 }
+
+/* ── Sport Donut ── */
+function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: number }) {
+  const size = 90;
+  const strokeWidth = 10;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  let accumulated = 0;
+  const segments = breakdown.map((s) => {
+    const pct = s.count / total;
+    const offset = accumulated;
+    accumulated += pct;
+    return { ...s, pct, offset };
+  });
+
+  return (
+    <div className="flex flex-col items-center flex-shrink-0">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
+        {segments.map((seg, i) => (
+          <circle
+            key={i}
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke={seg.color}
+            strokeWidth={strokeWidth}
+            strokeDasharray={`${seg.pct * circumference} ${circumference}`}
+            strokeDashoffset={-seg.offset * circumference}
+            strokeLinecap="round"
+          />
+        ))}
+      </svg>
+      <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-2 justify-center">
+        {segments.map((s, i) => (
+          <span key={i} className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: s.color }} />
+            <span className="font-mono-dm text-[8px] text-fog tracking-[0.05em]">{s.label}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Mini Stat ── */
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg bg-secondary/60 border border-border px-3 py-2">
+      <p className="text-base font-bold text-foreground leading-tight">{value}</p>
+      <p className="text-[9px] font-mono-dm uppercase tracking-wider text-muted-foreground">{label}</p>
+    </div>
+  );
+}
