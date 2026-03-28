@@ -258,9 +258,9 @@ export function useDashboardInsights(
 
     // Elevation sparkline: per-outing elevation for activities with elevation this quarter
     const elevationSpark: ElevSparkPoint[] = activities
-      .filter(a => new Date(a.start_time).getTime() >= qStartMs && (a.elevation_gain ?? 0) > 0)
+      .filter(a => new Date(a.start_time).getTime() >= qStartMs && ["hiking", "xc_skiing"].includes(a.type))
       .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
-      .map((a, i) => ({ idx: i, elev: a.elevation_gain!, date: format(new Date(a.start_time), "MMM d") }));
+      .map((a, i) => ({ idx: i, elev: a.elevation_gain ?? 0, date: format(new Date(a.start_time), "MMM d") }));
 
     return {
       wtd, mtd: { miles: getMiles(monthStart) }, ytd: { miles: getMiles(yearStart) }, qtd: { miles: qtdMiles },
