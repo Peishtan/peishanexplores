@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, CheckCircle2, Target } from "lucide-react";
+import { TrendingUp, TrendingDown, CheckCircle2, Target, Flame } from "lucide-react";
 
 interface GoalInsightProps {
   label: string;
@@ -49,8 +49,8 @@ export default function GoalInsight({ label, current, target, color, note, strea
         <p className="text-xs text-muted-foreground">{met ? `${current}/${target} ✔` : `${current}/${target}`}</p>
         <p className="text-xs font-medium" style={{ color }}>{note}</p>
         {streak > 1 && (
-          <p className="text-[10px] text-accent font-bold uppercase tracking-wider">
-            🔥 {streak}-week streak
+          <p className="text-[10px] text-accent font-bold uppercase tracking-wider flex items-center justify-center gap-1">
+            <Flame className="h-3 w-3" strokeWidth={2} /> {streak}-week streak
           </p>
         )}
       </div>
