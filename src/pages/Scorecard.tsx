@@ -195,7 +195,7 @@ export default function Scorecard() {
         )}
 
         {!isLoading && !scorecard && quarters.length === 0 && (
-          <div className="text-center py-20 text-muted-foreground">
+          <div className="text-center py-20 text-fog">
             <p className="text-sm">No activity data yet. Start logging to see your scorecard!</p>
           </div>
         )}
