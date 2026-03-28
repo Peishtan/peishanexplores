@@ -447,7 +447,7 @@ function ScoreFormula({ scorecard }: { scorecard: ScorecardData }) {
             <span className="font-mono-dm text-sm font-bold text-foreground">{total}%</span>
           </div>
           <p className="text-[11px] text-muted-foreground leading-relaxed">
-            Outdoor & paddle rhythm scores get a 75% floor when the corresponding distance target is met.
+            Outdoor consistency scores get a 75% floor when the corresponding distance target is met.
           </p>
         </div>
       )}
