@@ -44,7 +44,7 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
     const dayCounts = new Map<string, HeatmapDay>();
 
     // Initialize all days in range
-    const allDays = eachDayOfInterval({ start: firstMonday, end: qEnd > now ? now : qEnd });
+    const allDays = eachDayOfInterval({ start: firstMonday, end: now });
     allDays.forEach((d) => {
       const key = format(d, "yyyy-MM-dd");
       dayCounts.set(key, { date: d, count: 0, types: [] });
