@@ -123,7 +123,7 @@ export default function Scorecard() {
 
         {isLoading && (
           <div className="flex justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-moss-light" />
           </div>
         )}
 
@@ -134,7 +134,7 @@ export default function Scorecard() {
 
             {/* ── Strengths & Gaps ── */}
             {scorecard.insights.length > 0 && (
-              <ScorecardSection title="Review" icon={<FileSearch className="h-4 w-4 text-muted-foreground" />}>
+              <ScorecardSection title="Review" icon={<FileSearch className="h-4 w-4 text-fog" />}>
                 <div className="space-y-3">
                   <ReviewTopline scorecard={scorecard} />
                   <div className="border-t border-border pt-3 space-y-2">
@@ -147,7 +147,7 @@ export default function Scorecard() {
             )}
 
             {/* ── Highlights ── */}
-            <ScorecardSection title="Highlights" icon={<Trophy className="h-4 w-4 text-muted-foreground" />}>
+            <ScorecardSection title="Highlights" icon={<Trophy className="h-4 w-4 text-fog" />}>
               <div className="flex gap-4 mb-3">
                 {/* Sport Mix Donut */}
                 {scorecard.sportBreakdown.length > 0 && (
@@ -169,7 +169,7 @@ export default function Scorecard() {
             </ScorecardSection>
 
             {/* ── Targets ── */}
-            <ScorecardSection title="Targets" icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}>
+            <ScorecardSection title="Targets" icon={<TrendingUp className="h-4 w-4 text-fog" />}>
               <div className="space-y-4">
                 {scorecard.targets.map((t, i) => (
                   <TargetRow key={i} {...t} />
@@ -183,7 +183,7 @@ export default function Scorecard() {
             </ScorecardSection>
 
             {/* ── Consistency ── */}
-            <ScorecardSection title="Consistency" icon={<CheckCircle2 className="h-4 w-4 text-muted-foreground" />}>
+            <ScorecardSection title="Consistency" icon={<CheckCircle2 className="h-4 w-4 text-fog" />}>
               <div className="space-y-4">
                 {scorecard.consistency.map((c, i) => (
                   <ConsistencyRow key={i} {...c} />
@@ -195,7 +195,7 @@ export default function Scorecard() {
         )}
 
         {!isLoading && !scorecard && quarters.length === 0 && (
-          <div className="text-center py-20 text-muted-foreground">
+          <div className="text-center py-20 text-fog">
             <p className="text-sm">No activity data yet. Start logging to see your scorecard!</p>
           </div>
         )}
@@ -244,8 +244,8 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   ];
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-6 text-center">
-      <p className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+    <div className="rounded-[14px] border border-[rgba(255,255,255,0.06)] bg-card p-6 text-center">
+      <p className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog mb-2">
         {scorecard.quarter.isCurrent ? "Current Quarter" : "Final Score"}
       </p>
       <div className="relative group/score inline-block cursor-default">
@@ -272,11 +272,11 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
           </p>
         </div>
       </div>
-      <p className="font-mono-dm text-sm text-muted-foreground mt-1">{label}</p>
+      <p className="font-mono-dm text-sm text-fog mt-1">{label}</p>
       <div className="flex justify-center gap-6 mt-4">
         <div>
           <p className="text-lg font-bold text-foreground">{targetsHit}/{totalTargets}</p>
-          <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">Targets</p>
+          <p className="text-[10px] font-mono-dm uppercase tracking-wider text-fog">Targets</p>
         </div>
       </div>
     </div>
@@ -324,11 +324,11 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
 function ScorecardSection({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-3">
         {icon}
-        <h2 className="font-mono-dm text-[11px] uppercase tracking-[0.15em] text-muted-foreground">{title}</h2>
+        <h2 className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog">{title}</h2>
       </div>
-      <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="rounded-[14px] border border-[rgba(255,255,255,0.06)] bg-card p-4">
         {children}
       </div>
     </div>
@@ -349,7 +349,7 @@ function TargetRow({ label, current, target, unit, hit }: { label: string; curre
           )}
           <span className="text-sm font-medium text-foreground">{label}</span>
         </div>
-        <span className="font-mono-dm text-xs text-muted-foreground">
+        <span className="font-mono-dm text-xs text-fog">
           {current} / {target} {unit}
         </span>
       </div>
@@ -383,22 +383,22 @@ function ConsistencyRow({ label, weeksHit, totalWeeks, pct }: { label: string; w
 }
 
 const highlightIcons: Record<string, React.ReactNode> = {
-  medal: <Medal className="h-5 w-5 text-muted-foreground" />,
-  footprints: <Footprints className="h-5 w-5 text-muted-foreground" />,
-  waves: <Waves className="h-5 w-5 text-muted-foreground" />,
-  mountain: <Mountain className="h-5 w-5 text-muted-foreground" />,
-  snowflake: <Snowflake className="h-5 w-5 text-muted-foreground" />,
-  activity: <Activity className="h-5 w-5 text-muted-foreground" />,
-  miles: <Footprints className="h-5 w-5 text-muted-foreground" />,
-  elevation: <MapPin className="h-5 w-5 text-muted-foreground" />,
+  medal: <Medal className="h-5 w-5 text-fog" />,
+  footprints: <Footprints className="h-5 w-5 text-fog" />,
+  waves: <Waves className="h-5 w-5 text-fog" />,
+  mountain: <Mountain className="h-5 w-5 text-fog" />,
+  snowflake: <Snowflake className="h-5 w-5 text-fog" />,
+  activity: <Activity className="h-5 w-5 text-fog" />,
+  miles: <Footprints className="h-5 w-5 text-fog" />,
+  elevation: <MapPin className="h-5 w-5 text-fog" />,
 };
 
 function HighlightCard({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-secondary/60 border border-border p-3 text-center">
+    <div className="rounded-xl bg-secondary/60 border border-[rgba(255,255,255,0.06)] p-3 text-center">
       <div className="flex justify-center">{highlightIcons[icon] ?? null}</div>
       <p className="text-lg font-bold text-foreground mt-1">{value}</p>
-      <p className="text-[10px] font-mono-dm uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-[10px] font-mono-dm uppercase tracking-wider text-fog">{label}</p>
     </div>
   );
 }
@@ -466,9 +466,9 @@ function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: 
 /* ── Mini Stat ── */
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg bg-secondary/60 border border-border px-3 py-2">
+    <div className="rounded-lg bg-secondary/60 border border-[rgba(255,255,255,0.06)] px-3 py-2">
       <p className="text-base font-bold text-foreground leading-tight">{value}</p>
-      <p className="text-[9px] font-mono-dm uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-[9px] font-mono-dm uppercase tracking-wider text-fog">{label}</p>
     </div>
   );
 }
