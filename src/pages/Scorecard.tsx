@@ -183,7 +183,7 @@ export default function Scorecard() {
             </ScorecardSection>
 
             {/* ── Consistency ── */}
-            <ScorecardSection title="Consistency" icon={<CheckCircle2 className="h-4 w-4 text-muted-foreground" />}>
+            <ScorecardSection title="Consistency" icon={<CheckCircle2 className="h-4 w-4 text-fog" />}>
               <div className="space-y-4">
                 {scorecard.consistency.map((c, i) => (
                   <ConsistencyRow key={i} {...c} />
