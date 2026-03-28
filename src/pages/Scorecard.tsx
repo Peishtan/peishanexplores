@@ -162,7 +162,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
 
   const score = targetScore * 0.45 + independentScore * 0.25 + dependentScore * 0.20 + milestoneScore * 0.10;
 
-  const scoreColor = score >= 87 ? "text-done" : score >= 73 ? "text-amber" : "text-destructive";
+  const scoreColor = score >= 80 ? "text-done" : "text-amber";
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
     : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
 
