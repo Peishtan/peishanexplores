@@ -282,8 +282,9 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
 }
 
 /* ── Weekly Dot Card ── */
-function WeeklyCard({ icon, name, rule, weekResults, total, streak }: {
+function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor, missedColor, missedBorder }: {
   icon: React.ReactNode; name: string; rule: string; weekResults: boolean[]; total: number; streak: number;
+  accentColor: string; missedColor: string; missedBorder: string;
 }) {
   const totalWeeks = 13;
   return (
@@ -308,19 +309,29 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak }: {
           const isCurrent = i === total - 1;
           const wasHit = i < weekResults.length ? weekResults[i] : false;
           return (
-            <div key={i} className={`aspect-square rounded-[3px] ${
-              isPast ? (wasHit ? "bg-moss-light" : "bg-[rgba(90,125,91,0.25)] border border-[rgba(90,125,91,0.3)]")
-              : isCurrent ? (wasHit ? "bg-moss-light" : "border-[1.5px] border-moss-light animate-pulse-dot bg-transparent")
-              : "bg-[rgba(255,255,255,0.05)]"
-            }`} />
+            <div key={i} className="aspect-square rounded-[3px]"
+              style={
+                isPast
+                  ? wasHit
+                    ? { backgroundColor: accentColor }
+                    : { backgroundColor: missedColor, border: `1px solid ${missedBorder}` }
+                  : isCurrent
+                    ? wasHit
+                      ? { backgroundColor: accentColor }
+                      : { border: `1.5px solid ${accentColor}`, background: 'transparent' }
+                    : { backgroundColor: 'rgba(255,255,255,0.05)' }
+              }
+              className={`aspect-square rounded-[3px] ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+            />
           );
         })}
       </div>
       <div className="grid grid-cols-13 gap-1 mt-1">
         {Array.from({ length: totalWeeks }, (_, i) => (
-          <span key={i} className={`font-mono-dm text-[7px] text-center ${
-            i === total - 1 ? "text-moss-light" : "text-fog opacity-50"
-          }`}>W{i + 1}</span>
+          <span key={i} className="font-mono-dm text-[7px] text-center"
+            style={{ color: i === total - 1 ? accentColor : undefined, opacity: i === total - 1 ? 1 : 0.5 }}>
+            W{i + 1}
+          </span>
         ))}
       </div>
     </div>
