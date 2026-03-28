@@ -116,6 +116,13 @@ export default function Activities() {
         toast.error("Elevation must be between 0 and 50,000 ft");
         return;
       }
+      const duration = form.duration ? parseInt(form.duration, 10) : 0;
+      if (duration < 0 || duration > 1440) {
+        toast.error("Duration must be between 0 and 1440 minutes");
+        return;
+        toast.error("Elevation must be between 0 and 50,000 ft");
+        return;
+      }
 
       // Validate text fields
       const route = (form.route || "").trim().slice(0, 500) || null;
