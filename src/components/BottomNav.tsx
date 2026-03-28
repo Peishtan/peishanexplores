@@ -17,7 +17,7 @@ export default function BottomNav() {
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 px-3 py-1 transition-opacity ${
+              `flex flex-col items-center gap-1 px-3 py-1 transition-opacity relative ${
                 isActive ? "opacity-100" : "opacity-40 hover:opacity-60"
               }`
             }
@@ -28,6 +28,9 @@ export default function BottomNav() {
                 <span className={`font-mono-dm text-[9px] uppercase tracking-[0.12em] ${
                   isActive ? "text-moss-light" : "text-mist"
                 }`}>{label}</span>
+                {isActive && (
+                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-moss-light" />
+                )}
               </>
             )}
           </NavLink>

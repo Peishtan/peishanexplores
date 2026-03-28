@@ -295,9 +295,13 @@ export default function Activities() {
                   <Loader2 className="h-8 w-8 animate-spin text-moss-light" />
                 </div>
               ) : filtered?.length === 0 ? (
-                <p className="font-mono-dm text-xs text-[rgba(255,255,255,0.12)] italic text-center py-8">
-                  No activities found.
-                </p>
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Footprints className="h-10 w-10 text-fog/20 mb-3" />
+                  <p className="text-sm text-fog mb-1.5">No activities yet</p>
+                  <button onClick={openAdd} className="text-sm font-semibold text-moss-light hover:underline">
+                    Log your first activity →
+                  </button>
+                </div>
               ) : (
               filtered?.map((a) => {
                   const sport = getSportInfo(a.type);
