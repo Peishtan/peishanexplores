@@ -349,7 +349,7 @@ function TargetRow({ label, current, target, unit, hit }: { label: string; curre
           )}
           <span className="text-sm font-medium text-foreground">{label}</span>
         </div>
-        <span className="font-mono-dm text-xs text-muted-foreground">
+        <span className="font-mono-dm text-xs text-fog">
           {current} / {target} {unit}
         </span>
       </div>
