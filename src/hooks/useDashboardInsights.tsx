@@ -52,9 +52,9 @@ export interface DashboardInsights {
   streaks: { outdoor: number; classes: number; water: number; miles: number };
   elevationSpark: ElevSparkPoint[];
   quarterWeeklyGoals: {
-    kayak: { weekResults: boolean[]; total: number };
-    outdoor: { weekResults: boolean[]; total: number };
-    classes: { weekResults: boolean[]; total: number };
+    kayak: { weekResults: WeekResult[]; total: number };
+    outdoor: { weekResults: WeekResult[]; total: number };
+    classes: { weekResults: WeekResult[]; total: number };
   };
   kayakChallenge: QuarterChallenge;
   hikingChallenge: QuarterChallenge;
