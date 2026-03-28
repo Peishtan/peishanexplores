@@ -303,9 +303,9 @@ export function useDashboardInsights(
       lastWeek, weekDelta: wtd.miles - lastWeek.miles, threeWeekAvg: threeWeekMiles / 3, streaks,
       elevationSpark,
       quarterWeeklyGoals: {
-        kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak, (w) => w.water), total: weeksInQuarter },
-        outdoor: { weekResults: getWeekResults((w) => w.outdoor >= goals.outdoor, (w) => w.outdoor), total: weeksInQuarter },
-        classes: { weekResults: getWeekResults((w) => w.classes >= goals.exercises, (w) => w.classes), total: weeksInQuarter },
+        kayak: { weekResults: getWeekResults((w) => w.water >= goals.kayak, (w) => w.water, ["kayaking"]), total: weeksInQuarter },
+        outdoor: { weekResults: getWeekResults((w) => w.outdoor >= goals.outdoor, (w) => w.outdoor, ["hiking", "xc_skiing"]), total: weeksInQuarter },
+        classes: { weekResults: getWeekResults((w) => w.classes >= goals.exercises, (w) => w.classes, ["peloton", "orange_theory"]), total: weeksInQuarter },
       },
       kayakChallenge, hikingChallenge,
       hikingTotal: { miles: hikingMiles, count: hikingLogs.length, avgElevation: Math.round(avgElevation), maxElevation },
