@@ -100,11 +100,17 @@ export default function SkillMilestonesCard() {
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="text-[13px] font-normal text-mist leading-snug">{ms.title}</p>
-                        {unlocked && p?.achieved_at ? (
-                          <p className="font-mono-dm text-[10px] text-done mt-0.5">
-                            Unlocked {format(new Date(p.achieved_at), "MMM d")}
-                          </p>
-                        ) : status === "in_progress" ? (
+                        {unlocked && p?.achieved_at ? (() => {
+                          const evidenceList = evidenceMap?.get(p.id);
+                          const latest = evidenceList?.[0];
+                          const hasNewer = latest?.start_time && new Date(latest.start_time).getTime() > new Date(p.achieved_at!).getTime();
+                          return (
+                            <p className="font-mono-dm text-[10px] text-done mt-0.5">
+                              Unlocked {format(new Date(p.achieved_at), "MMM d")}
+                              {hasNewer && ` · Latest ${format(new Date(latest!.start_time), "MMM d")}`}
+                            </p>
+                          );
+                        })() : status === "in_progress" ? (
                           <p className="font-mono-dm text-[10px] text-fog mt-0.5">
                             {current > 0 ? `Longest so far: ${current}${ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}` : "In progress"}
                           </p>
@@ -115,26 +121,21 @@ export default function SkillMilestonesCard() {
                           {current} / {target}{ms.milestone_type.includes("ELEVATION") ? " ft" : " mi"}
                         </span>
                       )}
-                      {/* Hover tooltip — evidence list */}
+                      {/* Hover tooltip — latest evidence */}
                       {unlocked && p && (() => {
                         const evidenceList = evidenceMap?.get(p.id);
-                        return evidenceList && evidenceList.length > 0 ? (
+                        const latest = evidenceList?.[0];
+                        if (!latest) return null;
+                        const detail = [latest.route, latest.elevation_gain != null ? `${latest.elevation_gain.toLocaleString()} ft` : null, latest.distance != null ? `${latest.distance} mi` : null].filter(Boolean).join(", ");
+                        return detail ? (
                           <div className="hidden group-hover/tip:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50
-                            bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg max-w-[240px]">
-                            <div className="space-y-1.5">
-                              {evidenceList.map((ev) => (
-                                <div key={ev.id} className="flex items-baseline justify-between gap-2">
-                                  <p className="text-[12px] text-mist leading-snug truncate">
-                                    {[ev.route, ev.elevation_gain != null ? `${ev.elevation_gain.toLocaleString()} ft` : null, ev.distance != null ? `${ev.distance} mi` : null].filter(Boolean).join(", ")}
-                                  </p>
-                                  {ev.start_time && (
-                                    <span className="font-mono-dm text-[10px] text-fog flex-shrink-0">
-                                      {format(new Date(ev.start_time), "MMM d")}
-                                    </span>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
+                            bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg max-w-[220px]">
+                            <p className="text-[12px] text-mist leading-snug">{detail}</p>
+                            {latest.start_time && (
+                              <p className="font-mono-dm text-[10px] text-done mt-0.5">
+                                {format(new Date(latest.start_time), "MMM d, yyyy")}
+                              </p>
+                            )}
                           </div>
                         ) : null;
                       })()}
