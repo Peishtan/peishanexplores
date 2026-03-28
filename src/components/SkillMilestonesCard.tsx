@@ -1,7 +1,6 @@
 import { useSkillMilestones, useSkillMilestoneProgress, useRecomputeMilestones, type SkillMilestoneProgress } from "@/hooks/useSkillMilestones";
 import { CheckCircle2, Lock, Loader2, Compass } from "lucide-react";
 import { format } from "date-fns";
-import { format } from "date-fns";
 
 
 type Tier = "foundation" | "intermediate" | "advanced";
