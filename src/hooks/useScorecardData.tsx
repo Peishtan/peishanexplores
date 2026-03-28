@@ -199,10 +199,25 @@ export function computeScorecard(
   const xcSkiLogs = qActivities.filter((a) => a.type === "xc_skiing");
   const longestXcSki = xcSkiLogs.length > 0 ? Math.max(...xcSkiLogs.map((a) => a.distance || 0)) : 0;
 
-  // Milestones achieved this quarter
-  const qMilestones = milestones.filter(
-    (m) => m.status === "achieved" && m.achieved_at && new Date(m.achieved_at).getTime() >= qStartMs && new Date(m.achieved_at).getTime() < qEndMs
-  );
+  // Milestones with qualifying activity in this quarter
+  // A milestone counts for a quarter if any of its evidence activities fall within the quarter,
+  // OR if achieved_at is within the quarter (for milestones without evidence logs)
+  const qMilestones = milestones.filter((m) => {
+    if (m.status !== "achieved") return false;
+    // Check if any evidence activity falls in this quarter
+    const evidenceIds = (m.evidence_log_ids as string[]) ?? [];
+    const hasEvidenceInQuarter = evidenceIds.some((logId) => {
+      const activity = qActivities.find((a) => a.id === logId);
+      return !!activity;
+    });
+    if (hasEvidenceInQuarter) return true;
+    // Fallback: check achieved_at
+    if (m.achieved_at) {
+      const achievedMs = new Date(m.achieved_at).getTime();
+      return achievedMs >= qStartMs && achievedMs < qEndMs;
+    }
+    return false;
+  });
 
   const highlights: Highlight[] = [];
   if (longestHike > 0) {
