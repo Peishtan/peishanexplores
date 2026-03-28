@@ -182,6 +182,48 @@ export type Database = {
         }
         Relationships: []
       }
+      quarter_goal_snapshots: {
+        Row: {
+          created_at: string
+          goal_elevation_avg: number
+          goal_exercises_per_week: number
+          goal_hiking_quarterly_miles: number
+          goal_kayak_per_week: number
+          goal_kayak_quarterly_miles: number
+          goal_outdoor_per_week: number
+          id: string
+          quarter: number
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          goal_elevation_avg: number
+          goal_exercises_per_week: number
+          goal_hiking_quarterly_miles: number
+          goal_kayak_per_week: number
+          goal_kayak_quarterly_miles: number
+          goal_outdoor_per_week: number
+          id?: string
+          quarter: number
+          user_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          goal_elevation_avg?: number
+          goal_exercises_per_week?: number
+          goal_hiking_quarterly_miles?: number
+          goal_kayak_per_week?: number
+          goal_kayak_quarterly_miles?: number
+          goal_outdoor_per_week?: number
+          id?: string
+          quarter?: number
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
       skill_milestone_progress: {
         Row: {
           achieved_at: string | null
