@@ -365,7 +365,7 @@ export default function Activities() {
                           <button onClick={() => openEdit(a)} className="flex items-center gap-1.5 text-[10px] font-mono-dm uppercase tracking-[0.1em] text-fog hover:text-moss-light transition-colors px-2.5 py-1.5 rounded-lg bg-[rgba(255,255,255,0.04)]">
                             <Edit2 className="h-3 w-3" /> Edit
                           </button>
-                          <button onClick={() => handleDelete(a.id)} className="flex items-center gap-1.5 text-[10px] font-mono-dm uppercase tracking-[0.1em] text-fog hover:text-amber transition-colors px-2.5 py-1.5 rounded-lg bg-[rgba(255,255,255,0.04)]">
+                          <button onClick={() => setDeleteConfirmId(a.id)} className="flex items-center gap-1.5 text-[10px] font-mono-dm uppercase tracking-[0.1em] text-fog hover:text-amber transition-colors px-2.5 py-1.5 rounded-lg bg-[rgba(255,255,255,0.04)]">
                             <Trash2 className="h-3 w-3" /> Delete
                           </button>
                         </div>
