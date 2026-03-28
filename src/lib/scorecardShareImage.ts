@@ -63,8 +63,12 @@ export async function generateShareImage(scorecard: ScorecardData): Promise<void
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, W, H);
 
-  // Grain overlay (subtle noise)
-  const grainData = ctx.createImageData(W, H);
+  // Grain overlay (subtle noise) — use a temp canvas so we composite instead of replace
+  const grainCanvas = document.createElement("canvas");
+  grainCanvas.width = W;
+  grainCanvas.height = H;
+  const grainCtx = grainCanvas.getContext("2d")!;
+  const grainData = grainCtx.createImageData(W, H);
   for (let i = 0; i < grainData.data.length; i += 4) {
     const v = Math.random() * 255;
     grainData.data[i] = v;
@@ -72,7 +76,8 @@ export async function generateShareImage(scorecard: ScorecardData): Promise<void
     grainData.data[i + 2] = v;
     grainData.data[i + 3] = 8;
   }
-  ctx.putImageData(grainData, 0, 0);
+  grainCtx.putImageData(grainData, 0, 0);
+  ctx.drawImage(grainCanvas, 0, 0);
 
   // Mountain silhouette at bottom
   ctx.fillStyle = "rgba(26, 46, 28, 0.6)";
