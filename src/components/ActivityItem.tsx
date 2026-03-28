@@ -11,7 +11,7 @@ const activityEmojis: Record<string, string> = {
 };
 
 const activityLabels: Record<string, string> = {
-  kayaking: "Kayaking",
+  kayaking: "Paddling",
   hiking: "Hiking",
   xc_skiing: "XC Skiing",
   peloton: "Peloton",

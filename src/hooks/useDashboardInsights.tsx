@@ -159,7 +159,7 @@ export function useDashboardInsights(
     // Kayak challenge + totals
     const kayakLogs = activities.filter((a) => new Date(a.start_time).getTime() >= qStartMs && a.type === "kayaking");
     const kayakQtd = kayakLogs.reduce((s, a) => s + (a.distance || 0), 0);
-    const kayakChallenge = buildChallenge(`${getQuarterLabel(now)} Kayak Challenge`, kayakQtd, goals.kayakTarget, daysPassed, totalDays, now);
+    const kayakChallenge = buildChallenge(`${getQuarterLabel(now)} Paddle Challenge`, kayakQtd, goals.kayakTarget, daysPassed, totalDays, now);
     const kayakAvgDistance = kayakLogs.length > 0 ? kayakQtd / kayakLogs.length : 0;
 
     // Hiking challenge + totals

@@ -151,7 +151,7 @@ export function computeScorecard(
 
   const targets: TargetResult[] = [
     { label: "Hiking / XC Ski Miles", current: Math.round(hikingMiles * 10) / 10, target: profile.goal_hiking_quarterly_miles, unit: "mi", hit: hikingMiles >= profile.goal_hiking_quarterly_miles },
-    { label: "Kayak Miles", current: Math.round(kayakMiles * 10) / 10, target: profile.goal_kayak_quarterly_miles, unit: "mi", hit: kayakMiles >= profile.goal_kayak_quarterly_miles },
+    { label: "Paddle Miles", current: Math.round(kayakMiles * 10) / 10, target: profile.goal_kayak_quarterly_miles, unit: "mi", hit: kayakMiles >= profile.goal_kayak_quarterly_miles },
   ];
 
   // ── Consistency (weekly goals) ──
@@ -177,7 +177,7 @@ export function computeScorecard(
   const consistency: ConsistencyResult[] = [
     { label: "Gym Sessions", weeksHit: gymHit, totalWeeks: weeksInQuarter, pct: Math.round((gymHit / weeksInQuarter) * 100) },
     { label: "Outdoor Sessions", weeksHit: outdoorHit, totalWeeks: weeksInQuarter, pct: Math.round((outdoorHit / weeksInQuarter) * 100) },
-    { label: "Kayak Sessions", weeksHit: kayakHit, totalWeeks: weeksInQuarter, pct: Math.round((kayakHit / weeksInQuarter) * 100) },
+    { label: "Paddle Sessions", weeksHit: kayakHit, totalWeeks: weeksInQuarter, pct: Math.round((kayakHit / weeksInQuarter) * 100) },
   ];
 
   const overallConsistency = Math.round(consistency.reduce((s, c) => s + c.pct, 0) / consistency.length);
@@ -254,7 +254,7 @@ export function computeScorecard(
   // Sport breakdown
   const sportMap: Record<string, { label: string; count: number; color: string }> = {
     hiking: { label: "Hike", count: 0, color: "hsl(122, 35%, 60%)" },
-    kayaking: { label: "Kayak", count: 0, color: "hsl(200, 60%, 60%)" },
+    kayaking: { label: "Paddle", count: 0, color: "hsl(200, 60%, 60%)" },
     xc_skiing: { label: "XC Ski", count: 0, color: "hsl(240, 30%, 72%)" },
     orange_theory: { label: "Gym", count: 0, color: "hsl(10, 65%, 58%)" },
     peloton: { label: "Gym", count: 0, color: "hsl(10, 65%, 58%)" },
