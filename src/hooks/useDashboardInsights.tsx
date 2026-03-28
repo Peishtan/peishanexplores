@@ -205,7 +205,7 @@ export function useDashboardInsights(
         const weekActivities = activities
           .filter(a => {
             const t = new Date(a.start_time).getTime();
-            return t >= effectiveStart && t < we.getTime() && filterTypes.includes(a.type);
+            return t >= ws.getTime() && t < we.getTime() && filterTypes.includes(a.type);
           })
           .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
           .map(a => ({
@@ -218,7 +218,7 @@ export function useDashboardInsights(
         results.push({
           hit: check(weekData),
           count: countFn(weekData),
-          weekLabel: `${format(new Date(effectiveStart), "MMM d")} – ${format(endDisplay, "MMM d")}`,
+          weekLabel: `${format(ws, "MMM d")} – ${format(endDisplay, "MMM d")}`,
           activities: weekActivities,
         });
       }
