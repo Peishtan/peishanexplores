@@ -179,9 +179,9 @@ export function computeScorecard(
     return hit;
   };
 
-  const gymHit = checkWeeks((w) => w.classes >= (profile.goal_exercises_per_week ?? 3));
-  const outdoorHit = checkWeeks((w) => w.outdoor >= (profile.goal_outdoor_per_week ?? 1));
-  const kayakHit = checkWeeks((w) => w.water >= (profile.goal_kayak_per_week ?? 1));
+  const gymHit = checkWeeks((w) => w.classes >= (goals.goal_exercises_per_week ?? 3));
+  const outdoorHit = checkWeeks((w) => w.outdoor >= (goals.goal_outdoor_per_week ?? 1));
+  const kayakHit = checkWeeks((w) => w.water >= (goals.goal_kayak_per_week ?? 1));
 
   const consistency: ConsistencyResult[] = [
     { label: "Gym Sessions", weeksHit: gymHit, totalWeeks: weeksInQuarter, pct: Math.round((gymHit / weeksInQuarter) * 100) },
