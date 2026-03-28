@@ -132,6 +132,8 @@ export default function Dashboard() {
                 elevTrendPct={insights?.momentum?.elevTrendPct ?? 0}
                 elevationGoal={profile?.goal_elevation_avg ?? 1200}
                 fourWeekAvgElev={insights?.momentum?.fourWeekAvgElev ?? 0}
+                activities={activities}
+                profile={profile}
               />
             </div>
 
