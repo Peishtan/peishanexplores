@@ -24,11 +24,11 @@ const SPORTS = [
 ];
 
 const FILTERS = [
-  { id: "all", label: "All" },
-  { id: "kayaking", label: "Paddle" },
-  { id: "hiking", label: "Hike" },
-  { id: "xc_skiing", label: "XC Ski" },
-  { id: "gym", label: "Gym" },
+  { id: "all", label: "All", activeClass: "bg-moss text-paper border-moss-light" },
+  { id: "kayaking", label: "Paddle", activeClass: "bg-[rgba(100,160,210,0.25)] text-[#7ab4d4] border-[rgba(100,160,210,0.5)]" },
+  { id: "hiking", label: "Hike", activeClass: "bg-[rgba(77,179,140,0.25)] text-[#4db38c] border-[rgba(77,179,140,0.5)]" },
+  { id: "xc_skiing", label: "XC Ski", activeClass: "bg-[rgba(180,180,220,0.25)] text-[#b0b4e0] border-[rgba(180,180,220,0.5)]" },
+  { id: "gym", label: "Gym", activeClass: "bg-[rgba(212,106,90,0.25)] text-[#d46a5a] border-[rgba(212,106,90,0.5)]" },
 ];
 
 const DATE_RANGES = [
@@ -249,7 +249,7 @@ export default function Activities() {
                   onClick={() => setSportFilter(f.id)}
                   className={`font-mono-dm text-[11px] tracking-[0.1em] uppercase px-3.5 py-1.5 rounded-full border whitespace-nowrap flex-shrink-0 transition-all ${
                     sportFilter === f.id
-                      ? "bg-moss text-paper border-moss-light"
+                      ? f.activeClass
                       : "bg-card text-fog border-[rgba(255,255,255,0.07)] hover:border-[rgba(255,255,255,0.15)]"
                   }`}
                 >
