@@ -139,56 +139,6 @@ export default function SkillMilestonesCard() {
         )}
       </div>
 
-      {/* Evidence Modal */}
-      {selectedProgress && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setSelectedProgress(null)}>
-          <div className="bg-card rounded-2xl border border-[rgba(255,255,255,0.1)] max-w-md w-full mx-4 p-5" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-display text-sm font-bold">
-                {selectedProgress.skill_milestones?.title ?? "Milestone"}
-              </h3>
-              <button onClick={() => setSelectedProgress(null)} className="p-1 rounded hover:bg-secondary text-fog">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="mb-3">
-              <span className={`font-mono-dm text-[10px] tracking-[0.1em] uppercase px-2 py-1 rounded-full ${
-                selectedProgress.status === "achieved"
-                  ? "bg-[rgba(106,191,122,0.15)] text-done border border-[rgba(106,191,122,0.3)]"
-                  : "bg-secondary text-fog"
-              }`}>
-                {selectedProgress.status === "achieved"
-                  ? `Unlocked${selectedProgress.achieved_at ? ` ${format(new Date(selectedProgress.achieved_at), "MMM d, yyyy")}` : ""}`
-                  : `${selectedProgress.progress_current} / ${selectedProgress.progress_target}`}
-              </span>
-            </div>
-
-            <h4 className="font-mono-dm text-[9px] uppercase tracking-[0.15em] text-fog mb-2">Evidence Logs</h4>
-            {loadingEvidence ? (
-              <Loader2 className="h-4 w-4 animate-spin text-fog mx-auto" />
-            ) : evidenceLogs.length === 0 ? (
-              <p className="text-xs text-fog">No qualifying logs yet.</p>
-            ) : (
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {evidenceLogs.map((log) => (
-                  <div key={log.id} className="text-xs bg-secondary rounded-xl p-2.5 border border-[rgba(255,255,255,0.06)]">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium capitalize">{log.type.replace("_", " ")}</span>
-                      <span className="text-fog font-mono-dm text-[10px]">{format(new Date(log.start_time), "MMM d, yyyy")}</span>
-                    </div>
-                    <div className="flex gap-3 text-fog">
-                      {log.distance != null && <span>{log.distance} mi</span>}
-                      {log.elevation_gain != null && <span>{log.elevation_gain.toLocaleString()} ft</span>}
-                      {log.route && <span>{log.route}</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </>
   );
 }
