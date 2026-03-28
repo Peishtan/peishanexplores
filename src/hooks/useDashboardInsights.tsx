@@ -30,6 +30,7 @@ export interface MomentumData {
 }
 
 export interface SparkPoint { day: number; miles: number }
+export interface ElevSparkPoint { idx: number; elev: number; date: string }
 
 export interface DashboardInsights {
   wtd: WeekData;
