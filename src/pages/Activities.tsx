@@ -417,7 +417,7 @@ export default function Activities() {
                 onChange={(e) => setForm({ ...form, sport: e.target.value as ActivityType })}
                 className="flex h-10 w-full rounded-md bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.12)] px-3 py-2 text-sm text-foreground outline-none focus:border-moss-light"
               >
-                <option value="kayaking">Kayak</option>
+                <option value="kayaking">Paddle</option>
                 <option value="hiking">Hike</option>
                 <option value="xc_skiing">XC Ski</option>
                 <option value="orange_theory">Orange Theory</option>
