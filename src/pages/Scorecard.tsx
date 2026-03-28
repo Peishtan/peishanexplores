@@ -11,6 +11,7 @@ import HeroBanner from "@/components/HeroBanner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle2, XCircle, TrendingUp, FileSearch, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, Info, ArrowRight, Download } from "lucide-react";
 import { Link } from "react-router-dom";
+import { generateScorecardPdf } from "@/lib/scorecardPdf";
 
 function useQuarterGoalSnapshots() {
   const { user } = useAuth();
