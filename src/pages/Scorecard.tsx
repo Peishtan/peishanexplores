@@ -116,13 +116,6 @@ export default function Scorecard() {
                 >
                   <Share2 className="h-3.5 w-3.5" strokeWidth={1.5} />
                 </button>
-                <button
-                  onClick={() => generateScorecardPdf(scorecard)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary border border-border font-mono-dm text-[10px] uppercase tracking-[0.1em] text-fog hover:text-moss-light transition-colors flex-shrink-0"
-                  title="Download PDF"
-                >
-                  <Download className="h-3.5 w-3.5" strokeWidth={1.5} />
-                </button>
               </>
             )}
           </div>
