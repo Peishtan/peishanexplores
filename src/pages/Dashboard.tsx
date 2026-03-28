@@ -750,9 +750,6 @@ function MilestoneSpotlight() {
                   bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg w-48">
                   <p className="font-mono-dm text-[10px] text-fog uppercase tracking-[0.1em] mb-1">Milestone</p>
                   <p className="text-[12px] text-mist leading-snug">{ms?.title}</p>
-                  {threshold && (
-                    <p className="font-mono-dm text-[10px] text-fog mt-1">Threshold: {threshold}</p>
-                  )}
                   {p.achieved_at && (
                     <p className="font-mono-dm text-[10px] text-done mt-0.5">
                       Unlocked {format(new Date(p.achieved_at), "MMM d, yyyy")}
