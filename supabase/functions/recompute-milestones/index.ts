@@ -156,8 +156,8 @@ Deno.serve(async (req) => {
           progressTarget = 1;
           progressCurrent = qualifying.length > 0 ? 1 : 0;
           if (qualifying.length > 0) {
-            // Pick earliest qualifying activity (activities sorted desc, so last is earliest)
-            evidenceLogIds = [qualifying[qualifying.length - 1].id];
+            // Store up to 3 most recent qualifying activities (already sorted desc by start_time)
+            evidenceLogIds = qualifying.slice(0, 3).map((a: any) => a.id);
           }
           break;
         }
@@ -169,8 +169,8 @@ Deno.serve(async (req) => {
           progressTarget = 1;
           progressCurrent = qualifying.length > 0 ? 1 : 0;
           if (qualifying.length > 0) {
-            // Pick earliest qualifying activity (activities sorted desc, so last is earliest)
-            evidenceLogIds = [qualifying[qualifying.length - 1].id];
+            // Store up to 3 most recent qualifying activities (already sorted desc by start_time)
+            evidenceLogIds = qualifying.slice(0, 3).map((a: any) => a.id);
           }
           break;
         }
