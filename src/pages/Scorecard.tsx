@@ -383,14 +383,14 @@ function ConsistencyRow({ label, weeksHit, totalWeeks, pct }: { label: string; w
 }
 
 const highlightIcons: Record<string, React.ReactNode> = {
-  medal: <Medal className="h-5 w-5 text-muted-foreground" />,
-  footprints: <Footprints className="h-5 w-5 text-muted-foreground" />,
-  waves: <Waves className="h-5 w-5 text-muted-foreground" />,
-  mountain: <Mountain className="h-5 w-5 text-muted-foreground" />,
-  snowflake: <Snowflake className="h-5 w-5 text-muted-foreground" />,
-  activity: <Activity className="h-5 w-5 text-muted-foreground" />,
-  miles: <Footprints className="h-5 w-5 text-muted-foreground" />,
-  elevation: <MapPin className="h-5 w-5 text-muted-foreground" />,
+  medal: <Medal className="h-5 w-5 text-fog" />,
+  footprints: <Footprints className="h-5 w-5 text-fog" />,
+  waves: <Waves className="h-5 w-5 text-fog" />,
+  mountain: <Mountain className="h-5 w-5 text-fog" />,
+  snowflake: <Snowflake className="h-5 w-5 text-fog" />,
+  activity: <Activity className="h-5 w-5 text-fog" />,
+  miles: <Footprints className="h-5 w-5 text-fog" />,
+  elevation: <MapPin className="h-5 w-5 text-fog" />,
 };
 
 function HighlightCard({ icon, label, value }: { icon: string; label: string; value: string }) {
