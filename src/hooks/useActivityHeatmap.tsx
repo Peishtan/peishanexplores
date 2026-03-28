@@ -64,6 +64,7 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
     // Group into weeks
     const weeks: HeatmapWeek[] = [];
     let weekStart = firstMonday;
+    let weekNum = 1;
     while (weekStart <= now) {
       const weekEnd = addWeeks(weekStart, 1);
       const days: HeatmapDay[] = [];
@@ -75,9 +76,10 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
         days.push(dayCounts.get(key) ?? { date: day, count: 0, types: [] });
       }
       if (days.length > 0) {
-        weeks.push({ weekNum: getISOWeek(weekStart), days });
+        weeks.push({ weekNum, days });
       }
       weekStart = weekEnd;
+      weekNum++;
     }
 
     return { weeks, dayCounts };
