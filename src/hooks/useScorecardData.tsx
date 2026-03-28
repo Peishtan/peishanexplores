@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { startOfWeek, addWeeks } from "date-fns";
 import { Activity, MILE_ACTIVITIES } from "./useActivities";
 import { SkillMilestoneProgress } from "./useSkillMilestones";
-import { Profile } from "./useProfile";
 
 export interface QuarterInfo {
   label: string;
