@@ -192,7 +192,7 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
   const areas: { label: string; pct: number; weight: number; tip: string }[] = [
     { label: "gym consistency", pct: gymCons?.pct ?? 0, weight: 0.25, tip: "hitting your weekly gym sessions" },
     { label: "outdoor rhythm", pct: outdoorCons?.pct ?? 0, weight: 0.10, tip: "getting outside more regularly each week" },
-    { label: "kayak rhythm", pct: kayakCons?.pct ?? 0, weight: 0.10, tip: "paddling more consistently each week" },
+    { label: "paddle rhythm", pct: kayakCons?.pct ?? 0, weight: 0.10, tip: "paddling more consistently each week" },
   ];
 
   const targetsHit = scorecard.targets.filter((t) => t.hit).length;
