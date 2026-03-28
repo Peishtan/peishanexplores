@@ -272,7 +272,7 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
 
   return (
     <p className="text-sm text-foreground/70 leading-relaxed">
-      💡 <span className="font-medium text-foreground">Biggest lever to raise your score:</span> Focus on {top.tip}. Your {top.label} is at {top.pct}% — improving this could add the most points.
+      <span className="font-medium text-foreground">Biggest lever to raise your score:</span> Focus on {top.tip}. Your {top.label} is at {top.pct}% — improving this could add the most points.
     </p>
   );
 }
