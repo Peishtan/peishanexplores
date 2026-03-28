@@ -191,8 +191,6 @@ export default function Scorecard() {
               </div>
             </ScorecardSection>
 
-            {/* ── Score Formula ── */}
-            <ScoreFormula scorecard={scorecard} />
           </div>
         )}
 
