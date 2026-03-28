@@ -151,7 +151,7 @@ export function computeScorecard(
 
   const targets: TargetResult[] = [
     { label: "Hiking / XC Ski Miles", current: Math.round(hikingMiles * 10) / 10, target: profile.goal_hiking_quarterly_miles, unit: "mi", hit: hikingMiles >= profile.goal_hiking_quarterly_miles },
-    { label: "Kayak Miles", current: Math.round(kayakMiles * 10) / 10, target: profile.goal_kayak_quarterly_miles, unit: "mi", hit: kayakMiles >= profile.goal_kayak_quarterly_miles },
+    { label: "Paddle Miles", current: Math.round(kayakMiles * 10) / 10, target: profile.goal_kayak_quarterly_miles, unit: "mi", hit: kayakMiles >= profile.goal_kayak_quarterly_miles },
   ];
 
   // ── Consistency (weekly goals) ──
