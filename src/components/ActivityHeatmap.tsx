@@ -71,7 +71,7 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
             </span>
           ))}
         {isCapped && (
-          <p className="font-mono-dm text-[9px] text-fog/40 text-center mt-2">Showing last 90 days</p>
+          <p className="font-mono-dm text-[9px] text-fog/60 text-center mt-2">Showing last 90 days</p>
         )}
       </div>
       </div>
