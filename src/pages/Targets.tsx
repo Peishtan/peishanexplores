@@ -185,7 +185,7 @@ export default function Targets() {
                     </p>
                     <span className="font-mono-dm text-[10px] text-fog">avg</span>
                     {pacing.elev.done && (
-                      <span className="font-mono-dm text-[9px] tracking-[0.12em] uppercase px-2 py-0.5 rounded-full bg-[rgba(122,184,124,0.15)] text-moss-light border border-[rgba(122,184,124,0.25)] mt-0.5">
+                      <span className="font-mono-dm text-[9px] tracking-[0.12em] uppercase px-2 py-0.5 rounded-full bg-[rgba(106,191,122,0.15)] text-done border border-[rgba(106,191,122,0.3)] mt-0.5">
                         Above target
                       </span>
                     )}
