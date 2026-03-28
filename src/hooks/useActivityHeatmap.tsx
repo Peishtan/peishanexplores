@@ -78,7 +78,6 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
         weeks.push({ weekNum: getISOWeek(weekStart), days });
       }
       weekStart = weekEnd;
-      weekNum++;
     }
 
     return { weeks, dayCounts };
