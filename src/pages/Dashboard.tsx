@@ -451,7 +451,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
           return (
             <div key={weekIdx} className="relative group/tip">
               {pips}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tip:block z-50 pointer-events-none">
+              <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${weekIdx <= 1 ? 'left-0' : weekIdx >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
                 <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-lg p-3 shadow-lg whitespace-nowrap">
                   <WeekHoverContent wr={wr} weekIdx={weekIdx} />
                 </div>
