@@ -408,6 +408,14 @@ export function computeScorecard(
     { type: "gym", label: "Gym", count: gymCount, color: "hsl(10, 65%, 58%)" },
   ].filter((s) => s.count > 0);
 
+  // Compute avg elevation for hike/xc_ski activities with elevation
+  const elevActivities = qActivities.filter(
+    (a) => (a.type === "hiking" || a.type === "xc_skiing") && (a.elevation_gain ?? 0) > 0
+  );
+  const avgElevation = elevActivities.length > 0
+    ? elevActivities.reduce((s, a) => s + (a.elevation_gain ?? 0), 0) / elevActivities.length
+    : 0;
+
   return {
     quarter,
     targets,
@@ -422,5 +430,7 @@ export function computeScorecard(
     milestonesAchievedTotal: milestones.filter((m) => m.status === "achieved").length,
     totalMilestones: totalMilestoneCount,
     sportBreakdown,
+    _avgElevation: Math.round(avgElevation),
+    _elevationTarget: goals.goal_elevation_avg,
   };
 }
