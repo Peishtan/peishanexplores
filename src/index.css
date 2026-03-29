@@ -117,4 +117,67 @@
   .animate-pulse-dot {
     animation: pulse-dot 2s infinite;
   }
+
+  /* 1. Streak badge ambient glow */
+  @keyframes streak-glow {
+    0%, 100% { box-shadow: 0 0 6px 0 hsla(var(--amber), 0.15); }
+    50% { box-shadow: 0 0 14px 2px hsla(var(--amber), 0.3); }
+  }
+  .animate-streak-glow {
+    animation: streak-glow 3s ease-in-out infinite;
+  }
+
+  /* 2. Achievement banner sweep */
+  @keyframes banner-sweep {
+    0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+    40% { opacity: 0.12; }
+    100% { transform: translateX(300%) skewX(-15deg); opacity: 0; }
+  }
+  .animate-banner-sweep::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, hsla(var(--moss-light), 0.15), transparent);
+    animation: banner-sweep 4s ease-in-out 1s infinite;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* 3. Milestone unlock pop */
+  @keyframes unlock-pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .animate-unlock-pop {
+    animation: unlock-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  /* 5. Staggered dot entrance */
+  @keyframes dot-enter {
+    from { opacity: 0; transform: scale(0.3); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .animate-dot-enter {
+    animation: dot-enter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  /* 7. Card press tactile */
+  .press-scale {
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .press-scale:active {
+    transform: scale(0.975);
+  }
+
+  /* 8. Nav icon bounce */
+  @keyframes nav-bounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(0.85); }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  .animate-nav-bounce {
+    animation: nav-bounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 }
