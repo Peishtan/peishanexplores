@@ -8,6 +8,7 @@ import { getAvailableQuarters, computeScorecard, type QuarterInfo, type Scorecar
 import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle2, XCircle, TrendingUp, FileSearch, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, ArrowRight, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
