@@ -365,6 +365,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           const isPast = i < total - 1;
           const isCurrent = i === total - 1;
           const wasHit = wr?.hit ?? false;
+          const overflow = wr && wasHit ? (wr.count - goal) : 0;
           const boxStyle = isPast
             ? wasHit
               ? { backgroundColor: accentColor }
@@ -390,6 +391,14 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
                 className={`aspect-square rounded-[3px] cursor-default animate-dot-enter ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
                 style={{ ...boxStyle, animationDelay: `${i * 40}ms` }}
               />
+              {overflow > 0 && (
+                <span
+                  className="absolute -top-1 -right-0.5 font-mono-dm text-[6px] leading-none pointer-events-none"
+                  style={{ color: accentColor, opacity: 0.7 }}
+                >
+                  +{overflow}
+                </span>
+              )}
               <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${i <= 1 ? 'left-0' : i >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
                 <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg whitespace-nowrap">
                   <WeekHoverContent wr={wr} weekIdx={i} />
