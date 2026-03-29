@@ -45,9 +45,10 @@ A 13-column dot grid per sport showing weekly goal completion across the quarter
 ### Automated Scorecard
 Each quarter generates a weighted percentage score based on:
 - **45%** Distance targets hit
-- **25%** Gym consistency
+- **20%** Gym consistency
 - **20%** Outdoor / Paddle rhythm (with a 75% floor when the corresponding distance target is met)
-- **10%** Milestones unlocked
+- **5%** Average elevation gain vs target
+- **10%** Milestones unlocked *this quarter* (quarter-scoped — a milestone counts if any qualifying evidence activity falls within the quarter, so repeating a 10-mile hike in a new quarter earns the score again)
 
 Includes a sport mix donut chart, collapsible score formula breakdown, and a dynamic review section. Past quarters are accessible via a dropdown selector and scored against the goals that were active at the time (via snapshots).
 
