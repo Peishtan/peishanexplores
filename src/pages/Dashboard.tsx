@@ -656,6 +656,17 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
     insights.push({ type: "Strong", text: "Elevation avg exceeding target — strong climbing!", color: "text-moss-light" });
   }
 
+  // ── Recovery / overtraining awareness ──
+  if (wtdSessionCount != null && wtdSessionCount >= 6) {
+    if (wtdHighIntensityCount != null && wtdHighIntensityCount >= 4) {
+      insights.push({ type: "Recovery", text: `${wtdSessionCount} sessions this week with ${wtdHighIntensityCount} at high intensity. Consider a rest day or active recovery to avoid overtraining.`, color: "text-amber" });
+    } else {
+      insights.push({ type: "Recovery", text: `${wtdSessionCount} sessions logged this week — that's a heavy load. Make sure you're building in recovery time.`, color: "text-amber" });
+    }
+  } else if (wtdHighIntensityCount != null && wtdHighIntensityCount >= 4) {
+    insights.push({ type: "Recovery", text: `${wtdHighIntensityCount} high-intensity sessions this week. Balance with a lighter day to let your body adapt.`, color: "text-amber" });
+  }
+
   // ── Prior quarter carryover when no insights generated yet ──
   if (insights.length === 0 && activities && profile) {
     const now = new Date();
