@@ -226,11 +226,18 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const kayakPct = kayakTargetHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
   const dependentScore = (outdoorPct + kayakPct) / 2;
 
+  // Quarter-scoped milestone score: how many milestones had qualifying evidence THIS quarter
   const milestoneScore = scorecard.totalMilestones > 0
-    ? Math.min((scorecard.milestonesAchievedTotal / scorecard.totalMilestones) * 100, 100)
+    ? Math.min((scorecard.milestonesUnlocked / scorecard.totalMilestones) * 100, 100)
     : 100;
 
-  const score = targetScore * 0.45 + independentScore * 0.25 + dependentScore * 0.20 + milestoneScore * 0.10;
+  // Elevation score: avg elevation gain vs target
+  const elevationScore = scorecard._elevationTarget > 0
+    ? Math.min((scorecard._avgElevation / scorecard._elevationTarget) * 100, 100)
+    : 100;
+
+  // Weights: 45% targets, 20% gym, 20% outdoor, 5% elevation, 10% milestones
+  const score = targetScore * 0.45 + independentScore * 0.20 + dependentScore * 0.20 + elevationScore * 0.05 + milestoneScore * 0.10;
 
   const scoreColor = score >= 80 ? "text-done" : "text-amber";
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
@@ -238,8 +245,9 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
 
   const rows = [
     { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: targetScore * 0.45 },
-    { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: independentScore * 0.25 },
+    { label: "Gym Consistency", weight: 20, value: Math.round(independentScore), contribution: independentScore * 0.20 },
     { label: "Outdoor Consistency", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
+    { label: "Avg Elevation", weight: 5, value: Math.round(elevationScore), contribution: elevationScore * 0.05 },
     { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: milestoneScore * 0.10 },
   ];
 
@@ -297,7 +305,7 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
 
   // Find weakest area by weighted impact
   const areas: { label: string; pct: number; weight: number; tip: string }[] = [
-    { label: "gym consistency", pct: gymPct, weight: 0.25, tip: "hitting your weekly gym sessions" },
+    { label: "gym consistency", pct: gymPct, weight: 0.20, tip: "hitting your weekly gym sessions" },
     { label: "outdoor rhythm", pct: outdoorPct, weight: 0.10, tip: "getting outside more regularly each week" },
     { label: "paddle rhythm", pct: kayakPct, weight: 0.10, tip: "paddling more consistently each week" },
   ];

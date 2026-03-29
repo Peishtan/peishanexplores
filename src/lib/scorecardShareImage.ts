@@ -36,8 +36,10 @@ function computeScore(sc: ScorecardData): { score: number; label: string } {
   const kayakPct = kayakHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
   const depScore = (outdoorPct + kayakPct) / 2;
   const milestoneScore = sc.totalMilestones > 0
-    ? Math.min((sc.milestonesAchievedTotal / sc.totalMilestones) * 100, 100) : 100;
-  const score = Math.round(targetScore * 0.45 + gymPct * 0.25 + depScore * 0.20 + milestoneScore * 0.10);
+    ? Math.min((sc.milestonesUnlocked / sc.totalMilestones) * 100, 100) : 100;
+  const elevationScore = sc._elevationTarget > 0
+    ? Math.min((sc._avgElevation / sc._elevationTarget) * 100, 100) : 100;
+  const score = Math.round(targetScore * 0.45 + gymPct * 0.20 + depScore * 0.20 + elevationScore * 0.05 + milestoneScore * 0.10);
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
     : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
   return { score, label };
