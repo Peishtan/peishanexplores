@@ -113,6 +113,7 @@ export default function Dashboard() {
                   accentColor="rgba(100,160,210,0.9)"
                   missedColor="rgba(100,160,210,0.25)"
                   missedBorder="rgba(100,160,210,0.35)"
+                  goal={kayakGoal}
                 />
                 <WeeklyCard
                   icon={<Mountain className="h-5 w-5 text-fog" strokeWidth={1.5} />}
