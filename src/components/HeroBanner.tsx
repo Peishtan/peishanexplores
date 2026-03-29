@@ -13,9 +13,8 @@ export default function HeroBanner({ title, subtitle, children, compact }: HeroB
   const { signOut } = useAuth();
   const now = new Date();
   const qNum = Math.floor(now.getMonth() / 3) + 1;
-  const weekOfYear = Math.ceil(
-    (now.getTime() - new Date(now.getFullYear(), 0, 1).getTime()) / (7 * 86400000)
-  );
+  const qStart = new Date(now.getFullYear(), (qNum - 1) * 3, 1);
+  const weekOfQuarter = Math.max(1, Math.ceil((now.getTime() - qStart.getTime()) / (7 * 86400000)));
 
   const handleSignOut = async () => {
     await signOut();
