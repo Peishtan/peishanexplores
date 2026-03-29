@@ -323,7 +323,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
 }) {
   const totalWeeks = 13;
   return (
-    <div className="rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
+    <div className="rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px] press-scale">
       <div className="flex justify-between items-center mb-3.5">
         <div className="flex items-center gap-2">
           <span className="flex-shrink-0">{icon}</span>
