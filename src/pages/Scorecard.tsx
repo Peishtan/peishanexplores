@@ -305,7 +305,7 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
 
   // Find weakest area by weighted impact
   const areas: { label: string; pct: number; weight: number; tip: string }[] = [
-    { label: "gym consistency", pct: gymPct, weight: 0.25, tip: "hitting your weekly gym sessions" },
+    { label: "gym consistency", pct: gymPct, weight: 0.20, tip: "hitting your weekly gym sessions" },
     { label: "outdoor rhythm", pct: outdoorPct, weight: 0.10, tip: "getting outside more regularly each week" },
     { label: "paddle rhythm", pct: kayakPct, weight: 0.10, tip: "paddling more consistently each week" },
   ];
