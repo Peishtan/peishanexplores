@@ -9,6 +9,7 @@ import HeroBanner from "@/components/HeroBanner";
 import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
+import { useEffect, useRef, useState } from "react";
 
 
 export default function Dashboard() {
