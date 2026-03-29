@@ -28,7 +28,7 @@ export default function HeroBanner({ title, subtitle, children, compact }: HeroB
       </span>
       <div className="flex items-center gap-3">
         <span className="font-mono-dm text-[11px] tracking-[0.1em] text-fog">
-          Q{qNum} · WK {weekOfYear} · {now.getFullYear()}
+          Q{qNum} · W{weekOfQuarter} · {now.getFullYear()}
         </span>
         <button onClick={handleSignOut} className="text-fog/40 hover:text-fog transition-colors" title="Sign out">
           <LogOut className="h-3.5 w-3.5" strokeWidth={1.5} />

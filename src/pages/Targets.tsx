@@ -248,7 +248,7 @@ export default function Targets() {
           {/* Right Column: Skill Milestones */}
           <div>
             {/* Skill Milestones */}
-            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
+            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[40px] mb-[16px]">
               Skill Milestones
             </div>
             <div className="px-4">
