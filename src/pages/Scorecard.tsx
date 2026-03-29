@@ -8,7 +8,6 @@ import { getAvailableQuarters, computeScorecard, type QuarterInfo, type Scorecar
 import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle2, XCircle, TrendingUp, FileSearch, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, ArrowRight, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -444,6 +443,7 @@ function InsightRow({ type, text }: { type: "strength" | "gap"; text: string }) 
 
 /* ── Sport Donut ── */
 function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: number }) {
+  const [hovered, setHovered] = useState<number | null>(null);
   const size = 90;
   const strokeWidth = 10;
   const radius = (size - strokeWidth) / 2;
@@ -457,32 +457,40 @@ function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: 
     return { ...s, pct, offset };
   });
 
+  const hoveredSeg = hovered !== null ? segments[hovered] : null;
+
   return (
-    <div className="flex flex-col items-center flex-shrink-0">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
+    <div className="flex flex-col items-center flex-shrink-0 relative">
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="transform -rotate-90"
+        onMouseLeave={() => setHovered(null)}
+      >
         <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
         {segments.map((seg, i) => (
-          <Tooltip key={i}>
-            <TooltipTrigger asChild>
-              <circle
-                cx={size / 2}
-                cy={size / 2}
-                r={radius}
-                fill="none"
-                stroke={seg.color}
-                strokeWidth={strokeWidth}
-                strokeDasharray={`${seg.pct * circumference} ${circumference}`}
-                strokeDashoffset={-seg.offset * circumference}
-                strokeLinecap="round"
-                className="cursor-pointer"
-              />
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="text-xs">
-              {seg.label}: {seg.count} session{seg.count !== 1 ? "s" : ""}
-            </TooltipContent>
-          </Tooltip>
+          <circle
+            key={i}
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke={seg.color}
+            strokeWidth={strokeWidth + (hovered === i ? 3 : 0)}
+            strokeDasharray={`${seg.pct * circumference} ${circumference}`}
+            strokeDashoffset={-seg.offset * circumference}
+            strokeLinecap="round"
+            className="cursor-pointer transition-all"
+            onMouseEnter={() => setHovered(i)}
+          />
         ))}
       </svg>
+      {hoveredSeg && (
+        <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap bg-popover border border-border rounded-md px-2 py-0.5 text-[10px] text-popover-foreground shadow-md z-50">
+          {hoveredSeg.label}: {hoveredSeg.count} session{hoveredSeg.count !== 1 ? "s" : ""}
+        </div>
+      )}
       <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-2 justify-center">
         {segments.map((s, i) => (
           <span key={i} className="flex items-center gap-1">
