@@ -487,7 +487,7 @@ function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: 
         ))}
       </svg>
       {hoveredSeg && (
-        <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap bg-popover border border-border rounded-md px-2 py-0.5 text-[10px] text-popover-foreground shadow-md z-50">
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95">
           {hoveredSeg.label}: {hoveredSeg.count} session{hoveredSeg.count !== 1 ? "s" : ""}
         </div>
       )}
