@@ -613,11 +613,12 @@ function MomentumCard({ label, value, valueClass, alert, children }: {
 }
 
 /* ── Insights List ── */
-function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevationGoal, fourWeekAvgElev, activities, profile }: {
+function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevationGoal, fourWeekAvgElev, activities, profile, wtdSessionCount, wtdHighIntensityCount }: {
   kayakChallenge: QuarterChallenge | null;
   hikingChallenge: QuarterChallenge | null;
   elevTrendPct: number; elevationGoal: number; fourWeekAvgElev: number;
   activities?: Activity[]; profile?: Profile | null;
+  wtdSessionCount?: number; wtdHighIntensityCount?: number;
 }) {
   const insights: { type: string; text: string; color: string }[] = [];
 
