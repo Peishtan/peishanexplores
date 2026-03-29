@@ -781,7 +781,7 @@ function MilestoneSpotlight() {
             const evidenceList = evidenceMap?.get(p.id);
             return (
               <div key={p.id} className="relative group/tip flex items-center gap-3.5 py-3.5 border-b border-[rgba(255,255,255,0.05)] last:border-0 cursor-default">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done"
+                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done animate-unlock-pop"
                      style={{ background: 'rgba(74,155,92,0.15)' }}>
                   <CheckCircle2 className="h-3 w-3 text-done" strokeWidth={2.5} />
                 </div>
