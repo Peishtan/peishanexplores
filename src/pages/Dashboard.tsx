@@ -252,6 +252,7 @@ function StatItem({ value, label }: { value: string; label: string }) {
 
 /* ── Challenge Card ── */
 function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
+  const animatedCurrent = useCountUp(challenge.current, 1000);
   const paceLabel = challenge.pct >= 100 ? "✓ Achieved"
     : challenge.pace === "ahead" ? "↑ Ahead of pace"
     : challenge.pace === "on_pace" ? "→ On track" : "↓ Behind pace";
