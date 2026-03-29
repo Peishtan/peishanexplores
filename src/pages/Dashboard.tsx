@@ -423,7 +423,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
             <div className="flex flex-col-reverse gap-0.5 cursor-default">
               {Array.from({ length: maxPerWeek }, (_, pip) => {
                 const style: React.CSSProperties = {};
-                let cls = "aspect-square rounded-[2px] ";
+                let cls = "aspect-square rounded-[2px] animate-dot-enter ";
                 if (isFuture) {
                   style.backgroundColor = "rgba(255,255,255,0.05)";
                 } else if (isCurrent) {
