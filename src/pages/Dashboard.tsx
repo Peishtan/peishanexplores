@@ -357,8 +357,8 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           if (!wr || (!isPast && !isCurrent)) {
             return (
               <div key={i}
-                className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
-                style={boxStyle}
+                className={`aspect-square rounded-[3px] cursor-default animate-dot-enter ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+                style={{ ...boxStyle, animationDelay: `${i * 40}ms` }}
               />
             );
           }
