@@ -486,11 +486,8 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
             <div key={weekIdx} className="relative group/tip">
               {pips}
               {gymOverflow > 0 && (
-                <span
-                  className="absolute -top-1 -right-0.5 font-mono-dm text-[6px] leading-none pointer-events-none"
-                  style={{ color: accentColor, opacity: 0.7 }}
-                >
-                  +{gymOverflow}
+                <span className="absolute top-0 left-0 right-0 flex items-center justify-center font-mono-dm text-[8px] leading-none pointer-events-none" style={{ color: 'rgba(0,0,0,0.45)', height: `${100 / maxPerWeek}%` }}>
+                  {wr!.count}
                 </span>
               )}
               <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${weekIdx <= 1 ? 'left-0' : weekIdx >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
