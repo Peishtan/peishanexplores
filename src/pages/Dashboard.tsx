@@ -194,7 +194,7 @@ function AchievementBanner({ title, label, current, target, stats, extraStats }:
   return (
     <>
       <SectionLabel>Completed</SectionLabel>
-      <div className="mx-4 rounded-[14px] border border-moss p-5 relative overflow-hidden animate-fade-slide-up"
+      <div className="mx-4 rounded-[14px] border border-moss p-5 relative overflow-hidden animate-fade-slide-up animate-banner-sweep"
            style={{ background: 'linear-gradient(135deg, hsl(123 20% 20%) 0%, #1a3020 100%)' }}>
         <div className="absolute -top-[30px] -right-[30px] w-[120px] h-[120px] rounded-full"
              style={{ background: 'radial-gradient(circle, rgba(90,125,91,0.3) 0%, transparent 70%)' }} />
