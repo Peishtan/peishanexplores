@@ -336,9 +336,9 @@ function WeekHoverContent({ wr, weekIdx }: { wr: WeekResult; weekIdx: number }) 
 }
 
 /* ── Weekly Dot Card ── */
-function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor, missedColor, missedBorder }: {
+function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor, missedColor, missedBorder, goal = 1 }: {
   icon: React.ReactNode; name: string; rule: string; weekResults: WeekResult[]; total: number; streak: number;
-  accentColor: string; missedColor: string; missedBorder: string;
+  accentColor: string; missedColor: string; missedBorder: string; goal?: number;
 }) {
   const totalWeeks = 13;
   return (
