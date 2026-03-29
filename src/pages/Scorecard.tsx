@@ -459,13 +459,12 @@ function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: 
 
   return (
     <div className="flex flex-col items-center flex-shrink-0">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90 cursor-pointer">
-            <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
-            {segments.map((seg, i) => (
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
+        {segments.map((seg, i) => (
+          <Tooltip key={i}>
+            <TooltipTrigger asChild>
               <circle
-                key={i}
                 cx={size / 2}
                 cy={size / 2}
                 r={radius}
@@ -475,17 +474,15 @@ function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: 
                 strokeDasharray={`${seg.pct * circumference} ${circumference}`}
                 strokeDashoffset={-seg.offset * circumference}
                 strokeLinecap="round"
+                className="cursor-pointer"
               />
-            ))}
-          </svg>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" className="text-xs">
-          {segments.map((s, i) => (
-            <div key={i}>{s.label}: {s.count} session{s.count !== 1 ? "s" : ""}</div>
-          ))}
-          <div className="font-semibold mt-1">Total: {total}</div>
-        </TooltipContent>
-      </Tooltip>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs">
+              {seg.label}: {seg.count} session{seg.count !== 1 ? "s" : ""}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </svg>
       <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-2 justify-center">
         {segments.map((s, i) => (
           <span key={i} className="flex items-center gap-1">
