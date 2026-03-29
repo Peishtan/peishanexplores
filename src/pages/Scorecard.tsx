@@ -288,11 +288,18 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
   const outdoorCons = scorecard.consistency.find((c) => c.label === "Hike / XC Ski Sessions");
   const kayakCons = scorecard.consistency.find((c) => c.label === "Paddle Sessions");
 
+  // Check if outdoor/paddle volume is high relative to gym
+  const outdoorPct = outdoorCons?.pct ?? 0;
+  const kayakPct = kayakCons?.pct ?? 0;
+  const gymPct = gymCons?.pct ?? 0;
+  const outdoorVolumeHigh = outdoorPct >= 70 || kayakPct >= 70;
+  const gymIsLowest = gymPct <= outdoorPct && gymPct <= kayakPct;
+
   // Find weakest area by weighted impact
   const areas: { label: string; pct: number; weight: number; tip: string }[] = [
-    { label: "gym consistency", pct: gymCons?.pct ?? 0, weight: 0.25, tip: "hitting your weekly gym sessions" },
-    { label: "outdoor rhythm", pct: outdoorCons?.pct ?? 0, weight: 0.10, tip: "getting outside more regularly each week" },
-    { label: "paddle rhythm", pct: kayakCons?.pct ?? 0, weight: 0.10, tip: "paddling more consistently each week" },
+    { label: "gym consistency", pct: gymPct, weight: 0.25, tip: "hitting your weekly gym sessions" },
+    { label: "outdoor rhythm", pct: outdoorPct, weight: 0.10, tip: "getting outside more regularly each week" },
+    { label: "paddle rhythm", pct: kayakPct, weight: 0.10, tip: "paddling more consistently each week" },
   ];
 
   const targetsHit = scorecard.targets.filter((t) => t.hit).length;
@@ -310,6 +317,15 @@ function ReviewTopline({ scorecard }: { scorecard: ScorecardData }) {
     return (
       <p className="text-sm text-foreground/70 leading-relaxed">
         Exceptional quarter — all areas are firing. Keep this momentum going!
+      </p>
+    );
+  }
+
+  // Trade-off aware messaging for gym
+  if (top.label === "gym consistency" && gymIsLowest && outdoorVolumeHigh) {
+    return (
+      <p className="text-sm text-foreground/70 leading-relaxed">
+        <span className="font-medium text-foreground">Biggest lever to raise your score:</span> Outdoor expeditions and high-volume adventure weeks are crowding out gym sessions ({gymPct}%). A quick bodyweight or home workout on big outdoor days could close this gap without sacrificing trail time.
       </p>
     );
   }
