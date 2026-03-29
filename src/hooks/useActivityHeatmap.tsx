@@ -31,6 +31,10 @@ export function getSportColor(types: string[]): string {
   return SPORT_COLORS.mixed;
 }
 
+function getQuarterStart(date: Date): Date {
+  return new Date(date.getFullYear(), Math.floor(date.getMonth() / 3) * 3, 1);
+}
+
 export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays?: number) {
   return useMemo(() => {
     if (!activities) return { weeks: [], dayCounts: new Map<string, HeatmapDay>() };
@@ -40,6 +44,10 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
     const effectiveDays = Math.min(rangeDays ?? 90, 90);
     const rangeStart = new Date(now.getTime() - effectiveDays * 86400000);
     const firstMonday = startOfWeek(rangeStart, { weekStartsOn: 1 });
+
+    // Quarter-aligned week numbering (matches Dashboard)
+    const qStart = getQuarterStart(now);
+    const quarterFirstMonday = startOfWeek(qStart, { weekStartsOn: 1 });
 
     const dayCounts = new Map<string, HeatmapDay>();
 
@@ -61,10 +69,9 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
       }
     });
 
-    // Group into weeks
+    // Group into weeks with quarter-aligned week numbers
     const weeks: HeatmapWeek[] = [];
     let weekStart = firstMonday;
-    let weekNum = 1;
     while (weekStart <= now) {
       const weekEnd = addWeeks(weekStart, 1);
       const days: HeatmapDay[] = [];
@@ -75,11 +82,14 @@ export function useActivityHeatmap(activities: Activity[] | undefined, rangeDays
         const key = format(day, "yyyy-MM-dd");
         days.push(dayCounts.get(key) ?? { date: day, count: 0, types: [] });
       }
+      // Compute quarter-aligned week number
+      const weeksSinceQuarterStart = Math.floor(
+        (weekStart.getTime() - quarterFirstMonday.getTime()) / (7 * 86400000)
+      ) + 1;
       if (days.length > 0) {
-        weeks.push({ weekNum, days });
+        weeks.push({ weekNum: weeksSinceQuarterStart, days });
       }
       weekStart = weekEnd;
-      weekNum++;
     }
 
     return { weeks, dayCounts };

@@ -65,9 +65,9 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
         </div>
         {/* Week numbers */}
         <div className="flex gap-[3px] mt-1.5 ml-4">
-          {weeks.map((week) => (
-            <span key={week.weekNum} className="font-mono-dm text-[9px] text-fog/60 flex-1 text-center">
-              {week.weekNum % 2 === 1 ? `W${week.weekNum}` : ""}
+          {weeks.map((week, i) => (
+            <span key={i} className="font-mono-dm text-[9px] text-fog/60 flex-1 text-center">
+              {week.weekNum > 0 && week.weekNum % 2 === 1 ? `W${week.weekNum}` : ""}
             </span>
           ))}
         </div>
