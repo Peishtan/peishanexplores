@@ -30,6 +30,7 @@ function useCountUp(target: number, duration = 800) {
   return value;
 }
 
+export default function Dashboard() {
   const { data: profile } = useProfile();
   const { data: activities } = useActivities();
 
