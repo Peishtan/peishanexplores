@@ -534,7 +534,7 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal, elevationSpark }: 
                   }}
                 />
                 <Area type="monotone" dataKey="elev" stroke="hsl(var(--moss-light))" strokeWidth={1.5}
-                      fill="url(#elev-grad)" dot={false} activeDot={{ r: 3, fill: 'hsl(var(--moss-light))', strokeWidth: 0 }} isAnimationActive={false} />
+                      fill="url(#elev-grad)" dot={false} activeDot={{ r: 3, fill: 'hsl(var(--moss-light))', strokeWidth: 0 }} isAnimationActive animationDuration={1200} animationEasing="ease-out" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
