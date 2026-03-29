@@ -366,8 +366,8 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           return (
             <div key={i} className="relative group/tip">
               <div
-                className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
-                style={boxStyle}
+                className={`aspect-square rounded-[3px] cursor-default animate-dot-enter ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+                style={{ ...boxStyle, animationDelay: `${i * 40}ms` }}
               />
               <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${i <= 1 ? 'left-0' : i >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
                 <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg whitespace-nowrap">
