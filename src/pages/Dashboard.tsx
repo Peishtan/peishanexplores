@@ -569,10 +569,17 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal, elevationSpark }: 
 function MomentumCard({ label, value, valueClass, alert, children }: {
   label: string; value: string; valueClass?: string; alert?: boolean; children?: React.ReactNode;
 }) {
+  const numericPart = parseFloat(value.replace(/[^0-9.\-]/g, '')) || 0;
+  const animated = useCountUp(Math.abs(numericPart), 900);
+  const prefix = value.match(/^[^0-9.\-]*/)?.[0] ?? '';
+  const suffix = value.match(/[^0-9.\-]*$/)?.[0] ?? '';
+  const decimals = value.includes('.') ? (value.split('.')[1]?.replace(/[^0-9]/g, '').length ?? 0) : 0;
+  const displayValue = `${prefix}${animated.toFixed(decimals)}${suffix}`;
+
   return (
-    <div className={`bg-card border rounded-[14px] p-4 ${alert ? "border-[rgba(212,130,58,0.25)]" : "border-[rgba(255,255,255,0.06)]"}`}>
+    <div className={`bg-card border rounded-[14px] p-4 press-scale ${alert ? "border-[rgba(212,130,58,0.25)]" : "border-[rgba(255,255,255,0.06)]"}`}>
       <p className="font-mono-dm text-[9px] uppercase tracking-[0.18em] text-fog mb-2">{label}</p>
-      <p className={`font-display text-[32px] font-black leading-none tracking-tight ${valueClass ?? ""}`}>{value}</p>
+      <p className={`font-display text-[32px] font-black leading-none tracking-tight ${valueClass ?? ""}`}>{displayValue}</p>
       {children}
     </div>
   );
