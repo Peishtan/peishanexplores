@@ -125,6 +125,7 @@ export default function Dashboard() {
                   accentColor="rgba(77,179,140,0.9)"
                   missedColor="rgba(77,179,140,0.25)"
                   missedBorder="rgba(77,179,140,0.35)"
+                  goal={outdoorGoal}
                 />
                 <GymCard
                   rule={`${exerciseGoal} sessions / week`}
