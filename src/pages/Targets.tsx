@@ -208,7 +208,7 @@ export default function Targets() {
             </div>
 
             {/* Weekly Rhythm */}
-            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
+            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[40px] mb-[16px]">
               Weekly Rhythm
             </div>
             <div className="px-4 space-y-2">
