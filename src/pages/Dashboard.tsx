@@ -443,7 +443,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
                     style.border = `1px solid rgba(212,106,90,0.35)`;
                   }
                 }
-                return <div key={pip} className={cls} style={style} />;
+                return <div key={pip} className={cls} style={{ ...style, animationDelay: `${weekIdx * 40}ms` }} />;
               })}
             </div>
           );
