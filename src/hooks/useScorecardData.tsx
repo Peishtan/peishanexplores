@@ -294,15 +294,93 @@ export function computeScorecard(
     }
   }
 
-  // Gaps
+  // ── Cross-category trade-off analysis ──
+  // For each week, compute which categories had overflow (sessions > goal)
+  const weeklyOverflows: { gym: number; outdoor: number; water: number }[] = [];
+  const weeklyMisses: { gym: boolean; outdoor: boolean; water: boolean }[] = [];
+  for (let i = 0; i < weeksInQuarter; i++) {
+    const ws = addWeeks(firstMonday, i);
+    const we = addWeeks(firstMonday, i + 1);
+    const effectiveStart = Math.max(ws.getTime(), qStartMs);
+    const wd = getWeekData(activities, effectiveStart, we.getTime());
+    weeklyOverflows.push({
+      gym: Math.max(0, wd.classes - (goals.goal_exercises_per_week ?? 3)),
+      outdoor: Math.max(0, wd.outdoor - (goals.goal_outdoor_per_week ?? 1)),
+      water: Math.max(0, wd.water - (goals.goal_kayak_per_week ?? 1)),
+    });
+    weeklyMisses.push({
+      gym: wd.classes < (goals.goal_exercises_per_week ?? 3),
+      outdoor: wd.outdoor < (goals.goal_outdoor_per_week ?? 1),
+      water: wd.water < (goals.goal_kayak_per_week ?? 1),
+    });
+  }
+
+  // Count weeks where gym was missed but outdoor/water had overflow
+  const gymMissedWithOutdoorOverflow = weeklyMisses.filter(
+    (m, i) => m.gym && (weeklyOverflows[i].outdoor > 0 || weeklyOverflows[i].water > 0)
+  ).length;
+  const totalGymMisses = weeklyMisses.filter((m) => m.gym).length;
+
+  const outdoorMissedWithGymOverflow = weeklyMisses.filter(
+    (m, i) => (m.outdoor || m.water) && weeklyOverflows[i].gym > 0
+  ).length;
+
+  // Gaps — with trade-off awareness
   targets.filter((t) => !t.hit).forEach((t) => {
     const pct = Math.round((t.current / t.target) * 100);
     insights.push({ type: "gap", text: `${t.label}: reached ${pct}% of target (${t.current}/${t.target} ${t.unit})` });
   });
 
-  consistency.filter((c) => c.pct < 60).forEach((c) => {
-    insights.push({ type: "gap", text: `${c.label} consistency was ${c.pct}% — room to build a steadier rhythm` });
+  // Gym consistency gap — check for outdoor trade-off
+  const gymCons = consistency.find((c) => c.label === "Gym Sessions");
+  const outdoorCons = consistency.find((c) => c.label.includes("Hike"));
+  const paddleCons = consistency.find((c) => c.label.includes("Paddle"));
+
+  if (gymCons && gymCons.pct < 60) {
+    if (gymMissedWithOutdoorOverflow > 0 && totalGymMisses > 0) {
+      const tradeoffPct = Math.round((gymMissedWithOutdoorOverflow / totalGymMisses) * 100);
+      if (tradeoffPct >= 40) {
+        insights.push({
+          type: "gap",
+          text: `Gym consistency at ${gymCons.pct}% — but ${gymMissedWithOutdoorOverflow} of ${totalGymMisses} missed weeks coincided with extra outdoor sessions. High-volume adventure weeks are the main trade-off, not lack of effort.`,
+        });
+      } else {
+        insights.push({
+          type: "gap",
+          text: `Gym consistency was ${gymCons.pct}% — some missed weeks overlapped with big outdoor efforts, but there's room to build a steadier rhythm overall.`,
+        });
+      }
+    } else {
+      insights.push({ type: "gap", text: `Gym consistency was ${gymCons.pct}% — room to build a steadier rhythm` });
+    }
+  } else if (gymCons && gymCons.pct >= 60 && gymCons.pct < 80) {
+    // Not flagged as a gap above, but still below 80 — skip or leave to strengths
+  }
+
+  // Other consistency gaps (outdoor/paddle) — check reverse trade-off
+  consistency.filter((c) => c.pct < 60 && c.label !== "Gym Sessions").forEach((c) => {
+    if (outdoorMissedWithGymOverflow > 0 && c.label.includes("Hike")) {
+      insights.push({ type: "gap", text: `${c.label} consistency at ${c.pct}% — some weeks were traded for extra gym sessions` });
+    } else {
+      insights.push({ type: "gap", text: `${c.label} consistency was ${c.pct}% — room to build a steadier rhythm` });
+    }
   });
+
+  // Biggest lever insight
+  if (gymCons && outdoorCons && paddleCons) {
+    const lowestCons = [gymCons, outdoorCons, paddleCons].sort((a, b) => a.pct - b.pct)[0];
+    if (lowestCons.label === "Gym Sessions" && gymMissedWithOutdoorOverflow >= 2) {
+      insights.push({
+        type: "gap",
+        text: `Biggest lever: Gym is the lowest consistency metric at ${lowestCons.pct}%, largely driven by high-volume outdoor weeks. A quick home workout on adventure days could close this gap.`,
+      });
+    } else if (lowestCons.pct < 60) {
+      insights.push({
+        type: "gap",
+        text: `Biggest lever: ${lowestCons.label} at ${lowestCons.pct}% — focusing here would have the most impact on your overall score.`,
+      });
+    }
+  }
 
   if (qActivities.length === 0) {
     insights.push({ type: "gap", text: "No activities logged this quarter yet — time to get moving!" });
