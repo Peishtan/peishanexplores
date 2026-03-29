@@ -231,16 +231,9 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
     ? Math.min((scorecard.milestonesUnlocked / scorecard.totalMilestones) * 100, 100)
     : 100;
 
-  // Elevation score: avg elevation gain vs target (from goals)
-  const elevationTarget = scorecard.quarter.isCurrent
-    ? (scorecard as any)._elevationTarget ?? 0
-    : (scorecard as any)._elevationTarget ?? 0;
-  const elevationScore = elevationTarget > 0
-    ? Math.min((scorecard.totalElevation > 0 ? (() => {
-        // Compute avg elevation from hike/xc_ski activities with elevation
-        const avgElev = (scorecard as any)._avgElevation ?? 0;
-        return (avgElev / elevationTarget) * 100;
-      })() : 0), 100)
+  // Elevation score: avg elevation gain vs target
+  const elevationScore = scorecard._elevationTarget > 0
+    ? Math.min((scorecard._avgElevation / scorecard._elevationTarget) * 100, 100)
     : 100;
 
   // Weights: 45% targets, 20% gym, 20% outdoor, 5% elevation, 10% milestones
