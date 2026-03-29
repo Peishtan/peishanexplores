@@ -252,7 +252,7 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
         <p className={`font-display text-[72px] font-black leading-none ${scoreColor}`}>{Math.round(score)}%</p>
         {/* Score breakdown tooltip */}
         <div className="hidden group-hover/score:block pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50
-          bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 shadow-lg w-[280px] text-left">
+          bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-4 py-3 shadow-lg w-[280px] text-left">
           <div className="space-y-1.5">
             {rows.map((r) => (
               <div key={r.label} className="flex items-center justify-between text-[12px]">
