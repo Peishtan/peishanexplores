@@ -407,7 +407,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
           </div>
         </div>
         {streak >= 3 && (
-          <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em]">
+          <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em] animate-streak-glow">
             <Flame className="h-3 w-3" strokeWidth={1.5} /> {streak}-wk streak
           </span>
         )}
