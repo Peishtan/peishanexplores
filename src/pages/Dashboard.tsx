@@ -12,7 +12,24 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip as RechartsTooltip } from
 import { useEffect, useRef, useState } from "react";
 
 
-export default function Dashboard() {
+/* ── Count-up hook ── */
+function useCountUp(target: number, duration = 800) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef<number>();
+  useEffect(() => {
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      setValue(target * eased);
+      if (t < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [target, duration]);
+  return value;
+}
+
   const { data: profile } = useProfile();
   const { data: activities } = useActivities();
 
