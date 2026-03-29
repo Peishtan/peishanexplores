@@ -236,18 +236,18 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
     ? Math.min((scorecard._avgElevation / scorecard._elevationTarget) * 100, 100)
     : 100;
 
-  // Weights: 45% targets, 20% gym, 20% outdoor, 5% elevation, 10% milestones
-  const score = targetScore * 0.45 + independentScore * 0.20 + dependentScore * 0.20 + elevationScore * 0.05 + milestoneScore * 0.10;
+  // Weights: 40% targets, 20% gym, 20% outdoor, 10% elevation, 10% milestones
+  const score = targetScore * 0.40 + independentScore * 0.20 + dependentScore * 0.20 + elevationScore * 0.10 + milestoneScore * 0.10;
 
   const scoreColor = score >= 80 ? "text-done" : "text-amber";
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
     : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
 
   const rows = [
-    { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: targetScore * 0.45 },
+    { label: "Distance Targets", weight: 40, value: Math.round(targetScore), contribution: targetScore * 0.40 },
     { label: "Gym Consistency", weight: 20, value: Math.round(independentScore), contribution: independentScore * 0.20 },
     { label: "Outdoor Consistency", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
-    { label: "Avg Elevation", weight: 5, value: Math.round(elevationScore), contribution: elevationScore * 0.05 },
+    { label: "Avg Elevation", weight: 10, value: Math.round(elevationScore), contribution: elevationScore * 0.10 },
     { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: milestoneScore * 0.10 },
   ];
 

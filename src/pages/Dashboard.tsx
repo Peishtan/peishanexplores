@@ -165,6 +165,14 @@ export default function Dashboard() {
                 fourWeekAvgElev={insights?.momentum?.fourWeekAvgElev ?? 0}
                 activities={activities}
                 profile={profile}
+                wtdSessionCount={(insights?.wtd.classes ?? 0) + (insights?.wtd.outdoor ?? 0) + (insights?.wtd.water ?? 0)}
+                wtdHighIntensityCount={
+                  activities?.filter(a => {
+                    const t = new Date(a.start_time).getTime();
+                    const ws = startOfWeek(new Date(), { weekStartsOn: 1 }).getTime();
+                    return t >= ws && (a.intensity === "high" || a.intensity === "extreme");
+                  }).length ?? 0
+                }
               />
             </div>
 
@@ -605,11 +613,12 @@ function MomentumCard({ label, value, valueClass, alert, children }: {
 }
 
 /* ── Insights List ── */
-function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevationGoal, fourWeekAvgElev, activities, profile }: {
+function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevationGoal, fourWeekAvgElev, activities, profile, wtdSessionCount, wtdHighIntensityCount }: {
   kayakChallenge: QuarterChallenge | null;
   hikingChallenge: QuarterChallenge | null;
   elevTrendPct: number; elevationGoal: number; fourWeekAvgElev: number;
   activities?: Activity[]; profile?: Profile | null;
+  wtdSessionCount?: number; wtdHighIntensityCount?: number;
 }) {
   const insights: { type: string; text: string; color: string }[] = [];
 
@@ -645,6 +654,17 @@ function InsightsList({ kayakChallenge, hikingChallenge, elevTrendPct, elevation
     insights.push({ type: "Watch", text: `Elevation down ${Math.abs(elevTrendPct)}% over 4 weeks. Consider a hillier route this weekend.`, color: "text-amber" });
   } else if (fourWeekAvgElev >= elevationGoal) {
     insights.push({ type: "Strong", text: "Elevation avg exceeding target — strong climbing!", color: "text-moss-light" });
+  }
+
+  // ── Recovery / overtraining awareness ──
+  if (wtdSessionCount != null && wtdSessionCount >= 6) {
+    if (wtdHighIntensityCount != null && wtdHighIntensityCount >= 4) {
+      insights.push({ type: "Recovery", text: `${wtdSessionCount} sessions this week with ${wtdHighIntensityCount} at high intensity. Consider a rest day or active recovery to avoid overtraining.`, color: "text-amber" });
+    } else {
+      insights.push({ type: "Recovery", text: `${wtdSessionCount} sessions logged this week — that's a heavy load. Make sure you're building in recovery time.`, color: "text-amber" });
+    }
+  } else if (wtdHighIntensityCount != null && wtdHighIntensityCount >= 4) {
+    insights.push({ type: "Recovery", text: `${wtdHighIntensityCount} high-intensity sessions this week. Balance with a lighter day to let your body adapt.`, color: "text-amber" });
   }
 
   // ── Prior quarter carryover when no insights generated yet ──

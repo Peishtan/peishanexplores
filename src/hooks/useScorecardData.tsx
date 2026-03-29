@@ -388,6 +388,47 @@ export function computeScorecard(
     insights.push({ type: "gap", text: "No activities logged this quarter yet — time to get moving!" });
   }
 
+  // ── Progression trend: first half vs second half of quarter ──
+  if (qActivities.length >= 4) {
+    const midpointMs = qStartMs + (qEndMs - qStartMs) / 2;
+    const firstHalf = qActivities.filter(a => new Date(a.start_time).getTime() < midpointMs);
+    const secondHalf = qActivities.filter(a => new Date(a.start_time).getTime() >= midpointMs);
+
+    if (firstHalf.length > 0 && secondHalf.length > 0) {
+      const avgDist = (acts: typeof qActivities) => {
+        const withDist = acts.filter(a => (a.distance ?? 0) > 0);
+        return withDist.length > 0 ? withDist.reduce((s, a) => s + (a.distance ?? 0), 0) / withDist.length : 0;
+      };
+      const avgElev = (acts: typeof qActivities) => {
+        const withElev = acts.filter(a => (a.elevation_gain ?? 0) > 0);
+        return withElev.length > 0 ? withElev.reduce((s, a) => s + (a.elevation_gain ?? 0), 0) / withElev.length : 0;
+      };
+
+      const distFirst = avgDist(firstHalf);
+      const distSecond = avgDist(secondHalf);
+      const elevFirst = avgElev(firstHalf);
+      const elevSecond = avgElev(secondHalf);
+
+      const distDelta = distFirst > 0 ? ((distSecond - distFirst) / distFirst) * 100 : 0;
+      const elevDelta = elevFirst > 0 ? ((elevSecond - elevFirst) / elevFirst) * 100 : 0;
+
+      // Only surface if there's a meaningful trend (>15%)
+      if (distDelta > 15 && elevDelta > 15) {
+        insights.push({ type: "strength", text: `Building momentum: avg distance up ${Math.round(distDelta)}% and elevation up ${Math.round(elevDelta)}% in the second half of the quarter.` });
+      } else if (distDelta > 15) {
+        insights.push({ type: "strength", text: `Building momentum: avg distance per outing up ${Math.round(distDelta)}% in the second half of the quarter.` });
+      } else if (elevDelta > 15) {
+        insights.push({ type: "strength", text: `Building momentum: avg elevation per outing up ${Math.round(elevDelta)}% in the second half of the quarter.` });
+      } else if (distDelta < -20 && elevDelta < -20) {
+        insights.push({ type: "gap", text: `Fading late: avg distance down ${Math.abs(Math.round(distDelta))}% and elevation down ${Math.abs(Math.round(elevDelta))}% in the second half. Time to push through the plateau.` });
+      } else if (distDelta < -20) {
+        insights.push({ type: "gap", text: `Distance per outing dropped ${Math.abs(Math.round(distDelta))}% in the second half. Consider scheduling a longer effort to reset momentum.` });
+      } else if (elevDelta < -20) {
+        insights.push({ type: "gap", text: `Elevation per outing dropped ${Math.abs(Math.round(elevDelta))}% in the second half. Try a hillier route to rebuild climbing fitness.` });
+      }
+    }
+  }
+
   // Sport breakdown
   const sportMap: Record<string, { label: string; count: number; color: string }> = {
     hiking: { label: "Hike", count: 0, color: "hsl(160, 40%, 50%)" },

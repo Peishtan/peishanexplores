@@ -44,16 +44,22 @@ A 13-column dot grid per sport showing weekly goal completion across the quarter
 
 ### Automated Scorecard
 Each quarter generates a weighted percentage score based on:
-- **45%** Distance targets hit
+- **40%** Distance targets hit
 - **20%** Gym consistency
 - **20%** Outdoor / Paddle rhythm (with a 75% floor when the corresponding distance target is met)
-- **5%** Average elevation gain vs target
+- **10%** Average elevation gain vs target (avg ft/outing compared to elevation goal)
 - **10%** Milestones unlocked *this quarter* (quarter-scoped — a milestone counts if any qualifying evidence activity falls within the quarter, so repeating a 10-mile hike in a new quarter earns the score again)
 
 Includes a sport mix donut chart, collapsible score formula breakdown, and a dynamic review section. Past quarters are accessible via a dropdown selector and scored against the goals that were active at the time (via snapshots).
 
+#### Progression Trend
+The review compares the first half and second half of the quarter for average distance and elevation per outing. If either metric improves by >15%, the review highlights "building momentum." If either drops by >20%, it flags the decline with an actionable suggestion. This surfaces whether fitness is trending up or fading — a question raw totals don't answer.
+
 #### Trade-Off Aware Review
 The "Biggest lever" insight and consistency gap critiques use cross-category analysis before generating feedback. When a category (e.g., gym) has low consistency, the system checks whether missed weeks coincided with overflow sessions in other categories (e.g., extra hikes or paddles that same week). If the overlap is significant (≥40% of missed weeks), the review acknowledges the trade-off — framing it as "high-volume outdoor weeks crowding out gym sessions" rather than a generic consistency failure. This prevents misleading critiques when a big adventure week naturally displaces a gym day. The same logic applies in reverse for outdoor/paddle gaps with gym overflow.
+
+#### Recovery Awareness (Dashboard)
+The weekly Insights card on the Dashboard flags overtraining risk when the current week has ≥6 total sessions or ≥4 high/extreme intensity sessions. This provides real-time coaching nudges ("consider a rest day") rather than waiting for the end-of-quarter scorecard to surface load issues.
 
 #### Overflow Indicators (Dashboard)
 The weekly rhythm heat map shows a single success block per week per category. When sessions exceed the weekly target, the block displays the total count (e.g., "3") centered inside it using a subtle dark overlay, rather than adding extra blocks. This keeps the grid scannable while surfacing high-volume weeks that explain trade-offs in adjacent rows.

@@ -39,7 +39,7 @@ function computeScore(sc: ScorecardData): { score: number; label: string } {
     ? Math.min((sc.milestonesUnlocked / sc.totalMilestones) * 100, 100) : 100;
   const elevationScore = sc._elevationTarget > 0
     ? Math.min((sc._avgElevation / sc._elevationTarget) * 100, 100) : 100;
-  const score = Math.round(targetScore * 0.45 + gymPct * 0.20 + depScore * 0.20 + elevationScore * 0.05 + milestoneScore * 0.10);
+  const score = Math.round(targetScore * 0.40 + gymPct * 0.20 + depScore * 0.20 + elevationScore * 0.10 + milestoneScore * 0.10);
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
     : score >= 73 ? "Solid" : score >= 60 ? "Building" : "Getting Started";
   return { score, label };
