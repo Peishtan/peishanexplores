@@ -519,8 +519,21 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal, elevationSpark }: 
                     <stop offset="100%" stopColor="hsl(var(--moss-light))" stopOpacity={0.05} />
                   </linearGradient>
                 </defs>
+                <RechartsTooltip
+                  cursor={false}
+                  content={({ active, payload }) => {
+                    if (!active || !payload?.[0]) return null;
+                    const d = payload[0].payload as ElevSparkPoint;
+                    return (
+                      <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg">
+                        <p className="font-mono-dm text-[10px] text-fog/70 tracking-[0.1em] uppercase mb-0.5">{d.date}</p>
+                        <p className="text-[13px] font-medium text-foreground">{d.elev.toLocaleString()} ft</p>
+                      </div>
+                    );
+                  }}
+                />
                 <Area type="monotone" dataKey="elev" stroke="hsl(var(--moss-light))" strokeWidth={1.5}
-                      fill="url(#elev-grad)" dot={false} isAnimationActive={false} />
+                      fill="url(#elev-grad)" dot={false} activeDot={{ r: 3, fill: 'hsl(var(--moss-light))', strokeWidth: 0 }} isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
