@@ -8,6 +8,7 @@ import { getAvailableQuarters, computeScorecard, type QuarterInfo, type Scorecar
 import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
 import HeroBanner from "@/components/HeroBanner";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle2, XCircle, TrendingUp, FileSearch, AlertTriangle, Trophy, Loader2, Medal, Footprints, Waves, Mountain, Snowflake, Activity, MapPin, ArrowRight, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -458,23 +459,33 @@ function SportDonut({ breakdown, total }: { breakdown: SportBreakdown[]; total: 
 
   return (
     <div className="flex flex-col items-center flex-shrink-0">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
-        {segments.map((seg, i) => (
-          <circle
-            key={i}
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke={seg.color}
-            strokeWidth={strokeWidth}
-            strokeDasharray={`${seg.pct * circumference} ${circumference}`}
-            strokeDashoffset={-seg.offset * circumference}
-            strokeLinecap="round"
-          />
-        ))}
-      </svg>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90 cursor-pointer">
+            <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
+            {segments.map((seg, i) => (
+              <circle
+                key={i}
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                fill="none"
+                stroke={seg.color}
+                strokeWidth={strokeWidth}
+                strokeDasharray={`${seg.pct * circumference} ${circumference}`}
+                strokeDashoffset={-seg.offset * circumference}
+                strokeLinecap="round"
+              />
+            ))}
+          </svg>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="text-xs">
+          {segments.map((s, i) => (
+            <div key={i}>{s.label}: {s.count} session{s.count !== 1 ? "s" : ""}</div>
+          ))}
+          <div className="font-semibold mt-1">Total: {total}</div>
+        </TooltipContent>
+      </Tooltip>
       <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-2 justify-center">
         {segments.map((s, i) => (
           <span key={i} className="flex items-center gap-1">
