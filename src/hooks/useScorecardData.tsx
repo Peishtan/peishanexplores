@@ -59,6 +59,8 @@ export interface ScorecardData {
   milestonesAchievedTotal: number;
   totalMilestones: number;
   sportBreakdown: SportBreakdown[];
+  _avgElevation: number;
+  _elevationTarget: number;
 }
 
 function getQuarterStart(year: number, q: number): Date {
