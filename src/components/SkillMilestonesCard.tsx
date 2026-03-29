@@ -89,7 +89,7 @@ export default function SkillMilestonesCard() {
                       }`}
                     >
                       {unlocked ? (
-                        <div className="w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done"
+                        <div className="w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done animate-unlock-pop"
                              style={{ background: 'rgba(106,191,122,0.15)' }}>
                           <CheckCircle2 className="h-[11px] w-[11px] text-done" strokeWidth={2.5} />
                         </div>

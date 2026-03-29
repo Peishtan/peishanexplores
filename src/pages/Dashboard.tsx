@@ -274,7 +274,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
         </div>
         <div className="flex items-baseline gap-1.5 mb-3.5">
           <span className="font-display text-5xl font-black tracking-tight leading-none">
-            {challenge.current.toFixed(0)}
+            {animatedCurrent.toFixed(0)}
           </span>
           <span className="font-mono-dm text-sm text-fog">/ {challenge.target}</span>
           <span className="text-[13px] text-fog font-light -ml-1">mi</span>
