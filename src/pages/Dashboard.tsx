@@ -165,6 +165,14 @@ export default function Dashboard() {
                 fourWeekAvgElev={insights?.momentum?.fourWeekAvgElev ?? 0}
                 activities={activities}
                 profile={profile}
+                wtdSessionCount={(insights?.wtd.classes ?? 0) + (insights?.wtd.outdoor ?? 0) + (insights?.wtd.water ?? 0)}
+                wtdHighIntensityCount={
+                  activities?.filter(a => {
+                    const t = new Date(a.start_time).getTime();
+                    const ws = startOfWeek(new Date(), { weekStartsOn: 1 }).getTime();
+                    return t >= ws && (a.intensity === "high" || a.intensity === "extreme");
+                  }).length ?? 0
+                }
               />
             </div>
 
