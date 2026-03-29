@@ -113,6 +113,7 @@ export default function Dashboard() {
                   accentColor="rgba(100,160,210,0.9)"
                   missedColor="rgba(100,160,210,0.25)"
                   missedBorder="rgba(100,160,210,0.35)"
+                  goal={kayakGoal}
                 />
                 <WeeklyCard
                   icon={<Mountain className="h-5 w-5 text-fog" strokeWidth={1.5} />}
@@ -124,6 +125,7 @@ export default function Dashboard() {
                   accentColor="rgba(77,179,140,0.9)"
                   missedColor="rgba(77,179,140,0.25)"
                   missedBorder="rgba(77,179,140,0.35)"
+                  goal={outdoorGoal}
                 />
                 <GymCard
                   rule={`${exerciseGoal} sessions / week`}
@@ -336,9 +338,9 @@ function WeekHoverContent({ wr, weekIdx }: { wr: WeekResult; weekIdx: number }) 
 }
 
 /* ── Weekly Dot Card ── */
-function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor, missedColor, missedBorder }: {
+function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor, missedColor, missedBorder, goal = 1 }: {
   icon: React.ReactNode; name: string; rule: string; weekResults: WeekResult[]; total: number; streak: number;
-  accentColor: string; missedColor: string; missedBorder: string;
+  accentColor: string; missedColor: string; missedBorder: string; goal?: number;
 }) {
   const totalWeeks = 13;
   return (
@@ -363,6 +365,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           const isPast = i < total - 1;
           const isCurrent = i === total - 1;
           const wasHit = wr?.hit ?? false;
+          const overflow = wr && wasHit ? (wr.count - goal) : 0;
           const boxStyle = isPast
             ? wasHit
               ? { backgroundColor: accentColor }
@@ -388,6 +391,14 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
                 className={`aspect-square rounded-[3px] cursor-default animate-dot-enter ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
                 style={{ ...boxStyle, animationDelay: `${i * 40}ms` }}
               />
+              {overflow > 0 && (
+                <span
+                  className="absolute -top-1 -right-0.5 font-mono-dm text-[6px] leading-none pointer-events-none"
+                  style={{ color: accentColor, opacity: 0.7 }}
+                >
+                  +{overflow}
+                </span>
+              )}
               <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${i <= 1 ? 'left-0' : i >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
                 <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg whitespace-nowrap">
                   <WeekHoverContent wr={wr} weekIdx={i} />
@@ -469,11 +480,21 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
             </div>
           );
 
+          const gymOverflow = wr ? Math.max(0, (wr.count) - maxPerWeek) : 0;
+
           if (!wr || isFuture) return <div key={weekIdx}>{pips}</div>;
 
           return (
             <div key={weekIdx} className="relative group/tip">
               {pips}
+              {gymOverflow > 0 && (
+                <span
+                  className="absolute -top-1 -right-0.5 font-mono-dm text-[6px] leading-none pointer-events-none"
+                  style={{ color: accentColor, opacity: 0.7 }}
+                >
+                  +{gymOverflow}
+                </span>
+              )}
               <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${weekIdx <= 1 ? 'left-0' : weekIdx >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
                 <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg whitespace-nowrap">
                   <WeekHoverContent wr={wr} weekIdx={weekIdx} />
