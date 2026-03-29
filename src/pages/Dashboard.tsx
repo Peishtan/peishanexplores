@@ -369,7 +369,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
                 style={boxStyle}
               />
               <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${i <= 1 ? 'left-0' : i >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
-                <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-lg p-3 shadow-lg whitespace-nowrap">
+                <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg whitespace-nowrap">
                   <WeekHoverContent wr={wr} weekIdx={i} />
                 </div>
               </div>
@@ -439,6 +439,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
                     style.backgroundColor = accentColor;
                   } else {
                     style.backgroundColor = missedColor;
+                    style.border = `1px solid rgba(212,106,90,0.35)`;
                   }
                 }
                 return <div key={pip} className={cls} style={style} />;
@@ -452,7 +453,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
             <div key={weekIdx} className="relative group/tip">
               {pips}
               <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${weekIdx <= 1 ? 'left-0' : weekIdx >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
-                <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-lg p-3 shadow-lg whitespace-nowrap">
+                <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg whitespace-nowrap">
                   <WeekHoverContent wr={wr} weekIdx={weekIdx} />
                 </div>
               </div>
@@ -761,7 +762,7 @@ function MilestoneSpotlight() {
                   const detail = [latest.route, latest.elevation_gain != null ? `${latest.elevation_gain.toLocaleString()} ft` : null, latest.distance != null ? `${latest.distance} mi` : null].filter(Boolean).join(", ");
                   return detail ? (
                     <div className="hidden group-hover/tip:block pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50
-                      bg-card border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2 shadow-lg max-w-[220px]">
+                      bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg max-w-[220px]">
                       <p className="text-[12px] text-mist leading-snug">{detail}</p>
                       {latest.start_time && (
                         <p className="font-mono-dm text-[10px] text-done mt-0.5">

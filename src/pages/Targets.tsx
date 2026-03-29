@@ -125,7 +125,7 @@ export default function Targets() {
           {/* Left Column: Quarterly Targets */}
           <div>
             {/* Quarterly Targets header */}
-            <div className="flex items-center justify-between px-6 mt-[28px] mb-[14px]">
+            <div className="flex items-center justify-between px-6 mt-[40px] mb-[16px]">
               <span className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog">Quarterly Targets</span>
               <button
                 onClick={() => editing ? handleSave() : setEditing(true)}
@@ -208,7 +208,7 @@ export default function Targets() {
             </div>
 
             {/* Weekly Rhythm */}
-            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
+            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[40px] mb-[16px]">
               Weekly Rhythm
             </div>
             <div className="px-4 space-y-2">
@@ -248,7 +248,7 @@ export default function Targets() {
           {/* Right Column: Skill Milestones */}
           <div>
             {/* Skill Milestones */}
-            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[32px] mb-[14px]">
+            <div className="font-mono-dm text-[10px] uppercase tracking-[0.2em] text-fog px-6 mt-[40px] mb-[16px]">
               Skill Milestones
             </div>
             <div className="px-4">

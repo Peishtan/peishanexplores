@@ -3,7 +3,7 @@ import { LayoutDashboard, ClipboardList, Target, Award } from "lucide-react";
 
 const links = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/logs", icon: ClipboardList, label: "Logs" },
+  { to: "/logs", icon: ClipboardList, label: "Activities" },
   { to: "/targets", icon: Target, label: "Targets" },
   { to: "/scorecard", icon: Award, label: "Scorecard" },
 ];
