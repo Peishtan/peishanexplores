@@ -226,11 +226,25 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
   const kayakPct = kayakTargetHit ? Math.max(kayakCons?.pct ?? 0, 75) : (kayakCons?.pct ?? 0);
   const dependentScore = (outdoorPct + kayakPct) / 2;
 
+  // Quarter-scoped milestone score: how many milestones had qualifying evidence THIS quarter
   const milestoneScore = scorecard.totalMilestones > 0
-    ? Math.min((scorecard.milestonesAchievedTotal / scorecard.totalMilestones) * 100, 100)
+    ? Math.min((scorecard.milestonesUnlocked / scorecard.totalMilestones) * 100, 100)
     : 100;
 
-  const score = targetScore * 0.45 + independentScore * 0.25 + dependentScore * 0.20 + milestoneScore * 0.10;
+  // Elevation score: avg elevation gain vs target (from goals)
+  const elevationTarget = scorecard.quarter.isCurrent
+    ? (scorecard as any)._elevationTarget ?? 0
+    : (scorecard as any)._elevationTarget ?? 0;
+  const elevationScore = elevationTarget > 0
+    ? Math.min((scorecard.totalElevation > 0 ? (() => {
+        // Compute avg elevation from hike/xc_ski activities with elevation
+        const avgElev = (scorecard as any)._avgElevation ?? 0;
+        return (avgElev / elevationTarget) * 100;
+      })() : 0), 100)
+    : 100;
+
+  // Weights: 45% targets, 20% gym, 20% outdoor, 5% elevation, 10% milestones
+  const score = targetScore * 0.45 + independentScore * 0.20 + dependentScore * 0.20 + elevationScore * 0.05 + milestoneScore * 0.10;
 
   const scoreColor = score >= 80 ? "text-done" : "text-amber";
   const label = score >= 93 ? "Outstanding" : score >= 87 ? "Excellent" : score >= 80 ? "Strong"
@@ -238,8 +252,9 @@ function OverallGrade({ scorecard }: { scorecard: ScorecardData }) {
 
   const rows = [
     { label: "Distance Targets", weight: 45, value: Math.round(targetScore), contribution: targetScore * 0.45 },
-    { label: "Gym Consistency", weight: 25, value: Math.round(independentScore), contribution: independentScore * 0.25 },
+    { label: "Gym Consistency", weight: 20, value: Math.round(independentScore), contribution: independentScore * 0.20 },
     { label: "Outdoor Consistency", weight: 20, value: Math.round(dependentScore), contribution: dependentScore * 0.20 },
+    { label: "Avg Elevation", weight: 5, value: Math.round(elevationScore), contribution: elevationScore * 0.05 },
     { label: "Milestones", weight: 10, value: Math.round(milestoneScore), contribution: milestoneScore * 0.10 },
   ];
 
