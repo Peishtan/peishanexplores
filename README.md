@@ -49,7 +49,13 @@ Each quarter generates a weighted percentage score based on:
 - **20%** Outdoor / Paddle rhythm (with a 75% floor when the corresponding distance target is met)
 - **10%** Milestones unlocked
 
-Includes a sport mix donut chart, collapsible score formula breakdown, and a dynamic review section highlighting the most impactful area to improve. Past quarters are accessible via a dropdown selector.
+Includes a sport mix donut chart, collapsible score formula breakdown, and a dynamic review section. Past quarters are accessible via a dropdown selector and scored against the goals that were active at the time (via snapshots).
+
+#### Trade-Off Aware Review
+The "Biggest lever" insight and consistency gap critiques use cross-category analysis before generating feedback. When a category (e.g., gym) has low consistency, the system checks whether missed weeks coincided with overflow sessions in other categories (e.g., extra hikes or paddles that same week). If the overlap is significant (≥40% of missed weeks), the review acknowledges the trade-off — framing it as "high-volume outdoor weeks crowding out gym sessions" rather than a generic consistency failure. This prevents misleading critiques when a big adventure week naturally displaces a gym day. The same logic applies in reverse for outdoor/paddle gaps with gym overflow.
+
+#### Overflow Indicators (Dashboard)
+The weekly rhythm heat map shows a single success block per week per category. When sessions exceed the weekly target, the block displays the total count (e.g., "3") centered inside it using a subtle dark overlay, rather than adding extra blocks. This keeps the grid scannable while surfacing high-volume weeks that explain trade-offs in adjacent rows.
 
 ### Skill Milestones
 Achievements unlock as real physical benchmarks are hit — not based on time or streaks. Organized into Beginner, Intermediate, and Advanced tiers:
