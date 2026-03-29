@@ -9,7 +9,26 @@ import HeroBanner from "@/components/HeroBanner";
 import { Trophy, Flame, TrendingUp, TrendingDown, Minus, CheckCircle2, Target, Waves, Mountain, Dumbbell, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
+import { useEffect, useRef, useState } from "react";
 
+
+/* ── Count-up hook ── */
+function useCountUp(target: number, duration = 800) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef<number>();
+  useEffect(() => {
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      setValue(target * eased);
+      if (t < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [target, duration]);
+  return value;
+}
 
 export default function Dashboard() {
   const { data: profile } = useProfile();
@@ -193,7 +212,7 @@ function AchievementBanner({ title, label, current, target, stats, extraStats }:
   return (
     <>
       <SectionLabel>Completed</SectionLabel>
-      <div className="mx-4 rounded-[14px] border border-moss p-5 relative overflow-hidden animate-fade-slide-up"
+      <div className="mx-4 rounded-[14px] border border-moss p-5 relative overflow-hidden animate-fade-slide-up animate-banner-sweep"
            style={{ background: 'linear-gradient(135deg, hsl(123 20% 20%) 0%, #1a3020 100%)' }}>
         <div className="absolute -top-[30px] -right-[30px] w-[120px] h-[120px] rounded-full"
              style={{ background: 'radial-gradient(circle, rgba(90,125,91,0.3) 0%, transparent 70%)' }} />
@@ -233,6 +252,7 @@ function StatItem({ value, label }: { value: string; label: string }) {
 
 /* ── Challenge Card ── */
 function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
+  const animatedCurrent = useCountUp(challenge.current, 1000);
   const paceLabel = challenge.pct >= 100 ? "✓ Achieved"
     : challenge.pace === "ahead" ? "↑ Ahead of pace"
     : challenge.pace === "on_pace" ? "→ On track" : "↓ Behind pace";
@@ -254,7 +274,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
         </div>
         <div className="flex items-baseline gap-1.5 mb-3.5">
           <span className="font-display text-5xl font-black tracking-tight leading-none">
-            {challenge.current.toFixed(0)}
+            {animatedCurrent.toFixed(0)}
           </span>
           <span className="font-mono-dm text-sm text-fog">/ {challenge.target}</span>
           <span className="text-[13px] text-fog font-light -ml-1">mi</span>
@@ -322,7 +342,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
 }) {
   const totalWeeks = 13;
   return (
-    <div className="rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
+    <div className="rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px] press-scale">
       <div className="flex justify-between items-center mb-3.5">
         <div className="flex items-center gap-2">
           <span className="flex-shrink-0">{icon}</span>
@@ -332,7 +352,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           </div>
         </div>
         {streak >= 3 && (
-          <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em]">
+          <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em] animate-streak-glow">
             <Flame className="h-3 w-3" strokeWidth={1.5} /> {streak}-wk streak
           </span>
         )}
@@ -356,8 +376,8 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           if (!wr || (!isPast && !isCurrent)) {
             return (
               <div key={i}
-                className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
-                style={boxStyle}
+                className={`aspect-square rounded-[3px] cursor-default animate-dot-enter ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+                style={{ ...boxStyle, animationDelay: `${i * 40}ms` }}
               />
             );
           }
@@ -365,8 +385,8 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           return (
             <div key={i} className="relative group/tip">
               <div
-                className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
-                style={boxStyle}
+                className={`aspect-square rounded-[3px] cursor-default animate-dot-enter ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+                style={{ ...boxStyle, animationDelay: `${i * 40}ms` }}
               />
               <div className={`absolute bottom-full mb-2 hidden group-hover/tip:block z-50 pointer-events-none ${i <= 1 ? 'left-0' : i >= 11 ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}>
                 <div className="bg-card border border-[rgba(255,255,255,0.1)] rounded-[14px] px-3 py-2 shadow-lg whitespace-nowrap">
@@ -396,7 +416,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
 }) {
   const totalWeeks = 13;
   return (
-    <div className="rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px]">
+    <div className="rounded-[14px] bg-card border border-[rgba(255,255,255,0.06)] p-[18px_20px] press-scale">
       <div className="flex justify-between items-center mb-3.5">
         <div className="flex items-center gap-2">
           <Dumbbell className="h-5 w-5 text-fog" strokeWidth={1.5} />
@@ -406,7 +426,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
           </div>
         </div>
         {streak >= 3 && (
-          <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em]">
+          <span className="font-mono-dm text-[10px] text-amber flex items-center gap-1.5 bg-[rgba(212,130,58,0.1)] border border-[rgba(212,130,58,0.25)] px-2 py-0.5 rounded-full tracking-[0.08em] animate-streak-glow">
             <Flame className="h-3 w-3" strokeWidth={1.5} /> {streak}-wk streak
           </span>
         )}
@@ -422,7 +442,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
             <div className="flex flex-col-reverse gap-0.5 cursor-default">
               {Array.from({ length: maxPerWeek }, (_, pip) => {
                 const style: React.CSSProperties = {};
-                let cls = "aspect-square rounded-[2px] ";
+                let cls = "aspect-square rounded-[2px] animate-dot-enter ";
                 if (isFuture) {
                   style.backgroundColor = "rgba(255,255,255,0.05)";
                 } else if (isCurrent) {
@@ -442,7 +462,7 @@ function GymCard({ rule, weekResults, total, maxPerWeek, wtdClasses, streak, acc
                     style.border = `1px solid rgba(212,106,90,0.35)`;
                   }
                 }
-                return <div key={pip} className={cls} style={style} />;
+                return <div key={pip} className={cls} style={{ ...style, animationDelay: `${weekIdx * 40}ms` }} />;
               })}
             </div>
           );
@@ -533,7 +553,7 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal, elevationSpark }: 
                   }}
                 />
                 <Area type="monotone" dataKey="elev" stroke="hsl(var(--moss-light))" strokeWidth={1.5}
-                      fill="url(#elev-grad)" dot={false} activeDot={{ r: 3, fill: 'hsl(var(--moss-light))', strokeWidth: 0 }} isAnimationActive={false} />
+                      fill="url(#elev-grad)" dot={false} activeDot={{ r: 3, fill: 'hsl(var(--moss-light))', strokeWidth: 0 }} isAnimationActive animationDuration={1200} animationEasing="ease-out" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -550,10 +570,17 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal, elevationSpark }: 
 function MomentumCard({ label, value, valueClass, alert, children }: {
   label: string; value: string; valueClass?: string; alert?: boolean; children?: React.ReactNode;
 }) {
+  const numericPart = parseFloat(value.replace(/[^0-9.\-]/g, '')) || 0;
+  const animated = useCountUp(Math.abs(numericPart), 900);
+  const prefix = value.match(/^[^0-9.\-]*/)?.[0] ?? '';
+  const suffix = value.match(/[^0-9.\-]*$/)?.[0] ?? '';
+  const decimals = value.includes('.') ? (value.split('.')[1]?.replace(/[^0-9]/g, '').length ?? 0) : 0;
+  const displayValue = `${prefix}${animated.toFixed(decimals)}${suffix}`;
+
   return (
-    <div className={`bg-card border rounded-[14px] p-4 ${alert ? "border-[rgba(212,130,58,0.25)]" : "border-[rgba(255,255,255,0.06)]"}`}>
+    <div className={`bg-card border rounded-[14px] p-4 press-scale ${alert ? "border-[rgba(212,130,58,0.25)]" : "border-[rgba(255,255,255,0.06)]"}`}>
       <p className="font-mono-dm text-[9px] uppercase tracking-[0.18em] text-fog mb-2">{label}</p>
-      <p className={`font-display text-[32px] font-black leading-none tracking-tight ${valueClass ?? ""}`}>{value}</p>
+      <p className={`font-display text-[32px] font-black leading-none tracking-tight ${valueClass ?? ""}`}>{displayValue}</p>
       {children}
     </div>
   );
@@ -754,7 +781,7 @@ function MilestoneSpotlight() {
             const evidenceList = evidenceMap?.get(p.id);
             return (
               <div key={p.id} className="relative group/tip flex items-center gap-3.5 py-3.5 border-b border-[rgba(255,255,255,0.05)] last:border-0 cursor-default">
-                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done"
+                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 border-[1.5px] border-done animate-unlock-pop"
                      style={{ background: 'rgba(74,155,92,0.15)' }}>
                   <CheckCircle2 className="h-3 w-3 text-done" strokeWidth={2.5} />
                 </div>
