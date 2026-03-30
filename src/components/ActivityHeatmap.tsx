@@ -29,39 +29,42 @@ export default function ActivityHeatmap({ activities, sportFilter, rangeDays, is
             ))}
           </div>
           {/* Week columns */}
-          {weeks.map((week) => (
-            <div key={week.weekNum} className="flex flex-col gap-[3px] flex-1">
-              {Array.from({ length: 7 }, (_, dayIdx) => {
-                const day = week.days[dayIdx];
-                if (!day) {
-                  return <div key={dayIdx} className="h-[18px] rounded-[3px]" />;
-                }
+          {weeks.map((week) => {
+            const weekKey = week.days[0] ? format(week.days[0].date, "yyyy-MM-dd") : `week-${week.weekNum}`;
 
-                // Filter logic
-                const filteredTypes = sportFilter === "all"
-                  ? day.types
-                  : sportFilter === "gym"
-                    ? day.types.filter(t => ["peloton", "orange_theory"].includes(t))
-                    : day.types.filter(t => t === sportFilter);
+            return (
+              <div key={weekKey} className="flex flex-col gap-[3px] flex-1">
+                {Array.from({ length: 7 }, (_, dayIdx) => {
+                  const day = week.days[dayIdx];
+                  if (!day) {
+                    return <div key={dayIdx} className="h-[18px] rounded-[3px]" />;
+                  }
 
-                const count = filteredTypes.length;
-                const color = count > 0 ? getSportColor(filteredTypes) : undefined;
-                const opacity = count > 0 ? 1 : 0.06;
-                const isToday = format(day.date, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+                  // Filter logic
+                  const filteredTypes = sportFilter === "all"
+                    ? day.types
+                    : sportFilter === "gym"
+                      ? day.types.filter(t => ["peloton", "orange_theory"].includes(t))
+                      : day.types.filter(t => t === sportFilter);
 
-                return (
-                  <div
-                    key={dayIdx}
-                    className={`h-[18px] rounded-[3px] transition-all ${isToday ? "ring-1 ring-moss-light/50" : ""}`}
-                    style={{
-                      backgroundColor: color ?? "rgba(255,255,255,0.06)",
-                    }}
-                    title={`${format(day.date, "MMM d")}${count > 0 ? ` · ${count} activit${count > 1 ? "ies" : "y"}` : ""}`}
-                  />
-                );
-              })}
-            </div>
-          ))}
+                  const count = filteredTypes.length;
+                  const color = count > 0 ? getSportColor(filteredTypes) : undefined;
+                  const isToday = format(day.date, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+
+                  return (
+                    <div
+                      key={dayIdx}
+                      className={`h-[18px] rounded-[3px] transition-all ${isToday ? "ring-1 ring-moss-light/50" : ""}`}
+                      style={{
+                        backgroundColor: color ?? "rgba(255,255,255,0.06)",
+                      }}
+                      title={`${format(day.date, "MMM d")}${count > 0 ? ` · ${count} activit${count > 1 ? "ies" : "y"}` : ""}`}
+                    />
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
         {/* Week numbers */}
         <div className="flex gap-[3px] mt-1.5 ml-4">
