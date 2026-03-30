@@ -264,7 +264,11 @@ export default function Activities() {
             </div>
 
             {/* Activity Heatmap */}
-            <ActivityHeatmap activities={activities} sportFilter={sportFilter} rangeDays={dateRange === "all" ? 90 : parseInt(dateRange)} isCapped={dateRange === "all" || parseInt(dateRange) > 90} />
+            <ActivityHeatmap activities={activities?.filter((a) => {
+              if (sportFilter === "all") return true;
+              if (sportFilter === "gym") return ["peloton", "orange_theory"].includes(a.type);
+              return a.type === sportFilter;
+            })} sportFilter={sportFilter} rangeDays={dateRange === "all" ? 90 : parseInt(dateRange)} isCapped={dateRange === "all" || parseInt(dateRange) > 90} />
           </div>
 
           {/* Right: Log List */}
