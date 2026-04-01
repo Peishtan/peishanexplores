@@ -387,7 +387,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           if (!wr || (!isPast && !isCurrent)) {
             return (
               <div key={i}
-                className={`aspect-square rounded-[3px] cursor-default animate-dot-enter ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+                className={`aspect-square rounded-[3px] cursor-default ${isCurrent && !wasHit ? 'animate-pulse-dot' : 'animate-dot-enter'}`}
                 style={{ ...boxStyle, animationDelay: `${i * 40}ms` }}
               />
             );
@@ -396,7 +396,7 @@ function WeeklyCard({ icon, name, rule, weekResults, total, streak, accentColor,
           return (
             <div key={i} className="relative group/tip">
               <div
-                className={`aspect-square rounded-[3px] cursor-default animate-dot-enter flex items-center justify-center ${isCurrent && !wasHit ? 'animate-pulse-dot' : ''}`}
+                className={`aspect-square rounded-[3px] cursor-default flex items-center justify-center ${isCurrent && !wasHit ? 'animate-pulse-dot' : 'animate-dot-enter'}`}
                 style={{ ...boxStyle, animationDelay: `${i * 40}ms` }}
               >
                 {overflow > 0 && (
