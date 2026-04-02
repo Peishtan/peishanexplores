@@ -304,8 +304,8 @@ export function computeScorecard(
   for (let i = 0; i < weeksInQuarter; i++) {
     const ws = addWeeks(firstMonday, i);
     const we = addWeeks(firstMonday, i + 1);
-    const effectiveStart = Math.max(ws.getTime(), qStartMs);
-    const wd = getWeekData(activities, effectiveStart, we.getTime());
+    // Use full week boundaries (consistent with checkWeeks above)
+    const wd = getWeekData(activities, ws.getTime(), we.getTime());
     weeklyOverflows.push({
       gym: Math.max(0, wd.classes - (goals.goal_exercises_per_week ?? 3)),
       outdoor: Math.max(0, wd.outdoor - (goals.goal_outdoor_per_week ?? 1)),
