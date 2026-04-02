@@ -174,13 +174,14 @@ export function computeScorecard(
     for (let i = 0; i < weeksInQuarter; i++) {
       const ws = addWeeks(firstMonday, i);
       const we = addWeeks(firstMonday, i + 1);
-      const effectiveStart = Math.max(ws.getTime(), qStartMs);
-      if (check(getWeekData(activities, effectiveStart, we.getTime()))) hit++;
+      // Use full week boundaries for consistency (don't clip to quarter start)
+      // so partial first weeks still count if the weekly goal is met
+      if (check(getWeekData(activities, ws.getTime(), we.getTime()))) hit++;
     }
     return hit;
   };
 
-  const gymHit = checkWeeks((w) => w.classes >= 1);
+  const gymHit = checkWeeks((w) => w.classes >= (goals.goal_exercises_per_week ?? 3));
   const outdoorHit = checkWeeks((w) => w.outdoor >= (goals.goal_outdoor_per_week ?? 1));
   const kayakHit = checkWeeks((w) => w.water >= (goals.goal_kayak_per_week ?? 1));
 
