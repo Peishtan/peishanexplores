@@ -180,7 +180,7 @@ export function computeScorecard(
     return hit;
   };
 
-  const gymHit = checkWeeks((w) => w.classes >= (goals.goal_exercises_per_week ?? 3));
+  const gymHit = checkWeeks((w) => w.classes >= 1);
   const outdoorHit = checkWeeks((w) => w.outdoor >= (goals.goal_outdoor_per_week ?? 1));
   const kayakHit = checkWeeks((w) => w.water >= (goals.goal_kayak_per_week ?? 1));
 
