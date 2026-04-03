@@ -107,7 +107,8 @@ function buildChallenge(
   }
   const dailyRate = current / Math.max(daysPassed, 1);
   const daysToFinish = dailyRate > 0 ? Math.ceil((target - current) / dailyRate) : null;
-  const projectedFinish = daysToFinish !== null && daysToFinish > 0
+  // Suppress projection until 14+ days into the quarter to avoid misleading early extrapolations
+  const projectedFinish = daysPassed >= 14 && daysToFinish !== null && daysToFinish > 0
     ? format(addDays(now, daysToFinish), "MMM d")
     : null;
   const expectedPct = daysPassed / totalDays;
