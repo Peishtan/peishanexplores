@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { startOfWeek, endOfWeek } from "date-fns";
-import { useRecomputeMilestones } from "./useSkillMilestones";
+
 
 export interface Activity {
   id: string;
