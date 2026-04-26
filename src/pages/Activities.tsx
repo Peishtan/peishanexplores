@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useActivities, useDeleteActivity, Activity } from "@/hooks/useActivities";
+import { useRecomputeMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import ActivityHeatmap from "@/components/ActivityHeatmap";
 import HeroBanner from "@/components/HeroBanner";
@@ -57,6 +58,7 @@ function getSportInfo(type: string) {
 export default function Activities() {
   const { data: activities, isLoading } = useActivities();
   const deleteActivity = useDeleteActivity();
+  const recomputeMilestones = useRecomputeMilestones();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -149,7 +151,9 @@ export default function Activities() {
           })
           .eq("id", editingId);
         if (error) throw error;
+        await recomputeMilestones.mutateAsync();
         queryClient.invalidateQueries({ queryKey: ["activities"] });
+        queryClient.invalidateQueries({ queryKey: ["skill_milestone_progress"] });
         toast.success("Activity updated");
       } else {
         const { error } = await supabase
@@ -167,7 +171,9 @@ export default function Activities() {
             user_id: user!.id,
           });
         if (error) throw error;
+        await recomputeMilestones.mutateAsync();
         queryClient.invalidateQueries({ queryKey: ["activities"] });
+        queryClient.invalidateQueries({ queryKey: ["skill_milestone_progress"] });
         toast.success("Activity logged");
       }
       setDialogOpen(false);
