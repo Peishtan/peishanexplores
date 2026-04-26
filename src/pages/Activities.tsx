@@ -58,6 +58,7 @@ function getSportInfo(type: string) {
 export default function Activities() {
   const { data: activities, isLoading } = useActivities();
   const deleteActivity = useDeleteActivity();
+  const recomputeMilestones = useRecomputeMilestones();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
