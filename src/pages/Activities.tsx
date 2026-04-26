@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useActivities, useDeleteActivity, Activity } from "@/hooks/useActivities";
+import { useRecomputeMilestones } from "@/hooks/useSkillMilestones";
 import BottomNav from "@/components/BottomNav";
 import ActivityHeatmap from "@/components/ActivityHeatmap";
 import HeroBanner from "@/components/HeroBanner";
