@@ -86,10 +86,21 @@ export function useWeekActivities() {
   });
 }
 
+async function triggerRecompute() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    await supabase.functions.invoke("recompute-milestones", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+  } catch (err) {
+    console.error("recompute-milestones invoke failed:", err);
+  }
+}
+
 export function useAddActivity() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const recompute = useRecomputeMilestones();
 
   return useMutation({
     mutationFn: async (activity: Omit<Activity, "id" | "user_id" | "created_at">) => {
@@ -97,26 +108,28 @@ export function useAddActivity() {
         .from("activities")
         .insert({ ...activity, user_id: user!.id });
       if (error) throw error;
+      // Await recompute inside mutationFn so it's not lost if the component unmounts
+      await triggerRecompute();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
-      recompute.mutate();
+      queryClient.invalidateQueries({ queryKey: ["skill_milestone_progress"] });
     },
   });
 }
 
 export function useDeleteActivity() {
   const queryClient = useQueryClient();
-  const recompute = useRecomputeMilestones();
 
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("activities").delete().eq("id", id);
       if (error) throw error;
+      await triggerRecompute();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
-      recompute.mutate();
+      queryClient.invalidateQueries({ queryKey: ["skill_milestone_progress"] });
     },
   });
 }
