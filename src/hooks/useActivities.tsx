@@ -128,7 +128,7 @@ export function useDeleteActivity() {
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("activities").delete().eq("id", id);
       if (error) throw error;
-      await triggerRecompute();
+      triggerRecompute();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
