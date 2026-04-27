@@ -171,7 +171,7 @@ export default function Activities() {
             user_id: user!.id,
           });
         if (error) throw error;
-        await recomputeMilestones.mutateAsync();
+        recomputeMilestones.mutateAsync().catch((err) => console.warn("recompute failed:", err));
         queryClient.invalidateQueries({ queryKey: ["activities"] });
         queryClient.invalidateQueries({ queryKey: ["skill_milestone_progress"] });
         toast.success("Activity logged");
