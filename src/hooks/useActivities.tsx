@@ -112,8 +112,7 @@ export function useAddActivity() {
         .from("activities")
         .insert({ ...activity, user_id: user!.id });
       if (error) throw error;
-      // Await recompute inside mutationFn so it's not lost if the component unmounts
-      await triggerRecompute();
+      triggerRecompute();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
