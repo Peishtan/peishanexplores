@@ -73,10 +73,13 @@ export function useRecomputeMilestones() {
       const res = await supabase.functions.invoke("recompute-milestones", {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
-      if (res.error) throw res.error;
+      if (res.error) {
+        console.warn("recompute-milestones failed:", res.error);
+        return null;
+      }
       return res.data;
     },
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["skill_milestone_progress"] });
     },
   });
