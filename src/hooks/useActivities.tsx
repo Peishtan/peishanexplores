@@ -86,16 +86,20 @@ export function useWeekActivities() {
   });
 }
 
-async function triggerRecompute() {
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-    await supabase.functions.invoke("recompute-milestones", {
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
-  } catch (err) {
-    console.error("recompute-milestones invoke failed:", err);
-  }
+function triggerRecompute() {
+  // Fire-and-forget. The DB trigger handles distance milestones synchronously,
+  // so a 429 / failure here must NOT block the activity save.
+  (async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      await supabase.functions.invoke("recompute-milestones", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+    } catch (err) {
+      console.warn("recompute-milestones invoke failed:", err);
+    }
+  })();
 }
 
 export function useAddActivity() {
