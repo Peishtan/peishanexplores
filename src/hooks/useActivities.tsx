@@ -86,16 +86,20 @@ export function useWeekActivities() {
   });
 }
 
-async function triggerRecompute() {
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-    await supabase.functions.invoke("recompute-milestones", {
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    });
-  } catch (err) {
-    console.error("recompute-milestones invoke failed:", err);
-  }
+function triggerRecompute() {
+  // Fire-and-forget. The DB trigger handles distance milestones synchronously,
+  // so a 429 / failure here must NOT block the activity save.
+  (async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      await supabase.functions.invoke("recompute-milestones", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+    } catch (err) {
+      console.warn("recompute-milestones invoke failed:", err);
+    }
+  })();
 }
 
 export function useAddActivity() {
@@ -108,8 +112,7 @@ export function useAddActivity() {
         .from("activities")
         .insert({ ...activity, user_id: user!.id });
       if (error) throw error;
-      // Await recompute inside mutationFn so it's not lost if the component unmounts
-      await triggerRecompute();
+      triggerRecompute();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
@@ -125,7 +128,7 @@ export function useDeleteActivity() {
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("activities").delete().eq("id", id);
       if (error) throw error;
-      await triggerRecompute();
+      triggerRecompute();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["activities"] });
