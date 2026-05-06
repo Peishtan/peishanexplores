@@ -536,7 +536,7 @@ function MomentumSection({ momentum, wtdMiles, elevationGoal, elevationSpark }: 
           </p>
         </MomentumCard>
         <MomentumCard
-          label="Elevation trend"
+          label="Elevation trend (4 wk)"
           value={`${elevTrendPct > 0 ? "+" : elevTrendPct < 0 ? "−" : ""}${Math.abs(elevTrendPct)}%`}
           valueClass={elevTrendPct < 0 ? "text-amber" : undefined}
           alert={elevTrendPct < -10}
