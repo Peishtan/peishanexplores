@@ -14,7 +14,7 @@ const activityLabels: Record<string, string> = {
   kayaking: "Paddling",
   hiking: "Hiking",
   xc_skiing: "XC Skiing",
-  peloton: "Peloton",
+  peloton: "Other",
   orange_theory: "OrangeTheory",
 };
 

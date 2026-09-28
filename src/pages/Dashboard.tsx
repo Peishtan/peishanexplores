@@ -316,7 +316,7 @@ function ChallengeCard({ challenge }: { challenge: QuarterChallenge }) {
 /* ── Activity type label helper ── */
 const TYPE_LABELS: Record<string, string> = {
   kayaking: "Paddle", hiking: "Hike", xc_skiing: "XC Ski",
-  peloton: "Peloton", orange_theory: "OTF",
+  peloton: "Other", orange_theory: "OTF",
 };
 
 /* ── Week Hover Content ── */
