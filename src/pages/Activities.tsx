@@ -436,7 +436,7 @@ export default function Activities() {
                 <option value="hiking">Hike</option>
                 <option value="xc_skiing">XC Ski</option>
                 <option value="orange_theory">Orange Theory</option>
-                <option value="peloton">Peloton</option>
+                <option value="peloton">Other</option>
               </select>
             </div>
             <div className="space-y-1.5">
